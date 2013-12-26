@@ -1,4 +1,5 @@
 noneOf = require('./../lib/noneOf')
+
 describe 'noneOf', ->
   it 'should return an object with and', ->
     noneOf(true).should.be.an.Object
