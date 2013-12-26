@@ -1,0 +1,29 @@
+{
+  "name": "neither",
+  "description": "Boolean helpers for node.js",
+  "version": "0.0.1",
+  "author": "Andrew Nichols <anichols@manta.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tandrewnichols/neither.git"
+  },
+  "homepage": "https://github.com/tandrewnichols/neither",
+  "bugs": "https://github.com/tandrewnichols/neither/issues",
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "dependencies": {
+    "underscore": "*"
+  },
+  "devDependencies": {
+    "coffee-script": "*",
+    "mocha": "*",
+    "should": "*"
+  },
+  "keywords": ["boolean", "if", "else"],
+  "main": "./lib/neither.js",
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}
