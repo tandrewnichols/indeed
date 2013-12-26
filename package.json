@@ -21,8 +21,8 @@
     "mocha": "*",
     "should": "*"
   },
-  "keywords": ["boolean", "if", "else"],
-  "main": "./lib/neither.js",
+  "keywords": ["boolean", "if", "else", "helpers"],
+  "main": "./lib",
   "engines": {
     "node": ">=0.8.0"
   }
