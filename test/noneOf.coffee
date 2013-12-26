@@ -1,6 +1,9 @@
 noneOf = require('./../lib/noneOf')
 
 describe 'noneOf', ->
+  beforeEach ->
+    noneOf.reset()
+
   it 'should return an object with and', ->
     noneOf(true).should.be.an.Object
     noneOf(true).and.should.be.a.Function

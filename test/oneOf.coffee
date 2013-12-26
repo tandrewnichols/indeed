@@ -1,6 +1,9 @@
 oneOf = require('./../lib/oneOf')
 
 describe 'oneOf', ->
+  beforeEach ->
+    oneOf.reset()
+
   it 'should return an object with and', ->
     oneOf(true).should.be.an.Object
     oneOf(true).and.should.be.a.Function
