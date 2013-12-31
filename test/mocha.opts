@@ -1,4 +1,5 @@
---reporter spec
+--reporter dot
+--watch
 --ui bdd
 --compilers coffee:coffee-script
 --recursive
