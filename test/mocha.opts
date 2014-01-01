@@ -1,5 +1,6 @@
---reporter dot
+--reporter min
 --watch
 --ui bdd
 --compilers coffee:coffee-script
 --recursive
+--suppress-stack

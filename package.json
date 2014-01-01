@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "coffee-script": "*",
-    "mocha": "*",
+    "mocha": "git://github.com/tandrewnichols/mocha.git#suppress-stack",
     "should": "*"
   },
   "keywords": ["boolean", "if", "else", "helpers"],
