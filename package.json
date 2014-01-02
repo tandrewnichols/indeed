@@ -1,14 +1,14 @@
 {
-  "name": "neither",
+  "name": "indeed",
   "description": "Boolean helpers for node.js",
   "version": "0.0.1",
   "author": "Andrew Nichols <anichols@manta.com>",
   "repository": {
     "type": "git",
-    "url": "git://github.com/tandrewnichols/neither.git"
+    "url": "git://github.com/tandrewnichols/indeed.git"
   },
-  "homepage": "https://github.com/tandrewnichols/neither",
-  "bugs": "https://github.com/tandrewnichols/neither/issues",
+  "homepage": "https://github.com/tandrewnichols/indeed",
+  "bugs": "https://github.com/tandrewnichols/indeed/issues",
   "license": "MIT",
   "scripts": {
     "test": "mocha test"
