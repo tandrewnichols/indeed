@@ -1,1 +1,1 @@
-[![Build Status](https://travis-ci.org/tandrewnichols/neither.png)](https://travis-ci.org/tandrewnichols/neither)
+[![Build Status](https://travis-ci.org/tandrewnichols/indeed.png)](https://travis-ci.org/tandrewnichols/indeed)
