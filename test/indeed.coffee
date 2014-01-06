@@ -71,5 +71,19 @@ describe 'indeed', ->
     it 'should start a new set of conditions and negate that set', ->
       indeed(true).and(true).butAlsoNot(true).and(false).test().should.be.true
 
-  #describe '#Or', ->
-    #it 'should start a new set of conditions joined with or', ->
+  describe '#Or', ->
+    it 'should start a new set of conditions joined with or', ->
+      indeed(true).and(false).Or(true).and(true).test().should.be.true
+
+  describe '#OrNot', ->
+    it 'should start a new set of conditions joined with or and negate it', ->
+      indeed(true).and(false).OrNot(false).and(false).test().should.be.true
+
+  describe '#And', ->
+    it 'should function like #butAlso', ->
+      indeed(true).and(true).And(false).or(true).test().should.be.true
+      indeed(true).and(true).And(false).or(true).And(true).and(true).test().should.be.true
+
+  describe '#AndNot', ->
+    it 'should function like #butAlsoNot', ->
+      indeed(true).and(true).AndNot(true).and(false).test().should.be.true
