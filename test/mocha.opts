@@ -2,4 +2,3 @@
 --ui bdd
 --compilers coffee:coffee-script
 --recursive
---suppress-stack
