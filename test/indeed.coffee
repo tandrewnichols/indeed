@@ -34,60 +34,106 @@ describe 'indeed', ->
         result.groupNegate = true
         result.test().should.be.false
 
-    #context 'with previous values', ->
-      #it 'should join all the previous values correctly', ->
-        #result = indeed(true)
-        #result.previous = [
-            #val: true
-            #join: 'and'
-          #,
-            #val: false
-            #join: 'or'
-        #]
-        #result.test().should.be.true
+    context 'with previous values', ->
+      it 'should join all the previous values correctly', ->
+        result = indeed(true)
+        result.previous = [
+            val: true
+            join: 'and'
+          ,
+            val: false
+            join: 'or'
+        ]
+        result.test().should.be.true
 
-  #describe '_run', ->
-    #beforeEach ->
-      #@i = new indeed.Indeed(true)
-    #context 'when this.allowed is empty', ->
-      #it 'should set current, lastCall, and this.allowed', ->
-        #@i.allowed = ['foobaby']
-        #@i._run('foobaby', true, 'and')
-        #@i.current.should.be.true
-        #@i.lastCall.should.eql('foobaby')
+  describe '_run', ->
+    beforeEach ->
+      @i = new indeed.Indeed(true)
+    context 'when this.allowed is empty', ->
+      it 'should set current, lastCall, and this.allowed', ->
+        @i.allowed = ['foobaby']
+        @i._run('foobaby', true, 'and')
+        @i.current.should.be.true
+        @i.lastCall.should.eql('foobaby')
 
-    #context 'when name is in this.allowed', ->
-      #it 'should set current', ->
-        #@i.allowed = ['foobaby']
-        #@i._run('foobaby', true, 'and')
-        #@i.current.should.be.true
-        #@i.lastCall.should.eql('foobaby')
+    context 'when name is in this.allowed', ->
+      it 'should set current', ->
+        @i.allowed = ['foobaby']
+        @i._run('foobaby', true, 'and')
+        @i.current.should.be.true
+        @i.lastCall.should.eql('foobaby')
 
-    #context 'when name is not in this.allowed', ->
-      #it 'should throw an error', ->
-        #i = @i
-        #i.allowed = ['daddy smurf']
-        #i.lastCall = 'baby smurf'
-        #( ->
-          #i._run('smurfette', true, 'or')
-        #).should.throw('IllegalMethodException: baby smurf cannot be called with smurfette')
+    context 'when name is not in this.allowed', ->
+      it 'should throw an error', ->
+        i = @i
+        i.allowed = ['daddy smurf']
+        i.lastCall = 'baby smurf'
+        ( ->
+          i._run('smurfette', true, 'or')
+        ).should.throw('IllegalMethodException: baby smurf cannot be called with smurfette')
 
-  #describe '#eval', ->
-    #it 'should work just like test', ->
-      #indeed(true).eval().should.be.true
+  describe '#eval', ->
+    context 'no previous values', ->
+      it 'should return basic values', ->
+        indeed(true).eval().should.be.true
+        indeed(false).eval().should.be.false
 
-  #describe '#val', ->
-    #it 'should work just like test', ->
-      #indeed(true).eval().should.be.true
+      it 'should return the value of current', ->
+        result = indeed(true)
+        result.eval().should.eql(result.current)
 
-  #describe '#and', ->
-    #it 'should "and" the previous result', ->
-      #indeed(true).and(true).test().should.be.true
-      #indeed(true).and(false).test().should.be.false
-      #indeed(false).and(false).test().should.be.false
-      #indeed(false).and(true).test().should.be.false
-      #indeed(true).and(true).and(true).test().should.be.true
-      #indeed(true).and(true).and(false).test().should.be.false
+      it 'should apply groupNegate', ->
+        result = indeed(true)
+        result.groupNegate = true
+        result.eval().should.be.false
+
+    context 'with previous values', ->
+      it 'should join all the previous values correctly', ->
+        result = indeed(true)
+        result.previous = [
+            val: true
+            join: 'and'
+          ,
+            val: false
+            join: 'or'
+        ]
+        result.eval().should.be.true
+
+  describe '#val', ->
+    context 'no previous values', ->
+      it 'should return basic values', ->
+        indeed(true).val().should.be.true
+        indeed(false).val().should.be.false
+
+      it 'should return the value of current', ->
+        result = indeed(true)
+        result.val().should.eql(result.current)
+
+      it 'should apply groupNegate', ->
+        result = indeed(true)
+        result.groupNegate = true
+        result.val().should.be.false
+
+    context 'with previous values', ->
+      it 'should join all the previous values correctly', ->
+        result = indeed(true)
+        result.previous = [
+            val: true
+            join: 'and'
+          ,
+            val: false
+            join: 'or'
+        ]
+        result.val().should.be.true
+
+  describe '#and', ->
+    it 'should "and" the previous result', ->
+      indeed(true).and(true).test().should.be.true
+      indeed(true).and(false).test().should.be.false
+      indeed(false).and(false).test().should.be.false
+      indeed(false).and(true).test().should.be.false
+      indeed(true).and(true).and(true).test().should.be.true
+      indeed(true).and(true).and(false).test().should.be.false
 
   #describe '#or', ->
     #it 'should "or" the previous result', ->
