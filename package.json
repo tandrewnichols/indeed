@@ -12,7 +12,7 @@
   "license": "MIT",
   "scripts": {
     "test": "mocha test",
-    "watch": "mocha --watch test"
+    "watch": "mocha -R min --suppress-stack --watch test"
   },
   "dependencies": {
     "underscore": "*"
