@@ -1,4 +1,4 @@
---reporter min
+--reporter spec
 --ui bdd
 --compilers coffee:coffee-script
 --recursive
