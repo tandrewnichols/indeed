@@ -1,16 +1,12 @@
 anyOf = require('./../lib/anyOf')
 
 describe 'anyOf', ->
-  beforeEach ->
-    anyOf.reset()
-
   it 'should return an object with and', ->
     anyOf(true).should.be.an.Object
     anyOf(true).and.should.be.a.Function
     anyOf(true).test.should.be.a.Function
-    anyOf.reset.should.be.a.Function
 
-  describe '.and', ->
+  describe '#and', ->
     context 'none true', ->
       it 'should return false', ->
         anyOf(false).and(false).test().should.be.false
@@ -21,13 +17,14 @@ describe 'anyOf', ->
       it 'should return true', ->
         anyOf(true).and(true).test().should.be.true
 
-  context 'called more than once', ->
-    it 'should reset conditions after test', ->
-      anyOf(false).and(false).test().should.be.false
-      anyOf(true).and(false).test().should.be.true
+  describe '#And', ->
+    it 'should delegate to indeed with and', ->
+      anyOf(true).and(false).And.also(true).or(false).test().should.be.true
 
-  describe '.reset', ->
-    it 'should reset conditions', ->
-      anyOf(false).and(false)
-      anyOf.reset()
-      anyOf(true).and(false).test().should.be.true
+  describe '#Or', ->
+    it 'should delegate to indeed with or', ->
+      anyOf(true).and(false).Or.also(true).or(false).test().should.be.true
+
+  describe '#Xor', ->
+    it 'should delegate to indeed with xor', ->
+      anyOf(true).and(false).Xor.also(true).or(false).test().should.be.false

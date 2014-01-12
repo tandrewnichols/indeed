@@ -5,9 +5,8 @@ describe 'allOf', ->
     allOf(true).should.be.an.Object
     allOf(true).and.should.be.a.Function
     allOf(true).test.should.be.a.Function
-    allOf.reset.should.be.a.Function
 
-  describe '.and', ->
+  describe '#and', ->
     context 'called with all true', ->
       it 'should return true', ->
         allOf(true).and(true).and(true).test().should.be.true
@@ -18,14 +17,18 @@ describe 'allOf', ->
       it 'should return false', ->
         allOf(false).and(false).and(false).test().should.be.false
 
-  context 'called multiple times', ->
-    it 'should reset conditions after test', ->
-      allOf(true).and(false).test().should.be.false
-      allOf(true).and(true).test().should.be.true
+  describe '#And', ->
+    it 'should delegate to indeed an and', ->
+      allOf(true).and(true).And.indeed(true).and(true).test().should.be.true
 
-  describe '.reset', ->
-    it 'should reset conditions', ->
-      allOf(true).and(false)
-      allOf.reset()
-      allOf(true).and(true).test().should.be.true
+  describe '#Or', ->
+    it 'should delegate to indeed with an or', ->
+      allOf(true).and(false).Or.else(true).or(false).test().should.be.true
 
+  describe '#Xor', ->
+    it 'should delegate to indeed with an xor', ->
+      allOf(true).and(false).Xor.indeed(true).or(false).test().should.be.true
+
+  describe 'Not', ->
+    it 'should negate the next group', ->
+      allOf(true).and(true).And.Not.indeed(true).and(true).test().should.be.false
