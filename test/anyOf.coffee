@@ -2,7 +2,7 @@ anyOf = require('./../lib/anyOf')
 
 describe 'anyOf', ->
   it 'should return an object with and', ->
-    anyOf(true).should.be.an.Object
+    anyOf(true).should.be.an.instanceOf(anyOf.AnyOf)
     anyOf(true).and.should.be.a.Function
     anyOf(true).test.should.be.a.Function
 

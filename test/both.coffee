@@ -2,8 +2,9 @@ both = require('./../lib/both')
 
 describe 'both', ->
   it 'should return an object with and', ->
-    both(true).should.be.an.Object
+    both(true).should.be.an.instanceOf(both.Both)
     both(true).and.should.be.a.Function
+    both(true).test.should.be.a.Function
 
   describe '#and', ->
     context 'both true', ->

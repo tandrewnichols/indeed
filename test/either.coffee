@@ -2,8 +2,9 @@ either = require('./../lib/either')
 
 describe 'either', ->
   it 'should return an object with or', ->
-    either(true).should.be.an.Object
+    either(true).should.be.an.instanceOf(either.Either)
     either(true).or.should.be.a.Function
+    either(true).test.should.be.a.Function
 
   describe 'or', ->
     context 'both true', ->

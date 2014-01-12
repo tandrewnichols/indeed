@@ -36,17 +36,6 @@ describe 'indeed', ->
       indeed(true).butNot(true)
     ).should.not.throw()
 
-  it 'should globalize helpers when called without a condition', ->
-    indeed()
-    global.indeed.should.be.a.Function
-    global.neither.should.be.a.Function
-    global.either.should.be.a.Function
-    global.both.should.be.a.Function
-    global.noneOf.should.be.a.Function
-    global.allOf.should.be.a.Function
-    global.oneOf.should.be.a.Function
-    global.nOf.should.be.a.Function
-
   describe '#_run', ->
     beforeEach ->
       @i = new indeed.Indeed(true)

@@ -2,7 +2,7 @@ allOf = require('./../lib/allOf')
 
 describe 'allOf', ->
   it 'should return an object with and', ->
-    allOf(true).should.be.an.Object
+    allOf(true).should.be.an.instanceOf(allOf.AllOf)
     allOf(true).and.should.be.a.Function
     allOf(true).test.should.be.a.Function
 
