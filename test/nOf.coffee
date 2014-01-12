@@ -1,30 +1,33 @@
-nOf = require('./../lib/nOf')
+n = require('./../lib/nOf')
 
 describe 'nOf', ->
-  beforeEach ->
-    nOf.reset()
-
   it 'should return an object with and', ->
-    nOf(true).should.be.an.Object
-    nOf(true).and.should.be.a.Function
-    nOf(true).test.should.be.a.Function
-    nOf.reset.should.be.a.Function
+    n(2).should.be.an.instanceOf(n.NOf)
+    n(2).and.should.be.a.Function
+    n(2).test.should.be.a.Function
+    n(2).of.should.be.a.Function
 
-  describe '.and', ->
+  describe '#and', ->
     context 'with the right number of trues', ->
       it 'should return true', ->
-        nOf(true).and(true).and(false).test(2).should.be.true
+        n(2).of(true).and(true).and(false).test().should.be.true
     context 'with the wrong number of trues', ->
       it 'should return false', ->
-        nOf(true).and(false).and(false).test(2).should.be.false
+        n(2).of(true).and(false).and(false).test().should.be.false
 
-  context 'called multiple times', ->
-    it 'should reset conditions after test', ->
-      nOf(true).and(false).test(2).should.be.false
-      nOf(true).and(true).test(2).should.be.true
+    context 'called multiple times', ->
+      ( ->
+        n(2).of(true).of(false)
+      ).should.throw('IllegalMethodException: of cannot be called with of/and')
 
-  describe '.reset', ->
-    it 'should reset conditions', ->
-      nOf(true).and(false)
-      nOf.reset()
-      nOf(true).and(true).test(2).should.be.true
+  describe '#And', ->
+    it 'should delegate to indeed an and', ->
+      n(1).of(true).and(true).And.indeed(true).and(true).test().should.be.false
+
+  describe '#Or', ->
+    it 'should delegate to indeed with an or', ->
+      n(1).of(true).and(true).Or.else(true).or(false).test().should.be.true
+
+  describe '#Xor', ->
+    it 'should delegate to indeed with an xor', ->
+      n(1).of(true).and(true).Xor.indeed(true).or(false).test().should.be.true
