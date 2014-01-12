@@ -387,3 +387,46 @@ describe 'indeed', ->
       ( ->
         indeed(true).And.allOf(true).and(true).both(false)
       ).should.throw('IllegalMethodException: both cannot be called with allOf')
+
+  describe '#oneOf', ->
+    it 'should return true when exactly one condition is true', ->
+     indeed(true).And.oneOf(true).and(false).and(false).test().should.be.true
+
+    it 'should only allow and', ->
+      ( ->
+        indeed(true).And.oneOf(true).and(false).or(true)
+      ).should.throw('IllegalMethodException: or cannot be called with oneOf')
+
+      ( ->
+        indeed(true).And.oneOf(true).and(false).else(true)
+      ).should.throw('IllegalMethodException: else cannot be called with oneOf')
+
+  describe '#anyOf', ->
+    it 'should return true when any one condition is true', ->
+      indeed(true).And.anyOf(true).and(false).and(true).test().should.be.true
+      indeed(true).And.anyOf(true).and(false).and(false).test().should.be.true
+      indeed(true).And.anyOf(false).and(true).and(false).test().should.be.true
+      indeed(true).And.anyOf(false).and(false).and(false).test().should.be.false
+
+    it 'should only allow and', ->
+      ( ->
+        indeed(true).And.anyOf(true).and(false).or(true)
+      ).should.throw('IllegalMethodException: or cannot be called with anyOf')
+
+      ( ->
+        indeed(true).And.anyOf(true).and(false).both(true)
+      ).should.throw('IllegalMethodException: both cannot be called with anyOf')
+
+  describe '#noneOf', ->
+    it 'should return true only when all conditions are false', ->
+      indeed(true).And.noneOf(false).and(false).and(false).test().should.be.true
+      indeed(true).And.noneOf(true).and(false).and(false).test().should.be.false
+
+    it 'should only allow and', ->
+      ( ->
+        indeed(true).And.noneOf(true).and(false).or(true)
+      ).should.throw('IllegalMethodException: or cannot be called with noneOf')
+
+      ( ->
+        indeed(true).And.noneOf(true).and(false).anyOf(false)
+      ).should.throw('IllegalMethodException: anyOf cannot be called with noneOf')
