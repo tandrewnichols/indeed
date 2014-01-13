@@ -1,5 +1,4 @@
 neither = require('./../lib/neither')
-should = require('should')
 
 describe 'neither', ->
   it 'should accept a boolean and return an object with nor', ->
