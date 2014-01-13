@@ -212,6 +212,13 @@ describe 'indeed', ->
     it 'should "or not" the previous result', ->
       indeed(false).orNot(true).test().should.be.false
 
+  describe '#xor', ->
+    it 'should "xor" the previous result', ->
+      indeed(true).xor(false).test().should.be.true
+      indeed(true).xor(true).test().should.be.false
+      indeed(false).xor(false).test().should.be.false
+      indeed(true).xor(false).xor(true).test().should.be.false
+
   describe '#indeed', ->
     it 'should reset current', ->
       indeed(true).And.indeed(false).current.should.be.false
