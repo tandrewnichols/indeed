@@ -38,7 +38,7 @@ if (neither(oneThing).nor(anotherThing)) {
 }
 ```
 
-and thus the module "neither" was born. And then I later changed it to "indeed", which was more globally usable as a boolean helper. A bit of anti-climatic ending, really. At any rate, this library is just a set of boolean helpers to put if statements into English-like syntax. Note that I use to be an English teacher and thus, that syntax is extremely opinionated and grammatically correct. Grammar is your friend.
+and thus the module "neither" was born. And then I later changed it to "indeed", which was more globally usable as a boolean helper. A bit of an anti-climatic ending, really. At any rate, this library is just a set of boolean helpers to put if statements into English-like syntax. Note that I use to be an English teacher and thus, that syntax is extremely opinionated and grammatically correct. Grammar is your friend.
 
 [Grammar Matters](http://50gooddeeds.files.wordpress.com/2012/06/howcangooglesearch.jpg)
 
