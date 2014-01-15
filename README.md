@@ -229,6 +229,8 @@ You can create groups of chains which are, also, evaluated left to right, using 
 if (indeed(a).or(b).And.indeed(c).test())
 
 if (indeed(a).and(b).Or.indeed(c).test())
+
+if (indeed(a).and(b).Xor.indeed(c).test())
 ```
 
 This will evaluate `a || b` first and then the result of that with `&& c`. `But` is an alias to `And` because sometimes it feels more natural to say "but" than "and." `indeed` also has several aliases that can be used after joins depending on what you want to say next:
@@ -241,8 +243,8 @@ if (indeed(a).or(b).And.also(c).test()) { }
 if (indeed(a).and(b).Or.else(c).test()) { }
 
 // just like indeed, but negated
-if (indeed(a).and(b).but.not(c).test()) { }
+if (indeed(a).and(b).But.not(c).test()) { }
 
 // just like indeed, but negates the entire next group
-if (indeed(a).and(b).but.Not(c).test()) { }
+if (indeed(a).and(b).But.Not(c).test()) { }
 ```

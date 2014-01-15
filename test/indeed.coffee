@@ -14,9 +14,9 @@ describe 'indeed', ->
   it 'should initialize values', ->
     indeed(true).previous.should.eql([])
     indeed(true).calls.should.eql(['indeed'])
-    indeed(true).current.should.be.true
-    indeed.not(true).current.should.be.false
-    indeed.Not(true).current.should.be.true
+    indeed(true).current.value.should.be.true
+    indeed.not(true).current.value.should.be.false
+    indeed.Not(true).current.value.should.be.true
     indeed.Not(true).groupNegate.should.be.true
 
   it 'should allow and, andNot, or, orNot, and butNot', ->
@@ -36,22 +36,102 @@ describe 'indeed', ->
       indeed(true).butNot(true)
     ).should.not.throw()
 
-  describe '#_run', ->
+  describe '#_exists', ->
     beforeEach ->
       @i = new indeed.Indeed(true)
     context 'when the method can be chained', ->
       it 'should set current', ->
         @i.calls = ['indeed']
-        @i._run('and', true, 'and')
-        @i.current.should.be.true
+        @i._exists('and', true, 'and')
+        @i.current.value.should.be.true
 
     context 'when the method cannot be chained', ->
       it 'should throw an error', ->
         i = @i
         i.calls = ['neither']
         ( ->
-          i._run('and', true, 'and')
+          i._exists('and', true, 'and')
         ).should.throw('IllegalMethodException: and cannot be called with neither')
+
+  describe '#_compare', ->
+    context 'with a string', ->
+      it 'should be true with the same string', ->
+        i = indeed('string')
+        i._compare('is', 'string')
+        i.current.should.eql
+          value: true
+          actual: 'string'
+
+      it 'should be false with different strings', ->
+        i = indeed('string')
+        i._compare('is', 'nope')
+        i.current.should.eql
+          value: false
+          actual: 'string'
+
+    context 'with numbers', ->
+      it 'should be true for the same number', ->
+        i = indeed(2)
+        i._compare('is', 2)
+        i.current.should.eql
+          value: true
+          actual: 2
+
+      it 'should be false for different numbers', ->
+        i = indeed(2)
+        i._compare('is', 4)
+        i.current.should.eql
+          value: false
+          actual: 2
+
+    context 'with an array', ->
+      it 'should be true for reference equality', ->
+        @arr = [1,2,3]
+        i = indeed(@arr)
+        i._compare('is', @arr)
+        i.current.should.eql
+          value: true
+          actual: @arr
+
+      it 'should be false for comparison equality', ->
+        i = indeed([1,2,3])
+        i._compare('is', [1,2,3])
+        i.current.should.eql
+          value: false
+          actual: [1,2,3]
+
+    context 'with object literals', ->
+      it 'should be true for reference equality', ->
+        @obj = key: 'value'
+        i = indeed(@obj)
+        i._compare('is', @obj)
+        i.current.should.eql
+          value: true
+          actual: @obj
+
+      it 'should be false for comparison equality', ->
+        i = indeed(key: 'value')
+        i._compare('is', key: 'value')
+        i.current.should.eql
+          value: false
+          actual:
+            key: 'value'
+
+    context 'with new-able objects', ->
+      it 'should be true for reference equality', ->
+        @d = new Date()
+        i = indeed(@d)
+        i._compare('is', @d)
+        i.current.should.eql
+          value: true
+          actual: @d
+
+      it 'should be false for comparison equality', ->
+        i = indeed(new Date(2000, 9, 9))
+        i._compare('is', new Date(2000, 9, 9))
+        i.current.should.eql
+          value: false
+          actual: new Date(2000, 9, 9)
 
   describe '#test', ->
     context 'no previous values', ->
@@ -61,7 +141,7 @@ describe 'indeed', ->
 
       it 'should return the value of current', ->
         result = indeed(true)
-        result.test().should.eql(result.current)
+        result.test().should.eql(result.current.value)
 
       it 'should apply groupNegate', ->
         result = indeed(true)
@@ -88,7 +168,7 @@ describe 'indeed', ->
 
       it 'should return the value of current', ->
         result = indeed(true)
-        result.eval().should.eql(result.current)
+        result.eval().should.eql(result.current.value)
 
       it 'should apply groupNegate', ->
         result = indeed(true)
@@ -115,7 +195,7 @@ describe 'indeed', ->
 
       it 'should return the value of current', ->
         result = indeed(true)
-        result.val().should.eql(result.current)
+        result.val().should.eql(result.current.value)
 
       it 'should apply groupNegate', ->
         result = indeed(true)
@@ -221,7 +301,7 @@ describe 'indeed', ->
 
   describe '#indeed', ->
     it 'should reset current', ->
-      indeed(true).And.indeed(false).current.should.be.false
+      indeed(true).And.indeed(false).current.value.should.be.false
       indeed(true).And.indeed(false).test().should.be.false
 
     it 'should not allow nor', ->
@@ -231,7 +311,7 @@ describe 'indeed', ->
       
   describe '#also', ->
     it 'should reset current', ->
-      indeed(true).And.also(false).current.should.be.false
+      indeed(true).And.also(false).current.value.should.be.false
       indeed(true).And.also(false).test().should.be.false
 
     it 'should not allow nor', ->
@@ -241,7 +321,7 @@ describe 'indeed', ->
 
   describe '#else', ->
     it 'should reset current', ->
-      indeed(true).Or.else(false).current.should.be.false
+      indeed(true).Or.else(false).current.value.should.be.false
       indeed(true).Or.else(false).test().should.be.true
 
     it 'should not allow nor', ->
@@ -251,7 +331,7 @@ describe 'indeed', ->
 
   describe '#not', ->
     it 'should reset current and negate the first element', ->
-      indeed(true).And.not(false).current.should.be.true
+      indeed(true).And.not(false).current.value.should.be.true
       indeed(true).And.not(false).test().should.be.true
 
     it 'should not allow nor', ->
@@ -266,7 +346,7 @@ describe 'indeed', ->
       result.previous[0].should.eql
         val: false
         join: 'and'
-      result.current.should.be.true
+      result.current.value.should.be.true
       result.test().should.be.false
 
     it 'should work with multiple conditions', ->
@@ -281,7 +361,7 @@ describe 'indeed', ->
       result.previous[2].should.eql
         val: true
         join: 'and'
-      result.current.should.be.true
+      result.current.value.should.be.true
       result.test().should.be.true
 
   describe '#But', ->
@@ -291,7 +371,7 @@ describe 'indeed', ->
       result.previous[0].should.eql
         val: false
         join: 'and'
-      result.current.should.be.true
+      result.current.value.should.be.true
       result.test().should.be.false
 
     it 'should work with multiple conditions', ->
@@ -306,7 +386,7 @@ describe 'indeed', ->
       result.previous[2].should.eql
         val: true
         join: 'and'
-      result.current.should.be.true
+      result.current.value.should.be.true
       result.test().should.be.true
 
   describe '#Or', ->
@@ -316,13 +396,13 @@ describe 'indeed', ->
       result.previous[0].should.eql
         val: false
         join: 'or'
-      result.current.should.be.true
+      result.current.value.should.be.true
       result.test().should.be.true
 
   describe '#Not', ->
     it 'should negate a set', ->
       result = indeed(true).and(true).And.Not.also(true).and(false)
-      result.current.should.be.false
+      result.current.value.should.be.false
       result.previous[0].should.eql
         val: true
         join: 'and'
@@ -331,7 +411,7 @@ describe 'indeed', ->
 
     it 'should negate an or', ->
       result = indeed(true).and(false).Or.Not.also(true).and(false)
-      result.current.should.be.false
+      result.current.value.should.be.false
       result.previous[0].should.eql
         val: false
         join: 'or'
@@ -366,7 +446,7 @@ describe 'indeed', ->
 
   describe '#nor', ->
     it 'should and the negated condition', ->
-      indeed(true).And.neither(true).nor(false).current.should.be.false
+      indeed(true).And.neither(true).nor(false).current.value.should.be.false
 
     it 'should not be chainable with anything', ->
       ( ->
@@ -471,3 +551,7 @@ describe 'indeed', ->
       ( ->
         indeed(true).And.noneOf(true).and(false).anyOf(false)
       ).should.throw('IllegalMethodException: anyOf cannot be called with noneOf')
+
+  #describe '#is', ->
+    #it 'should compare it\'s value with the actual condition passed previous', ->
+      #indeed('hello').is('hello')
