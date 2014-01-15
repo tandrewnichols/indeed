@@ -249,6 +249,16 @@ describe 'indeed', ->
         indeed(true).And.indeed(true).nor(false)
       ).should.throw('IllegalMethodException: nor cannot be called with indeed')
 
+  describe '#not', ->
+    it 'should reset current and negate the first element', ->
+      indeed(true).And.not(false).current.should.be.true
+      indeed(true).And.not(false).test().should.be.true
+
+    it 'should not allow nor', ->
+      (->
+        indeed(true).And.not(true).nor(false)
+      ).should.throw('IllegalMethodException: nor cannot be called with not')
+
   describe '#And', ->
     it 'should start a new condition set with &&', ->
       result = indeed(true).and(false).And.indeed(true).and(true)
@@ -274,6 +284,30 @@ describe 'indeed', ->
       result.current.should.be.true
       result.test().should.be.true
 
+  describe '#But', ->
+    it 'should start a new condition set with &&', ->
+      result = indeed(true).and(false).But.indeed(true).and(true)
+      result.previous.length.should.eql(1)
+      result.previous[0].should.eql
+        val: false
+        join: 'and'
+      result.current.should.be.true
+      result.test().should.be.false
+
+    it 'should work with multiple conditions', ->
+      result = indeed(true).and(true).But.indeed(true).and(true).But.indeed(false).or(true).But.indeed(true).butNot(false)
+      result.previous.length.should.eql(3)
+      result.previous[0].should.eql
+        val: true
+        join: 'and'
+      result.previous[1].should.eql
+        val: true
+        join: 'and'
+      result.previous[2].should.eql
+        val: true
+        join: 'and'
+      result.current.should.be.true
+      result.test().should.be.true
 
   describe '#Or', ->
     it 'should start a new condition set with ||', ->
@@ -368,7 +402,7 @@ describe 'indeed', ->
     it 'should start a new condition', ->
       indeed(true).And.both(true).and(false).test().should.be.false
 
-    it 'should only allow and (once)', ->
+    it 'should allow and (once)', ->
       ( ->
         indeed(true).And.both(true).and(true)
       ).should.not.throw()
@@ -386,7 +420,7 @@ describe 'indeed', ->
       indeed(true).And.allOf(true).and(true).and(true).test().should.be.true
       indeed(true).And.allOf(true).and(true).and(true).and(false).test().should.be.false
 
-    it 'should only allow and', ->
+    it 'should allow and', ->
       ( ->
         indeed(true).And.allOf(true).and(true).or(true)
       ).should.throw('IllegalMethodException: or cannot be called with allOf')
@@ -399,7 +433,7 @@ describe 'indeed', ->
     it 'should return true when exactly one condition is true', ->
      indeed(true).And.oneOf(true).and(false).and(false).test().should.be.true
 
-    it 'should only allow and', ->
+    it 'should allow and', ->
       ( ->
         indeed(true).And.oneOf(true).and(false).or(true)
       ).should.throw('IllegalMethodException: or cannot be called with oneOf')
@@ -415,7 +449,7 @@ describe 'indeed', ->
       indeed(true).And.anyOf(false).and(true).and(false).test().should.be.true
       indeed(true).And.anyOf(false).and(false).and(false).test().should.be.false
 
-    it 'should only allow and', ->
+    it 'should allow and', ->
       ( ->
         indeed(true).And.anyOf(true).and(false).or(true)
       ).should.throw('IllegalMethodException: or cannot be called with anyOf')
@@ -425,11 +459,11 @@ describe 'indeed', ->
       ).should.throw('IllegalMethodException: both cannot be called with anyOf')
 
   describe '#noneOf', ->
-    it 'should return true only when all conditions are false', ->
+    it 'should return true when all conditions are false', ->
       indeed(true).And.noneOf(false).and(false).and(false).test().should.be.true
       indeed(true).And.noneOf(true).and(false).and(false).test().should.be.false
 
-    it 'should only allow and', ->
+    it 'should allow and', ->
       ( ->
         indeed(true).And.noneOf(true).and(false).or(true)
       ).should.throw('IllegalMethodException: or cannot be called with noneOf')
