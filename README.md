@@ -38,7 +38,7 @@ if (neither(oneThing).nor(anotherThing)) {
 }
 ```
 
-and thus the module "neither" was born. And then I later changed it to "indeed", which was more globally usable as a boolean helper. A bit of an anti-climatic ending, really. At any rate, this library is just a set of boolean helpers to put if statements into English-like syntax. Note that I use to be an English teacher and thus, that syntax is extremely opinionated and grammatically correct. Grammar is your friend.
+and thus the module "neither" was born. And then I later changed it to "indeed", which was more globally usable as a boolean helper. A bit of an anti-climatic ending, really. At any rate, this library is just a set of boolean helpers to put `if` statements into English-like syntax. Note that I used to be an English teacher and thus, that syntax is extremely opinionated and grammatically correct. Grammar is your friend.
 
 ![Grammar Matters](http://50gooddeeds.files.wordpress.com/2012/06/howcangooglesearch.jpg)
 
@@ -67,9 +67,9 @@ require('indeed')();
 
 Begins a chain. All of the helpers are chainable (though most limit which chain methods you can call and how many times). `indeed` is chainable with the following methods: `and`, `andNot`, `or`, `orNot`, `butNot`, and `xor`. Most do what they sound like, but for completeness: `and` = `&&`, `andNot` = `&& !`, `or` = `||`, `orNot` = `|| !`, `butNot` = `andNot`, and `xor` = `(a || b) && !(a && b)`.
 
-In general, these helpers are more useful (or at least more immediately readable) with "exists" checks, as opposed to comparisons. To evaluate the result of a helper, call one of test, eval, or val (whatever your preference) to get a boolean result. 
+In general, these helpers are more useful (or at least more immediately readable) with "exists" checks, as opposed to comparisons. To evaluate the result of a helper, call one of `test`, `eval`, or `val` (whatever your preference) to get a boolean result. 
 
-Indeed is actually just a starting point with no particularly special meaning:
+`indeed` is actually just a starting point with no particularly special meaning:
 
 ```javascript
 if (indeed(member.isAdmin).and(member.settings.hideFromChat).or(page.isMobilePage).test()) {
@@ -95,7 +95,7 @@ is more closely equivalent to
 if ((member.isAdmin || member.settings.hideFromChat) && page.isMobilePage)
 ```
 
-You _can_ do some grouping (see below), but it is limited and I don't intend to expand it any time soon, since you could actually just group it yourself:
+You _can_ do some grouping (see below), but it is limited, and I don't intend to expand it any time soon, since you could actually just group it yourself:
 
 ```javascript
 if ((indeed(member.isAdmin).or(member.settings.hideFromChat).test()) && indeed(page.isMobilePage).test())
@@ -109,7 +109,7 @@ if ((indeed(member.isAdmin).or(member.settings.hideFromChat).test()) && page.isM
 
 or just plain old javascript booleans.
 
-Indeed is also equipped with some negation tools: `not` and `Not`. `not` simply negates the first condition:
+`indeed` is also equipped with some negation tools: `not` and `Not`. `not` simply negates the first condition:
 
 ```javascript
 if (indeed.not(a))
@@ -121,7 +121,7 @@ is equivalent to
 if (!a)
 ```
 
-`Not` negates the result of chain, so
+`Not` negates the result of the chain, so
 
 ```javascript
 if (indeed.Not(a).and(b))
@@ -168,7 +168,7 @@ if (both(opts.sync).and(callback).test())
 
 ### AllOf
 
-Begins a chain where all conditions should be true.
+Begins a chain where all conditions should be true. Incidentally, it only makes sense to use this with more than two conditions. With two conditions only, use `both`.
 
 Chainable methods: `and`<br>
 Chain limit: none
@@ -185,18 +185,18 @@ Chainable methods: `and`<br>
 Chain limit: none
 
 ```javascript
-if (allOf(member.firstname).and(member.lastname).and(member.email))
+if (allOf(member.firstname).and(member.lastname).and(member.email).test())
 ```
 
 ### OneOf
 
-Begins a chain where exactly one condition should be true. Incidentally, it only makes to use this with more than two conditions. With two conditions only, use `either`.
+Begins a chain where exactly one condition should be true. Like `allOf`, use this with more than two conditions. With two conditions, use `either`.
 
 Chainable methods: `and`<br>
 Chain limit: none
 
 ```javascript
-if (oneOf(member.nickname).and(member.penname).and(member.pseudonym))
+if (oneOf(member.nickname).and(member.penname).and(member.pseudonym).test())
 ```
 
 ### NoneOf
@@ -207,7 +207,7 @@ Chainable methods: `and`<br>
 Chain limit: none
 
 ```javascript
-if (noneOf(list.length > 2).and(list.indexOf('foo')).and(list.indexOf('bar')))
+if (noneOf(list.length > 2).and(~list.indexOf('foo')).and(~list.indexOf('bar')).test())
 ```
 
 ### NOf
@@ -218,7 +218,7 @@ Chainable methods: `and`<br>
 Chain limit: none
 
 ```javascript
-if (n(2).of(member.firstname).and(member.middleInitial).and(member.lastname))
+if (n(2).of(member.firstname).and(member.middleInitial).and(member.lastname)test())
 ```
 
 ## Grouping
@@ -226,23 +226,23 @@ if (n(2).of(member.firstname).and(member.middleInitial).and(member.lastname))
 You can create groups of chains which are, also, evaluated left to right, using the properties `And`, `But`, `Or`, and `Xor`. They do what you would expect:
 
 ```javascrit
-if (indeed(a).or(b).And.indeed(c))
+if (indeed(a).or(b).And.indeed(c).test())
 
-if (indeed(a).and(b).Or.indeed(c))
+if (indeed(a).and(b).Or.indeed(c).test())
 ```
 
 This will evaluate `a || b` first and then the result of that with `&& c`. `But` is an alias to `And`, because sometimes it feels more natural to say "but" than "and". `indeed` also has several aliases that can be used after joins depending on what you want to say next:
 
 ```javascript
 // just like indeed
-if (indeed(a).or(b).And.also(c)) { }
+if (indeed(a).or(b).And.also(c).test()) { }
 
 // also just like indeed
-if (indeed(a).and(b).Or.else(c)) { }
+if (indeed(a).and(b).Or.else(c).test()) { }
 
 // just like indeed, but negated
-if (indeed(a).and(b).but.not(c)) { }
+if (indeed(a).and(b).but.not(c).test()) { }
 
 // just like indeed, but negates the entire next group
-if (indeed(a).and(b).but.Not(c)) { }
+if (indeed(a).and(b).but.Not(c).test()) { }
 ```
