@@ -111,7 +111,7 @@ or just plain old javascript booleans.
 
 Begins a chain where one of two conditions should be true.
 
-Chainable methods: 'or'
+Chainable methods: 'or'<br>
 Chain limit: 1
 
 ```javascript
@@ -122,7 +122,7 @@ if (either(opts.async).or(callback).test())
 
 Begins a chain where both conditions should be false. 
 
-Chainable methods: 'nor'
+Chainable methods: 'nor'<br>
 Chain limit: 1
 
 ```javascript
@@ -133,7 +133,7 @@ if (neither(opts.async).nor(callback).test())
 
 Begins a chain where both conditions should be true.
 
-Chainable methods: 'and'
+Chainable methods: 'and'<br>
 Chain limit: 1
 
 ```javascript
@@ -144,7 +144,7 @@ if (both(opts.sync).and(callback).test())
 
 Begins a chain where all conditions should be true.
 
-Chainable methods: 'and'
+Chainable methods: 'and'<br>
 Chain limit: none
 
 ```javascript
@@ -155,7 +155,7 @@ if (allOf(a).and(b).and(c))
 
 Begins a chain where at least condition should be true.
 
-Chainable methods: 'and'
+Chainable methods: 'and'<br>
 Chain limit: none
 
 ```javascript
@@ -166,7 +166,7 @@ if (allOf(member.firstname).and(member.lastname).and(member.email))
 
 Begins a chain where exactly one condition should be true. Incidentally, it only makes to use this with more than two conditions. With two conditions only, use `either`.
 
-Chainable methods: 'and'
+Chainable methods: 'and'<br>
 Chain limit: none
 
 ```javascript
@@ -177,7 +177,7 @@ if (oneOf(member.nickname).and(member.penname).and(member.pseudonym))
 
 Begins a chain where all of the conditions should be true. Again, with only two conditions, use `neither` instead.
 
-Chainable methods: 'and'
+Chainable methods: 'and'<br>
 Chain limit: none
 
 ```javascript
@@ -188,7 +188,7 @@ if (noneOf(list.length > 2).and(list.indexOf('foo')).and(list.indexOf('bar')))
 
 `nOf` is the only helper that deviates from the standard structure. It accepts a number, and then any number of conditions, of which _exactly_ that number must be true.
 
-Chainable methods: 'and'
+Chainable methods: 'and'<br>
 Chain limit: none
 
 ```javascript
