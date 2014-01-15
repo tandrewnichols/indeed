@@ -231,7 +231,7 @@ if (indeed(a).or(b).And.indeed(c).test())
 if (indeed(a).and(b).Or.indeed(c).test())
 ```
 
-This will evaluate `a || b` first and then the result of that with `&& c`. `But` is an alias to `And`, because sometimes it feels more natural to say "but" than "and". `indeed` also has several aliases that can be used after joins depending on what you want to say next:
+This will evaluate `a || b` first and then the result of that with `&& c`. `But` is an alias to `And` because sometimes it feels more natural to say "but" than "and." `indeed` also has several aliases that can be used after joins depending on what you want to say next:
 
 ```javascript
 // just like indeed
