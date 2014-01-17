@@ -36,13 +36,13 @@ describe 'indeed', ->
       indeed(true).butNot(true)
     ).should.not.throw()
 
-  describe '#_exists', ->
+  describe '#_join', ->
     beforeEach ->
       @i = new indeed.Indeed(true)
     context 'when the method can be chained', ->
       it 'should set current', ->
         @i.calls = ['indeed']
-        @i._exists('and', true, 'and')
+        @i._join('and', true, 'and')
         @i.current.value.should.be.true
 
     context 'when the method cannot be chained', ->
@@ -50,88 +50,8 @@ describe 'indeed', ->
         i = @i
         i.calls = ['neither']
         ( ->
-          i._exists('and', true, 'and')
+          i._join('and', true, 'and')
         ).should.throw('IllegalMethodException: and cannot be called with neither')
-
-  describe '#_compare', ->
-    context 'with a string', ->
-      it 'should be true with the same string', ->
-        i = indeed('string')
-        i._compare('is', 'string')
-        i.current.should.eql
-          value: true
-          actual: 'string'
-
-      it 'should be false with different strings', ->
-        i = indeed('string')
-        i._compare('is', 'nope')
-        i.current.should.eql
-          value: false
-          actual: 'string'
-
-    context 'with numbers', ->
-      it 'should be true for the same number', ->
-        i = indeed(2)
-        i._compare('is', 2)
-        i.current.should.eql
-          value: true
-          actual: 2
-
-      it 'should be false for different numbers', ->
-        i = indeed(2)
-        i._compare('is', 4)
-        i.current.should.eql
-          value: false
-          actual: 2
-
-    context 'with an array', ->
-      it 'should be true for reference equality', ->
-        @arr = [1,2,3]
-        i = indeed(@arr)
-        i._compare('is', @arr)
-        i.current.should.eql
-          value: true
-          actual: @arr
-
-      it 'should be false for comparison equality', ->
-        i = indeed([1,2,3])
-        i._compare('is', [1,2,3])
-        i.current.should.eql
-          value: false
-          actual: [1,2,3]
-
-    context 'with object literals', ->
-      it 'should be true for reference equality', ->
-        @obj = key: 'value'
-        i = indeed(@obj)
-        i._compare('is', @obj)
-        i.current.should.eql
-          value: true
-          actual: @obj
-
-      it 'should be false for comparison equality', ->
-        i = indeed(key: 'value')
-        i._compare('is', key: 'value')
-        i.current.should.eql
-          value: false
-          actual:
-            key: 'value'
-
-    context 'with new-able objects', ->
-      it 'should be true for reference equality', ->
-        @d = new Date()
-        i = indeed(@d)
-        i._compare('is', @d)
-        i.current.should.eql
-          value: true
-          actual: @d
-
-      it 'should be false for comparison equality', ->
-        i = indeed(new Date(2000, 9, 9))
-        i._compare('is', new Date(2000, 9, 9))
-        i.current.should.eql
-          value: false
-          actual: new Date(2000, 9, 9)
 
   describe '#test', ->
     context 'no previous values', ->
@@ -552,6 +472,89 @@ describe 'indeed', ->
         indeed(true).And.noneOf(true).and(false).anyOf(false)
       ).should.throw('IllegalMethodException: anyOf cannot be called with noneOf')
 
-  #describe '#is', ->
-    #it 'should compare it\'s value with the actual condition passed previous', ->
-      #indeed('hello').is('hello')
+  describe '#is', ->
+    context 'with a string', ->
+      it 'should be true with the same string', ->
+        indeed('string').is('string').test().should.be.true
+
+      it 'should be false with different strings', ->
+        indeed('string').is('nope').test().should.be.false
+
+    context 'with numbers', ->
+      it 'should be true for the same number', ->
+        indeed(2).is(2).test().should.be.true
+
+      it 'should be false for different numbers', ->
+        indeed(2).is(4).test().should.be.false
+
+    context 'with an array', ->
+      it 'should be true for reference equality', ->
+        @arr = [1,2,3]
+        indeed(@arr).is(@arr).test().should.be.true
+
+      it 'should be false for comparison equality', ->
+        indeed([1,2,3]).is([1,2,3]).test().should.be.false
+
+    context 'with object literals', ->
+      it 'should be true for reference equality', ->
+        @obj = key: 'value'
+        indeed(@obj).is(@obj).test().should.be.true
+
+      it 'should be false for comparison equality', ->
+        indeed(key: 'value').is(key: 'value').test().should.be.false
+
+    context 'with new-able objects', ->
+      it 'should be true for reference equality', ->
+        @d = new Date()
+        indeed(@d).is(@d).test().should.be.true
+
+      it 'should be false for comparison equality', ->
+        indeed(new Date(2000, 9, 9)).is(new Date(2000, 9, 9)).test().should.be.false
+
+  describe '#equal', ->
+    context 'with a string', ->
+      it 'should be true with the same string', ->
+        indeed('string').equals('string').test().should.be.true
+
+      it 'should be false with different strings', ->
+        indeed('string').equals('nope').test().should.be.false
+
+    context 'with numbers', ->
+      it 'should be true for the same number', ->
+        indeed(2).equals(2).test().should.be.true
+
+      it 'should be false for different numbers', ->
+        indeed(2).equals(4).test().should.be.false
+
+    context 'with an array', ->
+      it 'should be true for reference equality', ->
+        @arr = [1,2,3]
+        indeed(@arr).equals(@arr).test().should.be.true
+
+      it 'should be true for comparison equality', ->
+        indeed([1,2,3]).equals([1,2,3]).test().should.be.true
+
+      it 'should be false for different arrays', ->
+        indeed([1,2,3]).equals([4,5,6]).test().should.be.false
+
+    context 'with object literals', ->
+      it 'should be true for reference equality', ->
+        @obj = key: 'value'
+        indeed(@obj).equals(@obj).test().should.be.true
+
+      it 'should be true for comparison equality', ->
+        indeed(key: 'value').equals(key: 'value').test().should.be.true
+
+      it 'should  be false for differnt objects', ->
+        indeed(key: 'value').equals(hello: 'world').test().should.be.false
+
+    context 'with new-able objects', ->
+      it 'should be true for reference equality', ->
+        @d = new Date()
+        indeed(@d).equals(@d).test().should.be.true
+
+      it 'should be true for comparison equality', ->
+        indeed(new Date(2000, 9, 9)).equals(new Date(2000, 9, 9)).test().should.be.true
+        
+      it 'should be false for different objects', ->
+        indeed(new Date(2000, 9, 9)).equals(new Date(1999, 3, 8)).test().should.be.false
