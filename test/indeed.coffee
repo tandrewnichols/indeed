@@ -14,9 +14,16 @@ describe 'indeed', ->
   it 'should initialize values', ->
     indeed(true).previous.should.eql([])
     indeed(true).calls.should.eql(['indeed'])
-    indeed(true).current.value.should.be.true
-    indeed.not(true).current.value.should.be.false
-    indeed.Not(true).current.value.should.be.true
+    indeed(true).current.should.eql [
+      val: true
+      negate: undefined
+      actual: true
+    ]
+    indeed.not(true).current.should.eql [
+      val: true
+      negate: true
+      actual: true
+    ]
     indeed.Not(true).groupNegate.should.be.true
 
   it 'should allow and, andNot, or, orNot, and butNot', ->
@@ -36,21 +43,25 @@ describe 'indeed', ->
       indeed(true).butNot(true)
     ).should.not.throw()
 
-  describe '#_join', ->
+  describe '#_chain', ->
     beforeEach ->
       @i = new indeed.Indeed(true)
     context 'when the method can be chained', ->
       it 'should set current', ->
         @i.calls = ['indeed']
-        @i._join('and', true, 'and')
-        @i.current.value.should.be.true
+        @i._chain('and', true, 'and')
+        @i.current.pop().should.eql
+          val: true
+          actual: true
+          join: 'and'
+          negate: undefined
 
     context 'when the method cannot be chained', ->
       it 'should throw an error', ->
         i = @i
         i.calls = ['neither']
         ( ->
-          i._join('and', true, 'and')
+          i._chain('and', true, 'and')
         ).should.throw('IllegalMethodException: and cannot be called with neither')
 
   describe '#test', ->
