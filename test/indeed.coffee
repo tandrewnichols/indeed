@@ -1,4 +1,5 @@
 indeed = require('./../lib/indeed')
+_ = require('underscore')
 
 describe 'indeed', ->
   it 'should return a function', ->
@@ -72,7 +73,7 @@ describe 'indeed', ->
 
       it 'should return the value of current', ->
         result = indeed(true)
-        result.test().should.eql(result.current.value)
+        result.test().should.be.true
 
       it 'should apply groupNegate', ->
         result = indeed(true)
@@ -99,7 +100,7 @@ describe 'indeed', ->
 
       it 'should return the value of current', ->
         result = indeed(true)
-        result.eval().should.eql(result.current.value)
+        result.eval().should.be.true
 
       it 'should apply groupNegate', ->
         result = indeed(true)
@@ -126,7 +127,7 @@ describe 'indeed', ->
 
       it 'should return the value of current', ->
         result = indeed(true)
-        result.val().should.eql(result.current.value)
+        result.val().should.be.true
 
       it 'should apply groupNegate', ->
         result = indeed(true)
@@ -232,7 +233,7 @@ describe 'indeed', ->
 
   describe '#indeed', ->
     it 'should reset current', ->
-      indeed(true).And.indeed(false).current.value.should.be.false
+      indeed(true).And.indeed(false).current.pop().val.should.be.false
       indeed(true).And.indeed(false).test().should.be.false
 
     it 'should not allow nor', ->
@@ -242,7 +243,7 @@ describe 'indeed', ->
       
   describe '#also', ->
     it 'should reset current', ->
-      indeed(true).And.also(false).current.value.should.be.false
+      indeed(true).And.also(false).current.pop().val.should.be.false
       indeed(true).And.also(false).test().should.be.false
 
     it 'should not allow nor', ->
@@ -252,7 +253,7 @@ describe 'indeed', ->
 
   describe '#else', ->
     it 'should reset current', ->
-      indeed(true).Or.else(false).current.value.should.be.false
+      indeed(true).Or.else(false).current.pop().val.should.be.false
       indeed(true).Or.else(false).test().should.be.true
 
     it 'should not allow nor', ->
@@ -262,7 +263,9 @@ describe 'indeed', ->
 
   describe '#not', ->
     it 'should reset current and negate the first element', ->
-      indeed(true).And.not(false).current.value.should.be.true
+      cur = indeed(true).And.not(false).current.pop()
+      cur.val.should.be.false
+      cur.negate.should.be.true
       indeed(true).And.not(false).test().should.be.true
 
     it 'should not allow nor', ->
@@ -277,7 +280,7 @@ describe 'indeed', ->
       result.previous[0].should.eql
         val: false
         join: 'and'
-      result.current.value.should.be.true
+      _(result.current).last().val.should.be.true
       result.test().should.be.false
 
     it 'should work with multiple conditions', ->
@@ -292,7 +295,11 @@ describe 'indeed', ->
       result.previous[2].should.eql
         val: true
         join: 'and'
-      result.current.value.should.be.true
+      last = _(result.current).last()
+      last.val.should.be.false
+      last.negate.should.be.true
+      first = _(result.current).first()
+      first.val.should.be.true
       result.test().should.be.true
 
   describe '#But', ->
@@ -302,7 +309,10 @@ describe 'indeed', ->
       result.previous[0].should.eql
         val: false
         join: 'and'
-      result.current.value.should.be.true
+      first = _(result.current).first()
+      first.val.should.be.true
+      last = _(result.current).last()
+      last.val.should.be.true
       result.test().should.be.false
 
     it 'should work with multiple conditions', ->
@@ -317,7 +327,10 @@ describe 'indeed', ->
       result.previous[2].should.eql
         val: true
         join: 'and'
-      result.current.value.should.be.true
+      _(result.current).first().val.should.be.true
+      last = _(result.current).last()
+      last.val.should.be.false
+      last.negate.should.be.true
       result.test().should.be.true
 
   describe '#Or', ->
@@ -327,13 +340,15 @@ describe 'indeed', ->
       result.previous[0].should.eql
         val: false
         join: 'or'
-      result.current.value.should.be.true
+      _(result.current).first().val.should.be.true
+      _(result.current).last().val.should.be.true
       result.test().should.be.true
 
   describe '#Not', ->
     it 'should negate a set', ->
       result = indeed(true).and(true).And.Not.also(true).and(false)
-      result.current.value.should.be.false
+      _(result.current).first().val.should.be.true
+      _(result.current).last().val.should.be.false
       result.previous[0].should.eql
         val: true
         join: 'and'
@@ -342,7 +357,8 @@ describe 'indeed', ->
 
     it 'should negate an or', ->
       result = indeed(true).and(false).Or.Not.also(true).and(false)
-      result.current.value.should.be.false
+      _(result.current).first().val.should.be.true
+      _(result.current).last().val.should.be.false
       result.previous[0].should.eql
         val: false
         join: 'or'
@@ -377,7 +393,16 @@ describe 'indeed', ->
 
   describe '#nor', ->
     it 'should and the negated condition', ->
-      indeed(true).And.neither(true).nor(false).current.value.should.be.false
+      indeed(true).And.neither(true).nor(false).current.should.eql [
+        val: true
+        negate: true
+        actual: true
+      ,
+        val: false
+        actual: false
+        negate: true
+        join: 'and'
+      ]
 
     it 'should not be chainable with anything', ->
       ( ->
