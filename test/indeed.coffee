@@ -594,3 +594,8 @@ describe 'indeed', ->
         
       it 'should be false for different objects', ->
         indeed(new Date(2000, 9, 9)).equals(new Date(1999, 3, 8)).test().should.be.false
+
+  describe '#isA', ->
+    it 'should return true if typeof matches', ->
+      indeed('string').isA('string').test().should.be.true
+      indeed(foo: 'bar').isA('object').test().should.be.true
