@@ -547,6 +547,14 @@ describe 'indeed', ->
       it 'should be false for comparison equality', ->
         indeed(new Date(2000, 9, 9)).is(new Date(2000, 9, 9)).test().should.be.false
 
+    context 'with null', ->
+      it 'should be true when null', ->
+        indeed(null).is(null).test().should.be.true
+
+    context 'with undefined', ->
+      it 'should be true when undefined', ->
+        indeed(undefined).is(undefined).test().should.be.true
+
   describe '#equal', ->
     context 'with a string', ->
       it 'should be true with the same string', ->
@@ -596,6 +604,199 @@ describe 'indeed', ->
         indeed(new Date(2000, 9, 9)).equals(new Date(1999, 3, 8)).test().should.be.false
 
   describe '#isA', ->
-    it 'should return true if typeof matches', ->
+    it 'should return true if constructor name matches', ->
       indeed('string').isA('string').test().should.be.true
+      indeed(1).isA('number').test().should.be.true
+      indeed(true).isA('boolean').test().should.be.true
       indeed(foo: 'bar').isA('object').test().should.be.true
+      indeed([1,2]).isA('Array').test().should.be.true
+      indeed(->).isA('function').test().should.be.true
+      indeed(new Date()).isA('date').test().should.be.true
+      indeed(new (class Foo)()).isA('foo').test().should.be.true
+      
+    it 'should return false if constructor name does not match', ->
+      indeed('string').isA('object').test().should.be.false
+      indeed(foo: 'bar').isA('thing').test().should.be.false
+      indeed([1,2]).isA('string').test().should.be.false
+      indeed(->).isA('object').test().should.be.false
+      indeed(new Date()).isA('number').test().should.be.false
+      indeed(new (class Foo)()).isA('object').test().should.be.false
+
+  describe '#isAn', ->
+    it 'should return true if constructor name matches', ->
+      indeed(foo: 'bar').isAn('object').test().should.be.true
+      indeed([1,2]).isAn('array').test().should.be.true
+      indeed(new (class Aardvark)()).isAn('aardvark').test().should.be.true
+    
+    it 'should return false if constructor name does not match', ->
+      indeed(1).isAn('object').test().should.be.false
+      indeed(true).isAn('array').test().should.be.false
+
+  describe '#contains', ->
+    it 'should return true if an array contains a value', ->
+      indeed([1,2]).contains(2).test().should.be.true
+
+    it 'should return false if an array does not contain a value', ->
+      indeed([1,2]).contains(4).test().should.be.false
+
+    it 'should return true if a string contains a value', ->
+      indeed('hello world').contains('lo').test().should.be.true
+
+    it 'should return false if a string does not contain a value', ->
+      indeed('hello world').contains('foo').test().should.be.false
+
+  describe '#containsKey', ->
+    it 'should return true if an object has a key', ->
+      indeed(foo: 'bar').containsKey('foo').test().should.be.true
+
+    it 'should return false if an object does not have a key', ->
+      indeed(foo: 'bar').containsKey('baz').test().should.be.false
+
+  describe '#containsValue', ->
+    it 'should return true if an object has a value', ->
+      indeed(foo: 'bar').containsValue('bar').test().should.be.true
+
+    it 'should return false if an object does not have a value', ->
+      indeed(foo: 'bar').containsValue('baz').test().should.be.false
+
+  describe 'isDefined', ->
+    it 'should return true when defined', ->
+      indeed('a').isDefined().test().should.be.true
+      indeed([1,2]).isDefined().test().should.be.true
+      indeed(foo: 'bar').isDefined().test().should.be.true
+      indeed(new Date()).isDefined().test().should.be.true
+      indeed(1).isDefined().test().should.be.true
+      indeed(true).isDefined().test().should.be.true
+      indeed(null).isDefined().test().should.be.true
+
+    it 'should return false when undefined', ->
+      indeed(undefined).isDefined().test().should.be.false
+
+  describe 'isNull', ->
+    it 'should return true when null', ->
+      indeed(null).isNull().test().should.be.true
+
+    it 'should return false when not null', ->
+      indeed('string').isNull().test().should.be.false
+
+  describe 'isNotNull', ->
+    it 'should return true when not null', ->
+      indeed('a').isNotNull().test().should.be.true
+      indeed([1,2]).isNotNull().test().should.be.true
+      indeed(foo: 'bar').isNotNull().test().should.be.true
+      indeed(new Date()).isNotNull().test().should.be.true
+      indeed(1).isNotNull().test().should.be.true
+      indeed(true).isNotNull().test().should.be.true
+      indeed(undefined).isNotNull().test().should.be.true
+
+  describe 'isTrue', ->
+    it 'should return true only when the value is literally "true"', ->
+      indeed(true).isTrue().test().should.be.true
+
+    it 'should return false in all other cases', ->
+      indeed(false).isTrue().test().should.be.false
+      indeed(1).isTrue().test().should.be.false
+      indeed([]).isTrue().test().should.be.false
+      indeed({}).isTrue().test().should.be.false
+
+  describe 'isFalse', ->
+    it 'should return true only when the value is literally "false"', ->
+      indeed(false).isFalse().test().should.be.true
+
+    it 'should return false in all other cases', ->
+      indeed(true).isFalse().test().should.be.false
+      indeed(0).isFalse().test().should.be.false
+      indeed(undefined).isFalse().test().should.be.false
+      indeed(null).isFalse().test().should.be.false
+      indeed([]).isFalse().test().should.be.false
+      indeed({}).isFalse().test().should.be.false
+
+  describe '#isGreaterThan', ->
+    it 'should return true when greater than', ->
+      indeed(4).isGreaterThan(2).test().should.be.true
+
+    it 'should return false when equal', ->
+      indeed(4).isGreaterThan(4).test().should.be.false
+
+    it 'should return false when less than', ->
+      indeed(4).isGreaterThan(7).test().should.be.false
+
+  describe '#isGt', ->
+    it 'should return true when greater than', ->
+      indeed(4).isGt(2).test().should.be.true
+    
+    it 'should return false when equal', ->
+      indeed(4).isGt(4).test().should.be.false
+
+    it 'should return false when less than', ->
+      indeed(4).isGt(7).test().should.be.false
+
+  describe '#isLessThan', ->
+    it 'should return true when less than', ->
+      indeed(2).isLessThan(4).test().should.be.true
+
+    it 'should return false when equal', ->
+      indeed(4).isLessThan(4).test().should.be.false
+
+    it 'should return false when greater than', ->
+      indeed(4).isLessThan(2).test().should.be.false
+
+  describe '#isLt', ->
+    it 'should return true when less than', ->
+      indeed(2).isLt(4).test().should.be.true
+
+    it 'should return false when equal', ->
+      indeed(4).isLt(4).test().should.be.false
+
+    it 'should return false when greater than', ->
+      indeed(4).isLt(2).test().should.be.false
+
+  describe '#isGreaterThanOrEqualTo', ->
+    it 'should return true when greater than or equal to', ->
+      indeed(4).isGreaterThanOrEqualTo(2).test().should.be.true
+
+    it 'should return true when equal', ->
+      indeed(2).isGreaterThanOrEqualTo(2).test().should.be.true
+
+    it 'should return false when less than', ->
+      indeed(1).isGreaterThanOrEqualTo(2).test().should.be.false
+
+  describe '#isGte', ->
+    it 'should return true when greater than or equal to', ->
+      indeed(4).isGte(2).test().should.be.true
+
+    it 'should return true when equal', ->
+      indeed(2).isGte(2).test().should.be.true
+
+    it 'should return false when less than', ->
+      indeed(1).isGte(2).test().should.be.false
+
+  describe '#isLessThanOrEqualTo', ->
+    it 'should return true when less than', ->
+      indeed(2).isLessThanOrEqualTo(4).test().should.be.true
+
+    it 'should return true when equal', ->
+      indeed(4).isLessThanOrEqualTo(4).test().should.be.true
+
+    it 'should return false when greater than', ->
+      indeed(4).isLessThanOrEqualTo(2).test().should.be.false
+
+  describe '#isLte', ->
+    it 'should return true when less than', ->
+      indeed(2).isLte(4).test().should.be.true
+
+    it 'should return true when equal', ->
+      indeed(4).isLte(4).test().should.be.true
+
+    it 'should return false when greater than', ->
+      indeed(4).isLte(2).test().should.be.false
+
+  describe '#mixin', ->
+    it 'should add a new compare method to Indeed.prototype', ->
+      indeed.mixin
+        isLengthFive: (condition) ->
+          return (val) -> _(val).isArray() && val.length == 5
+        startsWith: (condition) ->
+          return (val) -> val.charAt(0) == condition
+      indeed([1,2,3,4,5]).isLengthFive().test().should.be.true
+      indeed('apple').startsWith('a').test().should.be.true
