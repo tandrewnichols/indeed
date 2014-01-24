@@ -1,0 +1,46 @@
+{
+  "indeed": {
+    "list": ["and", "andNot", "or", "orNot", "butNot", "xor"],
+    "chain": true
+  },
+  "also": {
+    "list": ["and", "andNot", "or", "orNot", "butNot", "xor"],
+    "chain": true
+  },
+  "else": {
+    "list": ["and", "andNot", "or", "orNot", "butNot", "xor"],
+    "chain": true
+  },
+  "not": {
+    "list": ["and", "andNot", "or", "orNot", "butNot", "xor"],
+    "chain": true
+  },
+  "either": {
+    "list": ["or"],
+    "chain": false
+  },
+  "neither": {
+    "list": ["nor"],
+    "chain": false
+  },
+  "both": {
+    "list": ["and"],
+    "chain": false
+  },
+  "allOf": {
+    "list": ["and"],
+    "chain": true
+  },
+  "oneOf": {
+    "list": ["and"],
+    "chain": true
+  },
+  "anyOf": {
+    "list": ["and"],
+    "chain": true
+  },
+  "noneOf": {
+    "list": ["and"],
+    "chain": true
+  }
+}
