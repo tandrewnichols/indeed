@@ -18,7 +18,7 @@
     "underscore": "*"
   },
   "devDependencies": {
-    "coffee-script": "*",
+    "coffee-script": "1.6.1",
     "mocha": "git://github.com/tandrewnichols/mocha.git#suppress-stack",
     "should": "*",
     "sinon": "*"
