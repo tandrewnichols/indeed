@@ -11,3 +11,6 @@ describe 'integration', ->
   it 'should allow and/or/etc with comparisons', ->
     indeed('hello').isA('string').and(4).isGt(2).test().should.be.true
     indeed([1,2]).contains(3).and('foo').is('foo').And.also(foo: 'bar').containsValue('bar').and(undefined).isDefined().test().should.be.false
+
+  #it 'should allow comparisons with all entry points', ->
+    #neither(3).isLt(5).nor(foo: 'bar').containsKey('baz').test.should.be.true

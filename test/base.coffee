@@ -299,3 +299,272 @@ describe 'base', ->
 
       it 'should be false for other types', ->
         base.containsValue('i').current[0].val.should.be.false
+
+    describe '#isDefined', ->
+      it 'should be false for undefined', ->
+        base.current = [
+          val: true
+          actual: undefined
+        ]
+        base.isDefined().current[0].val.should.be.false
+
+      it 'should be true for other things', ->
+        base.isDefined().current[0].val.should.be.true
+
+    describe '#isNull', ->
+      it 'should be true for null', ->
+        base.current = [
+          val: false
+          actual: null
+        ]
+        base.isNull().current[0].val.should.be.true
+
+      it 'should be false for other things', ->
+        base.isNull().current[0].val.should.be.false
+
+    describe '#isNotNull', ->
+      it 'should be false for null', ->
+        base.current = [
+          val: true
+          actual: null
+        ]
+        base.isNotNull().current[0].val.should.be.false
+
+      it 'should be true for other things', ->
+        base.isNotNull().current[0].val.should.be.true
+
+    describe '#isTrue', ->
+      it 'should be true for true', ->
+        base.current = [
+          val: false
+          actual: true
+        ]
+        base.isTrue().current[0].val.should.be.true
+
+      it 'should be false for false', ->
+        base.current = [
+          val: true
+          actual: false
+        ]
+        base.isTrue().current[0].val.should.be.false
+
+      it 'should be false for non-booleans', ->
+        base.isTrue().current[0].val.should.be.false
+
+    describe '#isFalse', ->
+      it 'should be true for false', ->
+        base.current = [
+          val: false
+          actual: false
+        ]
+        base.isFalse().current[0].val.should.be.true
+
+      it 'should be false for true', ->
+        base.current = [
+          val: true
+          actual: true
+        ]
+        base.isFalse().current[0].val.should.be.false
+
+      it 'should be false for non-booleans', ->
+        base.isFalse().current[0].val.should.be.false
+
+    describe '#isGreaterThan', ->
+      it 'should be true for bigger numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isGreaterThan(1).current[0].val.should.be.true
+
+      it 'should be false for equal numbers', ->
+        base.current = [
+          val: true
+          actual: 2
+        ]
+        base.isGreaterThan(2).current[0].val.should.be.false
+
+      it 'should be false for smaller numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isGreaterThan(5).current[0].val.should.be.false
+
+      it 'should be false for non-numbers', ->
+        base.isGreaterThan(2).current[0].val.should.be.false
+
+    describe '#isGt', ->
+      it 'should be true for bigger numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isGt(1).current[0].val.should.be.true
+
+      it 'should be false for equal numbers', ->
+        base.current = [
+          val: true
+          actual: 2
+        ]
+        base.isGt(2).current[0].val.should.be.false
+
+      it 'should be false for smaller numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isGt(5).current[0].val.should.be.false
+
+      it 'should be false for non-numbers', ->
+        base.isGt(2).current[0].val.should.be.false
+
+    describe '#isLessThan', ->
+      it 'should be true for smaller numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isLessThan(5).current[0].val.should.be.true
+
+      it 'should be false for equal numbers', ->
+        base.current = [
+          val: true
+          actual: 2
+        ]
+        base.isLessThan(2).current[0].val.should.be.false
+
+      it 'should be false for bigger numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isLessThan(1).current[0].val.should.be.false
+
+      it 'should be false for non-numbers', ->
+        base.isLessThan(2).current[0].val.should.be.false
+
+    describe '#isLt', ->
+      it 'should be true for smaller numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isLt(5).current[0].val.should.be.true
+
+      it 'should be false for equal numbers', ->
+        base.current = [
+          val: true
+          actual: 2
+        ]
+        base.isLt(2).current[0].val.should.be.false
+
+      it 'should be false for bigger numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isLt(1).current[0].val.should.be.false
+
+      it 'should be false for non-numbers', ->
+        base.isLt(2).current[0].val.should.be.false
+        
+    describe '#isGreaterThanOrEqualTo', ->
+      it 'should be true for bigger numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isGreaterThanOrEqualTo(1).current[0].val.should.be.true
+
+      it 'should be true for equal numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isGreaterThanOrEqualTo(2).current[0].val.should.be.true
+
+      it 'should be false for smaller numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isGreaterThanOrEqualTo(5).current[0].val.should.be.false
+
+      it 'should be false for non-numbers', ->
+        base.isGreaterThanOrEqualTo(2).current[0].val.should.be.false
+
+    describe '#isGte', ->
+      it 'should be true for bigger numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isGte(1).current[0].val.should.be.true
+
+      it 'should be true for equal numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isGte(2).current[0].val.should.be.true
+
+      it 'should be false for smaller numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isGte(5).current[0].val.should.be.false
+
+      it 'should be false for non-numbers', ->
+        base.isGte(2).current[0].val.should.be.false
+
+    describe '#isLessThanOrEqualTo', ->
+      it 'should be true for smaller numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isLessThanOrEqualTo(5).current[0].val.should.be.true
+
+      it 'should be true for equal numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isLessThanOrEqualTo(2).current[0].val.should.be.true
+
+      it 'should be false for smaller numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isLessThanOrEqualTo(1).current[0].val.should.be.false
+
+      it 'should be false for non-numbers', ->
+        base.isLessThanOrEqualTo(2).current[0].val.should.be.false
+
+    describe '#isLte', ->
+      it 'should be true for smaller numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isLte(5).current[0].val.should.be.true
+
+      it 'should be true for equal numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isLte(2).current[0].val.should.be.true
+
+      it 'should be false for smaller numbers', ->
+        base.current = [
+          val: false
+          actual: 2
+        ]
+        base.isLte(1).current[0].val.should.be.false
+
+      it 'should be false for non-numbers', ->
+        base.isLte(2).current[0].val.should.be.false
