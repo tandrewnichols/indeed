@@ -1,57 +1,7 @@
 Base = require('./../lib/base')
 base = new Base()
-sinon = require('sinon')
 
 describe 'base', ->
-  describe 'grouping methods', ->
-    beforeEach ->
-      base.test = sinon.stub().returns(true)
-      base.previous = []
-
-    describe '#And', ->
-      it 'should add "and" to previous', ->
-        base.And.previous.should.eql [
-          val: true
-          join: 'and'
-        ]
-
-      it 'should reset calls', ->
-        base.And.calls.should.eql []
-
-    describe '#But', ->
-      it 'should add "and" to previous', ->
-        base.But.previous.should.eql [
-          val: true
-          join: 'and'
-        ]
-
-      it 'should reset calls', ->
-        base.But.calls.should.eql []
-
-    describe '#Or', ->
-      it 'should add "or" to previous', ->
-        base.Or.previous.should.eql [
-          val: true
-          join: 'or'
-        ]
-
-      it 'should reset calls', ->
-        base.Or.calls.should.eql []
-
-    describe '#Xor', ->
-      it 'should add "xor" to previous', ->
-        base.Xor.previous.should.eql [
-          val: true
-          join: 'xor'
-        ]
-
-      it 'should reset calls', ->
-        base.Xor.calls.should.eql []
-
-    describe '#Not', ->
-      it 'should negate the group', ->
-        base.Not.groupNegate.should.be.true
-
   describe '#mixin', ->
     it 'should add a new compare method to Base.prototype', ->
       base.mixin
@@ -65,7 +15,7 @@ describe 'base', ->
   describe 'comparison methods', ->
     beforeEach ->
       base.current = [
-        val: true
+        val: false
         actual: 'thing'
       ]
 
@@ -140,3 +90,164 @@ describe 'base', ->
           actual: new Date(2000, 9, 9)
         ]
         base.equals(new Date(2000, 9, 9)).current[0].val.should.be.true
+
+    describe '#isA', ->
+      it 'should be true for strings', ->
+        base.isA('string').current[0].val.should.be.true
+
+      it 'should should be true for arrays', ->
+        base.current = [
+          val: false
+          actual: [1,2,3]
+        ]
+        base.isA('array').current[0].val.should.be.true
+
+      it 'should be true for objects', ->
+        base.current = [
+          val: false
+          actual:
+            foo: 'bar'
+        ]
+        base.isA('object').current[0].val.should.be.true
+
+      it 'should be true for new-able types', ->
+        base.current = [
+          val: false
+          actual: new Date(2000, 9, 9)
+        ]
+        base.isA('date').current[0].val.should.be.true
+
+      it 'should be true for custom types', ->
+        base.current = [
+          val: false
+          actual: new (class Thing)()
+        ]
+        base.isA('thing').current[0].val.should.be.true
+
+      it 'should be false for different types', ->
+        base.current = [
+          val: true
+          actual: 'something'
+        ]
+        base.isA('spaceship').current[0].val.should.be.false
+
+      it 'should be false for null', ->
+        base.current = [
+          val: true
+          actual: null
+        ]
+        base.isA('null').current[0].val.should.be.false
+
+      it 'should be false for undefined', ->
+        base.current = [
+          val: true
+          actual: undefined
+        ]
+        base.isA('undefined').current[0].val.should.be.false
+
+    describe '#isAn', ->
+      it 'should be true for strings', ->
+        base.isAn('string').current[0].val.should.be.true
+
+      it 'should should be true for arrays', ->
+        base.current = [
+          val: false
+          actual: [1,2,3]
+        ]
+        base.isAn('array').current[0].val.should.be.true
+
+      it 'should be true for objects', ->
+        base.current = [
+          val: false
+          actual:
+            foo: 'bar'
+        ]
+        base.isAn('object').current[0].val.should.be.true
+
+      it 'should be true for new-able types', ->
+        base.current = [
+          val: false
+          actual: new Date(2000, 9, 9)
+        ]
+        base.isAn('date').current[0].val.should.be.true
+
+      it 'should be true for custom types', ->
+        base.current = [
+          val: false
+          actual: new (class Thing)()
+        ]
+        base.isAn('thing').current[0].val.should.be.true
+
+      it 'should be false for different types', ->
+        base.current = [
+          val: true
+          actual: 'something'
+        ]
+        base.isAn('spaceship').current[0].val.should.be.false
+
+      it 'should be false for null', ->
+        base.current = [
+          val: true
+          actual: null
+        ]
+        base.isAn('null').current[0].val.should.be.false
+
+      it 'should be false for undefined', ->
+        base.current = [
+          val: true
+          actual: undefined
+        ]
+        base.isAn('undefined').current[0].val.should.be.false
+
+    describe '#contains', ->
+      it 'should be true for arrays containing the value', ->
+        base.current = [
+          val: false
+          actual: [1,2,3]
+        ]
+        base.contains(1).current[0].val.should.be.true
+
+      it 'should be false for arrays not containing the value', ->
+        base.current = [
+          val: true
+          actual: [1,2,3]
+        ]
+        base.contains(4).current[0].val.should.be.false
+
+      it 'should be true for strings containing the value', ->
+        base.contains('in').current[0].val.should.be.true
+
+      it 'should be false for strings not containing the value', ->
+        base.contains('world').current[0].val.should.be.false
+
+      it 'should be false for other types', ->
+        base.current = [
+          val: true
+          actual:
+            foo: 'bar'
+        ]
+        base.contains('bar').current[0].val.should.be.false
+
+    describe '#containsKey', ->
+      it 'should be true for objects with the key', ->
+        base.current = [
+          val: false
+          actual:
+            foo: 'bar'
+        ]
+        base.containsKey('foo').current[0].val.should.be.true
+
+      it 'should be false for objects without the key', ->
+        base.current = [
+          val: true
+          actual:
+            foo: 'bar'
+        ]
+        base.containsKey('baz').current[0].val.should.be.false
+
+      it 'should be false for non-objects', ->
+        base.current = [
+          val: true
+          actual: 2
+        ]
+        base.containsKey('baz').current[0].val.should.be.false
