@@ -245,9 +245,57 @@ describe 'base', ->
         ]
         base.containsKey('baz').current[0].val.should.be.false
 
+      it 'should be true for arrays with the index', ->
+        base.current = [
+          val: false
+          actual: [1,2,3]
+        ]
+        base.containsKey('0').current[0].val.should.be.true
+
+      it 'should be false for arrays without the index', ->
+        base.current = [
+          val: true
+          actual: [1,2,3]
+        ]
+        base.containsKey('5').current[0].val.should.be.false
+
       it 'should be false for non-objects', ->
         base.current = [
           val: true
           actual: 2
         ]
         base.containsKey('baz').current[0].val.should.be.false
+
+    describe '#containsValue', ->
+      it 'should be true for objects with the value', ->
+        base.current = [
+          val: false
+          actual:
+            foo: 'bar'
+        ]
+        base.containsValue('bar').current[0].val.should.be.true
+
+      it 'should be false for objects without the value', ->
+        base.current = [
+          val: true
+          actual:
+            foo: 'bar'
+        ]
+        base.containsValue('thing').current[0].val.should.be.false
+
+      it 'should be true for arrays with the value', ->
+        base.current = [
+          val: false
+          actual: [1,2,3]
+        ]
+        base.containsValue(2).current[0].val.should.be.true
+
+      it 'should be false for arrays without the value', ->
+        base.current = [
+          val: true
+          actual: [1,2,3]
+        ]
+        base.containsValue(5).current[0].val.should.be.false
+
+      it 'should be false for other types', ->
+        base.containsValue('i').current[0].val.should.be.false
