@@ -2,7 +2,7 @@ describe 'index', ->
   context 'non-global', ->
     it 'should return all helpers in an object', ->
       lib = require('./../lib')
-      lib.should.have.properties('indeed', 'neither', 'either', 'both', 'noneOf', 'allOf', 'oneOf', 'nOf')
+      lib.should.have.properties('indeed', 'neither', 'either', 'both', 'noneOf', 'allOf', 'oneOf', 'n')
 
   context 'global', ->
     it 'should set global helpers', ->
@@ -15,4 +15,4 @@ describe 'index', ->
       global.allOf.should.be.a.Function
       global.anyOf.should.be.a.Function
       global.oneOf.should.be.a.Function
-      global.nOf.should.be.a.Function
+      global.n.should.be.a.Function

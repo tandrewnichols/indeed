@@ -2,16 +2,6 @@ Base = require('./../lib/base')
 base = new Base()
 
 describe 'base', ->
-  describe '#mixin', ->
-    it 'should add a new compare method to Base.prototype', ->
-      base.mixin
-        isLengthFive: (condition) ->
-          return (val) -> _(val).isArray() && val.length == 5
-        startsWith: (condition) ->
-          return (val) -> val.charAt(0) == condition
-      Base.prototype.isLengthFive.should.be.a.Function
-      Base.prototype.startsWith.should.be.a.Function
-
   describe 'comparison methods', ->
     beforeEach ->
       base.current = [
