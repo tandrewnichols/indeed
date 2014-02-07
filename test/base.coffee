@@ -301,6 +301,21 @@ describe 'base', ->
       it 'should be true for other things', ->
         base.isDefined().current[0].val.should.be.true
 
+    describe '#isUndefined', ->
+      it 'should be true for undefined', ->
+        base.current = [
+          val: false
+          actual: undefined
+        ]
+        base.isUndefined().current[0].val.should.be.true
+
+      it 'should be false for other things', ->
+        base.current = [
+          val: true
+          actual: null
+        ]
+        base.isUndefined().current[0].val.should.be.false
+
     describe '#isNull', ->
       it 'should be true for null', ->
         base.current = [

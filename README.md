@@ -56,23 +56,26 @@ then
 var helpers = require('indeed');
 ```
 
-which gives you an object with the following properties: indeed, either, neither, both, allOf, anyOf, oneOf, noneOf, and nOf. Alternatively, you can call `helpers` (or your `require`) to set up global helpers of the same name:
+or
 
 ```javascript
-// Set up global methods
+// Set up global methods.
+// Mainly useful because I don't like having to say "if (helpers.indeed(a)..."
 require('indeed')();
 ```
 
-### Indeed
+## Entry points
 
-Begins a chain. All of the helpers are chainable (though most limit which chain methods you can call and how many times). `indeed` is chainable with the following methods: `and`, `andNot`, `or`, `orNot`, `butNot`, and `xor`. Most do what they sound like, but for completeness: `and` = `&&`, `andNot` = `&& !`, `or` = `||`, `orNot` = `|| !`, `butNot` = `andNot`, and `xor` = `(a || b) && !(a && b)`.
+Indeed is the name of the module, but in fact, requiring indeed gives you access to a variety of different "entry points" which begin new boolean chains. Those entry points are as follows:
 
-In general, these helpers are more useful (or at least more immediately readable) with "exists" checks, as opposed to comparisons. To evaluate the result of a helper, call one of `test`, `eval`, or `val` (whatever your preference) to get a boolean result. 
+#### Indeed
 
-`indeed` is actually just a starting point with no particularly special meaning:
+Begins a chain. All of the helpers are chainable, though most limit which chain methods you can call and how many times (e.g. you cannot call either/or/or - that's numerically inconsistent - nor can you call either/and - that just doesn't make sense). `indeed` is chainable with the following methods: `and`, `andNot`, `or`, `orNot`, `butNot`, and `xor`. Most do what they sound like, but for completeness: `and` = `&&`, `andNot` = `&& !`, `or` = `||`, `orNot` = `|| !`, `butNot` = `andNot`, and `xor` = `(a || b) && !(a && b)`.
+
+To evaluate the result of a helper, call one of `test`, `eval`, or `val` (whatever your preference) to get a boolean result. 
 
 ```javascript
-if (indeed(member.isAdmin).and(member.settings.hideFromChat).or(page.isMobilePage).test()) {
+if (indeed(a).and(b).or(c).test()) {
   // do something
 }
 ```
@@ -80,39 +83,27 @@ if (indeed(member.isAdmin).and(member.settings.hideFromChat).or(page.isMobilePag
 Chainable methods are evaluated left to right, with no grouping, but with order. In other words, firstCondition/secondCondition are evaluated, and then the result with the thirdCondition. So this example is equivalent to
 
 ```javascript
-if (member.isAdmin && member.settings.hideFromChat || page.isMobilePage)
+if (a && b || c)
 ```
 
 however
 
 ```javascript
-if (indeed(member.isAdmin).or(member.settings.hideFromChat).and(page.isMobilePage).test())
+if (indeed(a).or(b).and(c).test())
 ```
 
 is more closely equivalent to
 
 ```javascript
-if ((member.isAdmin || member.settings.hideFromChat) && page.isMobilePage)
+if ((a || b) && c)
 ```
 
-You _can_ do some grouping (see below), but it is limited, and I don't intend to expand it any time soon, since you could actually just group it yourself:
-
-```javascript
-if ((indeed(member.isAdmin).or(member.settings.hideFromChat).test()) && indeed(page.isMobilePage).test())
-```
-
-or
-
-```javascript
-if ((indeed(member.isAdmin).or(member.settings.hideFromChat).test()) && page.isMobilePage)
-```
-
-or just plain old javascript booleans.
+(See [Grouping](#grouping) for more information)
 
 `indeed` is also equipped with some negation tools: `not` and `Not`. `not` simply negates the first condition:
 
 ```javascript
-if (indeed.not(a))
+if (indeed.not(a).test())
 ```
 
 is equivalent to
@@ -124,7 +115,7 @@ if (!a)
 `Not` negates the result of the chain, so
 
 ```javascript
-if (indeed.Not(a).and(b))
+if (indeed.Not(a).and(b).test())
 ```
 
 is equivalent to
@@ -133,18 +124,18 @@ is equivalent to
 if (!(a && b))
 ```
 
-### Either
+#### Either
 
-Begins a chain where one of two conditions should be true.
+Begins a chain where one of two conditions (or both) should be true.
 
 Chainable methods: `or`<br>
 Chain limit: 1
 
 ```javascript
-if (either(opts.async).or(callback).test())
+if (either(a).or(b).test())
 ```
 
-### Neither
+#### Neither
 
 Begins a chain where both conditions should be false. 
 
@@ -152,10 +143,10 @@ Chainable methods: `nor`<br>
 Chain limit: 1
 
 ```javascript
-if (neither(opts.async).nor(callback).test())
+if (neither(a).nor(b).test())
 ```
 
-### Both
+#### Both
 
 Begins a chain where both conditions should be true.
 
@@ -163,10 +154,10 @@ Chainable methods: `and`<br>
 Chain limit: 1
 
 ```javascript
-if (both(opts.sync).and(callback).test())
+if (both(a).and(b).test())
 ```
 
-### AllOf
+#### AllOf
 
 Begins a chain where all conditions should be true. Incidentally, it only makes sense to use this with more than two conditions. With two conditions only, use `both`.
 
@@ -174,10 +165,10 @@ Chainable methods: `and`<br>
 Chain limit: none
 
 ```javascript
-if (allOf(a).and(b).and(c))
+if (allOf(a).and(b).and(c).test())
 ```
 
-### AnyOf
+#### AnyOf
 
 Begins a chain where at least condition should be true.
 
@@ -185,10 +176,10 @@ Chainable methods: `and`<br>
 Chain limit: none
 
 ```javascript
-if (allOf(member.firstname).and(member.lastname).and(member.email).test())
+if (allOf(a).and(b).and(c).test())
 ```
 
-### OneOf
+#### OneOf
 
 Begins a chain where exactly one condition should be true. Like `allOf`, use this with more than two conditions. With two conditions, use `either`.
 
@@ -196,10 +187,10 @@ Chainable methods: `and`<br>
 Chain limit: none
 
 ```javascript
-if (oneOf(member.nickname).and(member.penname).and(member.pseudonym).test())
+if (oneOf(a).and(b).and(c).test())
 ```
 
-### NoneOf
+#### NoneOf
 
 Begins a chain where all of the conditions should be true. Again, with only two conditions, use `neither` instead.
 
@@ -207,10 +198,10 @@ Chainable methods: `and`<br>
 Chain limit: none
 
 ```javascript
-if (noneOf(list.length > 2).and(~list.indexOf('foo')).and(~list.indexOf('bar')).test())
+if (noneOf(a).and(b).and(c).test())
 ```
 
-### NOf
+#### NOf
 
 `nOf` is the only helper that deviates from the standard structure. It accepts a number, and then any number of conditions, of which _exactly_ that number must be true.
 
@@ -218,19 +209,21 @@ Chainable methods: `and`<br>
 Chain limit: none
 
 ```javascript
-if (n(2).of(member.firstname).and(member.middleInitial).and(member.lastname)test())
+if (n(2).of(a).and(b).and(c)test())
 ```
 
 ## Grouping
 
 You can create groups of chains which are, also, evaluated left to right, using the properties `And`, `But`, `Or`, and `Xor`. They do what you would expect:
 
-```javascrit
+```javascript
 if (indeed(a).or(b).And.indeed(c).test())
 
 if (indeed(a).and(b).Or.indeed(c).test())
 
 if (indeed(a).and(b).Xor.indeed(c).test())
+
+if (indeed(a).and(b).But.not(c).or(d).test())
 ```
 
 This will evaluate `a || b` first and then the result of that with `&& c`. `But` is an alias to `And` because sometimes it feels more natural to say "but" than "and." `indeed` also has several aliases that can be used after joins depending on what you want to say next:
@@ -247,4 +240,164 @@ if (indeed(a).and(b).But.not(c).test()) { }
 
 // just like indeed, but negates the entire next group
 if (indeed(a).and(b).But.Not(c).test()) { }
+```
+
+## Matching
+
+All the examples so far have been simple "exists" checks (for simplicify), but `indeed` has a wide variety of comparison functions as well.
+
+#### Is
+
+Literal comparison (i.e. reference equality).
+
+```javascript
+if (indeed(a).is('foo').test())
+```
+
+#### Equals
+
+Non-reference equality. This delegates to _.isEqual.
+
+```javascript
+if (indeed(a).equals(b).test())
+```
+
+#### IsA
+
+For type comparisons. This is more strict that `typeof` however. It checks for constructor.name (allowing custom types) and, failing, that uses typeof. It is worth noting that both the type and comparison are lower cased, so 'string', 'String', 'strIng', etc. are all equivalent.
+
+```javascript
+if (indeed(a).isA('string').test())
+```
+
+#### IsAn
+
+Just like isA but preferable (for me anyway) for types beginning with vowels.
+
+#### Contains
+
+Indicates if the string or array contains the value given.
+
+```javascript
+if (indeed('foo bar').contains('foo').test()) {}
+if (indeed([1,2,3]).contains(1).test()) {}
+```
+
+#### ContainsKey
+
+Indicates if the object (or array, though somewhat by accident) contains the given key.
+
+```javascript
+if (indeed({foo: 'bar'}).containsKey('foo').test())
+```
+
+#### ContainsValue
+
+Indicates if the object (or array) contains the given value.
+
+```javascript
+if (indeed({foo: 'bar'}).contains('bar').test())
+```
+
+#### IsDefined
+
+Returns true for everthing except undefined. A little cleaner looking that `if (typeof thing !== 'undefined')`, though that's exactly what it does under the hood.
+
+```javascript
+if (indeed('string').isDefined().test())
+```
+
+#### IsUndefined
+
+Again, just a useful shortcut for `typeof thing === 'undefined'`, especially when `0` or even `false` is a valid value, making `if (thing)` impossible.
+
+```javascript
+if (indeed(undefined).isUndefined().test())
+```
+
+#### IsNull
+
+Returns true for null and false for everything else.
+
+```javascript
+if (indeed(null).isNull().test())
+```
+
+#### IsNotNull
+
+Opposite of `isNull`.
+
+```javascript
+if (indeed([1,2]).isNotNull().test())
+```
+
+#### IsTrue
+
+Not to be confused with truthiness, this checks for the literal value `true`.
+
+```javascript
+if (indeed(true).isTrue().test())
+```
+
+#### IsFalse
+
+Checks for the literal value `false`.
+
+```javascript
+if (indeed(false).isFalse().test())
+```
+
+#### IsGreaterThan / IsGt
+
+Compares two numbers
+
+```javascript
+if (indeed(1).isGreaterThan(0).test())
+if (indeed(1).isGt(0).test())
+```
+
+#### IsLessThan / IsLt
+```javascript
+if (indeed(1).isLessThan(2).test())
+if (indeed(1).isLt(2).test())
+```
+
+#### IsGreaterThanOrEqualTo / IsGte
+
+```javascript
+if (indeed(1).isGreaterThanOrEqualTo(1).test())
+if (indeed(1).isGte(0).test())
+```
+
+#### IsLessThanOrEqualTo / IsLte
+
+```javascript
+if (indeed(1).isLessThanOrEqualTo(1).test())
+if (indeed(1).isLte(2).test())
+```
+
+## Mixin
+
+Additionally, `indeed` has a mixin method for extending these comparison methods. It takes an object of function names with corresponding functions.
+
+```javascript
+indeed.mixin({
+  can: function(condition) {
+    return function(val) {
+      return typeof val[condition] === 'function';
+    }
+  },
+  beginsWith: function(condition) {
+    return function(val) {
+      return val.charAt(0).toLowerCase() === condition.toLowerCase();
+    }
+  }
+});
+```
+
+The custom functions should be in this form, where `condition` is the thing to match against and `val` is the original object (which seems a little backwards, since val is "inside"). These methods,for example, would be called like this:
+
+```javascript
+if (indeed({ foo: function() {} }).can('foo').test())
+if (indeed('hello').beginsWith('h').test())
 ```
