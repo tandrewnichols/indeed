@@ -9,7 +9,7 @@ Boolean helpers for node.js
 Simple booleans are efficient and not that hard to use in javascript, so what's the value of a DDL for booleans? Mainly, I just find booleans one of those things that, if I think too hard about them, then I get lost. The project was born when I had
 
 ```javascript
-if (!oneThing || anotherThing) {
+if (!oneThing && anotherThing) {
   // . . .
 }
 ```
@@ -17,20 +17,20 @@ if (!oneThing || anotherThing) {
 but then realized I actually needed the negative of `anotherThing`. So I changed it to
 
 ```javascript
-if (!oneThing || !anotherThing) {
+if (!oneThing && !anotherThing) {
   // . . .
 }
 ```
 
-at which point, I thought, maybe I should just do
+at which point, I started wondering if that was the same as
 
 ```javascript
-if (!(oneThing || anotherThing)) {
+if (!(oneThing && anotherThing)) {
   // . . .
 }
 ```
 
-but by then, I had overthought it and began wondering whether I needed `||` or `&&`. And then I thought, what I want to say is
+And then I thought, what I really want is to say
 
 ```javascript
 if (neither(oneThing).nor(anotherThing)) {
@@ -80,7 +80,7 @@ if (indeed(a).and(b).or(c).test()) {
 }
 ```
 
-Chainable methods are evaluated left to right, with no grouping, but with order. In other words, firstCondition/secondCondition are evaluated, and then the result with the thirdCondition. So this example is equivalent to
+Chainable methods are evaluated left to right, with no grouping, but with order. In other words, in the example above `a` and `b` are evaluated first, and then the result is `or`'d with c. So this example is equivalent to
 
 ```javascript
 if (a && b || c)
@@ -98,7 +98,7 @@ is more closely equivalent to
 if ((a || b) && c)
 ```
 
-(See [Grouping](#grouping) for more information)
+(See [Grouping](#grouping) for more information.)
 
 `indeed` is also equipped with some negation tools: `not` and `Not`. `not` simply negates the first condition:
 
@@ -170,18 +170,18 @@ if (allOf(a).and(b).and(c).test())
 
 #### AnyOf
 
-Begins a chain where at least condition should be true.
+Begins a chain where at least one condition should be true.
 
 Chainable methods: `and`<br>
 Chain limit: none
 
 ```javascript
-if (allOf(a).and(b).and(c).test())
+if (anyOf(a).and(b).and(c).test())
 ```
 
 #### OneOf
 
-Begins a chain where exactly one condition should be true. Like `allOf`, use this with more than two conditions. With two conditions, use `either`.
+Begins a chain where exactly one condition should be true.
 
 Chainable methods: `and`<br>
 Chain limit: none
@@ -192,7 +192,7 @@ if (oneOf(a).and(b).and(c).test())
 
 #### NoneOf
 
-Begins a chain where all of the conditions should be true. Again, with only two conditions, use `neither` instead.
+Begins a chain where all of the conditions should be false. With only two conditions, use `neither` instead.
 
 Chainable methods: `and`<br>
 Chain limit: none
@@ -214,7 +214,7 @@ if (n(2).of(a).and(b).and(c)test())
 
 ## Grouping
 
-You can create groups of chains which are, also, evaluated left to right, using the properties `And`, `But`, `Or`, and `Xor`. They do what you would expect:
+You can create groups of chains, which are also evaluated left to right, using the properties `And`, `But`, `Or`, and `Xor`. They do what you would expect:
 
 ```javascript
 if (indeed(a).or(b).And.indeed(c).test())
@@ -223,10 +223,10 @@ if (indeed(a).and(b).Or.indeed(c).test())
 
 if (indeed(a).and(b).Xor.indeed(c).test())
 
-if (indeed(a).and(b).But.not(c).or(d).test())
+if (indeed(a).and(b).But.not(c).test())
 ```
 
-This will evaluate `a || b` first and then the result of that with `&& c`. `But` is an alias to `And` because sometimes it feels more natural to say "but" than "and." `indeed` also has several aliases that can be used after joins depending on what you want to say next:
+The first example evaluates `a || b` first and then the result of that with `&& c`. `But` is an alias to `And` because sometimes it feels more natural to say "but" than "and." `indeed` also has several aliases that can be used after joins depending on what you want to say next:
 
 ```javascript
 // just like indeed
@@ -239,12 +239,12 @@ if (indeed(a).and(b).Or.else(c).test()) { }
 if (indeed(a).and(b).But.not(c).test()) { }
 
 // just like indeed, but negates the entire next group
-if (indeed(a).and(b).But.Not(c).test()) { }
+if (indeed(a).and(b).But.Not(c).or(d).test()) { }
 ```
 
 ## Matching
 
-All the examples so far have been simple "exists" checks (for simplicify), but `indeed` has a wide variety of comparison functions as well.
+All the examples so far have been simple checks for definedness (for simplicify), but `indeed` has a wide variety of comparison functions as well.
 
 #### Is
 
@@ -276,7 +276,7 @@ Just like isA but preferable (for me anyway) for types beginning with vowels.
 
 #### Contains
 
-Indicates if the string or array contains the value given.
+Indicates if the string or array contains the given value.
 
 ```javascript
 if (indeed('foo bar').contains('foo').test()) {}
@@ -296,12 +296,12 @@ if (indeed({foo: 'bar'}).containsKey('foo').test())
 Indicates if the object (or array) contains the given value.
 
 ```javascript
-if (indeed({foo: 'bar'}).contains('bar').test())
+if (indeed({foo: 'bar'}).containsValue('bar').test())
 ```
 
 #### IsDefined
 
-Returns true for everthing except undefined. A little cleaner looking that `if (typeof thing !== 'undefined')`, though that's exactly what it does under the hood.
+Returns true for everthing except undefined. A little cleaner looking than `if (typeof thing !== 'undefined')`, though that's exactly what it does under the hood.
 
 ```javascript
 if (indeed('string').isDefined().test())
