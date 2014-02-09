@@ -5,6 +5,7 @@ describe 'index', ->
     it 'should return all helpers in an object', ->
       lib = require('./../lib')
       expect(lib).to.have.property('indeed')
+      expect(lib).to.have.property('expect')
       expect(lib).to.have.property('neither')
       expect(lib).to.have.property('either')
       expect(lib).to.have.property('both')
@@ -17,6 +18,7 @@ describe 'index', ->
     it 'should set global helpers', ->
       require('./../lib')()
       expect(global.indeed).to.be.a('function')
+      expect(global.expect).to.be.a('function')
       expect(global.either).to.be.a('function')
       expect(global.neither).to.be.a('function')
       expect(global.both).to.be.a('function')
