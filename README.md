@@ -401,3 +401,33 @@ The custom functions should be in this form, where `condition` is the thing to m
 if (indeed({ foo: function() {} }).can('foo').test())
 if (indeed('hello').beginsWith('h').test())
 ```
+
+## As an Assertion Library
+
+I didn't write `indeed` to be an assertion library, but when I discovered that most assertion libraries don't return true/false values from their assertion methods, thereby making them unusable with mocha-given (which I use), I realized that `indeed` already had everything it needed (under the hood) to be that kind of assertion library. It just needed a few semantic changes to make it _sound_ like an assertion library.
+
+#### Expect
+
+`expect` is an alias to `indeed`. It does all the same stuff but sounds more test-ish.
+
+```coffee
+Given -> @thing = 'foo'
+When -> @subject.doSomethingNeat(@thing)
+Then -> expect(@thing).to.be('foo bar').assert()
+```
+
+#### To and Should
+
+`to` and `should` are properties designed to make Indeed read more clearly as a test library. `to` was used in the example above. `should` is used similarly:
+
+```javascript
+indeed(a).should.equal(b).assert() # equal is an alias to equals
+```
+
+Note that this means that you cannot use the assertion library "should" in conjunction with this library (not sure why you would want to).
+
+#### Assert
+
+`assert` is an alias to `eval`, `val`, and `test`. Once again, it's only purpose is to convey testing semantics.
+
+Indeed will work well with [mocha-given](https://github.com/rendro/mocha-given) or [jasmine-given](https://github.com/searls/jasmine-given), but it isn't a _full_ assertion library to be used in every project since it doesn't throw AssertionErrors or accept or generate messages (at least for now - perhaps in the next version I will get more abmitious). But because `Then -> true` is a passing test in Given style testing, it works well in that limited capacity.
