@@ -20,7 +20,7 @@
   "devDependencies": {
     "coffee-script": "1.6.1",
     "mocha": "git://github.com/tandrewnichols/mocha.git#suppress-stack",
-    "should": "*",
+    "chai": "1.9.0",
     "sinon": "*"
   },
   "keywords": ["boolean", "if", "else", "helpers"],

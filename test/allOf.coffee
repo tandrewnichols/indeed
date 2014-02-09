@@ -1,34 +1,35 @@
+expect = require('chai').expect
 allOf = require('./../lib/allOf')
 
 describe 'allOf', ->
   it 'should return an object with and', ->
-    allOf(true).should.be.an.instanceOf(allOf.AllOf)
-    allOf(true).and.should.be.a.Function
-    allOf(true).test.should.be.a.Function
+    expect(allOf(true)).to.be.an.instanceOf(allOf.AllOf)
+    expect(allOf(true).and).to.be.a('function')
+    expect(allOf(true).test).to.be.a('function')
 
   describe '#and', ->
     context 'called with all true', ->
       it 'should return true', ->
-        allOf(true).and(true).and(true).test().should.be.true
+        expect(allOf(true).and(true).and(true).test()).to.be.true
     context 'called with some true', ->
       it 'should return false', ->
-        allOf(true).and(false).and(true).test().should.be.false
+        expect(allOf(true).and(false).and(true).test()).to.be.false
     context 'called with all false', ->
       it 'should return false', ->
-        allOf(false).and(false).and(false).test().should.be.false
+        expect(allOf(false).and(false).and(false).test()).to.be.false
 
   describe '#And', ->
     it 'should delegate to indeed an and', ->
-      allOf(true).and(true).And.indeed(true).and(true).test().should.be.true
+      expect(allOf(true).and(true).And.indeed(true).and(true).test()).to.be.true
 
   describe '#Or', ->
     it 'should delegate to indeed with an or', ->
-      allOf(true).and(false).Or.else(true).or(false).test().should.be.true
+      expect(allOf(true).and(false).Or.else(true).or(false).test()).to.be.true
 
   describe '#Xor', ->
     it 'should delegate to indeed with an xor', ->
-      allOf(true).and(false).Xor.indeed(true).or(false).test().should.be.true
+      expect(allOf(true).and(false).Xor.indeed(true).or(false).test()).to.be.true
 
   describe 'Not', ->
     it 'should negate the next group', ->
-      allOf(true).and(true).And.Not.indeed(true).and(true).test().should.be.false
+      expect(allOf(true).and(true).And.Not.indeed(true).and(true).test()).to.be.false
