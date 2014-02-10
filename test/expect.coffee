@@ -5,11 +5,18 @@ sinon = require('sinon')
 
 describe 'expect', ->
 
-  #describe.only '#new', ->
-    #context 'with a spy', ->
-      #it 'should extend expect with spy methods', ->
-        #stub = sinon.stub()
-        #xp = xpect(stub)
+  describe '#new', ->
+    context 'with a spy', ->
+      it 'should extend expect when called with a spy', ->
+        spy = sinon.spy()
+        spy('foo')
+        expect(xpect(spy).to.have.been.calledWith('foo')).to.be.true
+        expect(xpect('thing').calledWith).to.not.be.defined
+
+      it 'should extend expect when called with a stub', ->
+        stub = sinon.stub()
+        stub('foo')
+        expect(xpect(stub).to.have.been.calledWith('foo')).to.be.true
 
   describe '#throws', ->
     context 'with no args', ->
