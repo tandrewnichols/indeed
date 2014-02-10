@@ -6,6 +6,7 @@ describe 'utils', ->
   describe '.delegate', ->
     beforeEach ->
       @indeed = utils.delegate(true, 'and')
+
     it 'should return an instance of Indeed', ->
       expect(@indeed).to.be.an.instanceOf(indeed.Indeed)
 
