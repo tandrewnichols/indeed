@@ -400,31 +400,6 @@ describe 'base', ->
       it 'should be false for non-numbers', ->
         expect(base.isGreaterThan(2).current[0].val).to.be.false
 
-    describe '#isGt', ->
-      it 'should be true for bigger numbers', ->
-        base.current = [
-          val: false
-          actual: 2
-        ]
-        expect(base.isGt(1).current[0].val).to.be.true
-
-      it 'should be false for equal numbers', ->
-        base.current = [
-          val: true
-          actual: 2
-        ]
-        expect(base.isGt(2).current[0].val).to.be.false
-
-      it 'should be false for smaller numbers', ->
-        base.current = [
-          val: false
-          actual: 2
-        ]
-        expect(base.isGt(5).current[0].val).to.be.false
-
-      it 'should be false for non-numbers', ->
-        expect(base.isGt(2).current[0].val).to.be.false
-
     describe '#isLessThan', ->
       it 'should be true for smaller numbers', ->
         base.current = [
@@ -450,31 +425,6 @@ describe 'base', ->
       it 'should be false for non-numbers', ->
         expect(base.isLessThan(2).current[0].val).to.be.false
 
-    describe '#isLt', ->
-      it 'should be true for smaller numbers', ->
-        base.current = [
-          val: false
-          actual: 2
-        ]
-        expect(base.isLt(5).current[0].val).to.be.true
-
-      it 'should be false for equal numbers', ->
-        base.current = [
-          val: true
-          actual: 2
-        ]
-        expect(base.isLt(2).current[0].val).to.be.false
-
-      it 'should be false for bigger numbers', ->
-        base.current = [
-          val: false
-          actual: 2
-        ]
-        expect(base.isLt(1).current[0].val).to.be.false
-
-      it 'should be false for non-numbers', ->
-        expect(base.isLt(2).current[0].val).to.be.false
-        
     describe '#isGreaterThanOrEqualTo', ->
       it 'should be true for bigger numbers', ->
         base.current = [
@@ -500,31 +450,6 @@ describe 'base', ->
       it 'should be false for non-numbers', ->
         expect(base.isGreaterThanOrEqualTo(2).current[0].val).to.be.false
 
-    describe '#isGte', ->
-      it 'should be true for bigger numbers', ->
-        base.current = [
-          val: false
-          actual: 2
-        ]
-        expect(base.isGte(1).current[0].val).to.be.true
-
-      it 'should be true for equal numbers', ->
-        base.current = [
-          val: false
-          actual: 2
-        ]
-        expect(base.isGte(2).current[0].val).to.be.true
-
-      it 'should be false for smaller numbers', ->
-        base.current = [
-          val: false
-          actual: 2
-        ]
-        expect(base.isGte(5).current[0].val).to.be.false
-
-      it 'should be false for non-numbers', ->
-        expect(base.isGte(2).current[0].val).to.be.false
-
     describe '#isLessThanOrEqualTo', ->
       it 'should be true for smaller numbers', ->
         base.current = [
@@ -549,28 +474,3 @@ describe 'base', ->
 
       it 'should be false for non-numbers', ->
         expect(base.isLessThanOrEqualTo(2).current[0].val).to.be.false
-
-    describe '#isLte', ->
-      it 'should be true for smaller numbers', ->
-        base.current = [
-          val: false
-          actual: 2
-        ]
-        expect(base.isLte(5).current[0].val).to.be.true
-
-      it 'should be true for equal numbers', ->
-        base.current = [
-          val: false
-          actual: 2
-        ]
-        expect(base.isLte(2).current[0].val).to.be.true
-
-      it 'should be false for smaller numbers', ->
-        base.current = [
-          val: false
-          actual: 2
-        ]
-        expect(base.isLte(1).current[0].val).to.be.false
-
-      it 'should be false for non-numbers', ->
-        expect(base.isLte(2).current[0].val).to.be.false

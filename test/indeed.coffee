@@ -147,33 +147,6 @@ describe 'indeed', ->
         ]
         expect(result.val()).to.be.true
 
-  describe '#assert', ->
-    context 'no previous values', ->
-      it 'should return basic values', ->
-        expect(indeed(true).assert()).to.be.true
-        expect(indeed(false).assert()).to.be.false
-
-      it 'should return the value of current', ->
-        result = indeed(true)
-        expect(result.assert()).to.be.true
-
-      it 'should apply groupNegate', ->
-        result = indeed(true)
-        result.groupNegate = true
-        expect(result.assert()).to.be.false
-
-    context 'with previous values', ->
-      it 'should join all the previous values correctly', ->
-        result = indeed(true)
-        result.previous = [
-            val: true
-            join: 'and'
-          ,
-            val: false
-            join: 'or'
-        ]
-        expect(result.assert()).to.be.true
-
   describe '#and', ->
     it 'should "and" the previous result', ->
       expect(indeed(true).and(true).test()).to.be.true

@@ -43,15 +43,3 @@ describe 'integration', ->
   it 'should allow comparisons followed by joins', ->
     expect(either(2).isLt(1).or('string').isAn('object').Or.else(true).isFalse().test()).to.be.false
     expect(neither(false).nor('string').equals(3).And.either(3).isGte(3).or([1,2]).contains(4).test()).to.be.true
-
-  it 'should work for assertions with should', ->
-    thenFn = (fn) ->
-      return fn()
-    func = -> indeed(true).should.equal(true).assert()
-    expect(thenFn(func)).to.be.true
-
-  it 'should work for assertions with to and expect', ->
-    thenFn = (fn) ->
-      return fn()
-    func = -> xpect(true).to.equal(true).assert()
-    expect(thenFn(func)).to.be.true
