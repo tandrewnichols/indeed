@@ -64,7 +64,7 @@ describe 'indeed', ->
         i.calls = ['neither']
         expect(( ->
           i._chain('and', true, 'and')
-        )).to.throw('IllegalMethodException: and cannot be called with neither')
+        )).to.throw('IllegalMethodException: and cannot be chained with neither')
 
   describe '#test', ->
     context 'no previous values', ->
@@ -176,10 +176,10 @@ describe 'indeed', ->
     it 'should not allow anything after both', ->
       expect((->
         indeed(true).And.both(true).and(true).and(true)
-      )).to.throw('IllegalMethodException: and cannot be called with both/and')
+      )).to.throw('IllegalMethodException: and cannot be chained with both/and')
       expect((->
         indeed(true).And.both(true).and(true).or(true)
-      )).to.throw('IllegalMethodException: or cannot be called with both/and')
+      )).to.throw('IllegalMethodException: or cannot be chained with both/and')
 
   describe '#or', ->
     it 'should "or" the previous result', ->
@@ -208,10 +208,10 @@ describe 'indeed', ->
     it 'should not allow anything after either', ->
       expect((->
         indeed(true).And.either(true).or(true).and(true)
-      )).to.throw('IllegalMethodException: and cannot be called with either/or')
+      )).to.throw('IllegalMethodException: and cannot be chained with either/or')
       expect((->
         indeed(true).And.either(true).or(true).or(true)
-      )).to.throw('IllegalMethodException: or cannot be called with either/or')
+      )).to.throw('IllegalMethodException: or cannot be chained with either/or')
 
   describe '#andNot', ->
     it 'should "and not" the previous result', ->
@@ -240,7 +240,7 @@ describe 'indeed', ->
     it 'should not allow nor', ->
       expect((->
         indeed(true).And.indeed(true).nor(false)
-      )).to.throw('IllegalMethodException: nor cannot be called with indeed')
+      )).to.throw('IllegalMethodException: nor cannot be chained with indeed')
       
   describe '#also', ->
     it 'should reset current', ->
@@ -250,7 +250,7 @@ describe 'indeed', ->
     it 'should not allow nor', ->
       expect((->
         indeed(true).And.indeed(true).nor(false)
-      )).to.throw('IllegalMethodException: nor cannot be called with indeed')
+      )).to.throw('IllegalMethodException: nor cannot be chained with indeed')
 
   describe '#else', ->
     it 'should reset current', ->
@@ -260,7 +260,7 @@ describe 'indeed', ->
     it 'should not allow nor', ->
       expect((->
         indeed(true).And.indeed(true).nor(false)
-      )).to.throw('IllegalMethodException: nor cannot be called with indeed')
+      )).to.throw('IllegalMethodException: nor cannot be chained with indeed')
 
   describe '#not', ->
     it 'should reset current and negate the first element', ->
@@ -272,7 +272,7 @@ describe 'indeed', ->
     it 'should not allow nor', ->
       expect((->
         indeed(true).And.not(true).nor(false)
-      )).to.throw('IllegalMethodException: nor cannot be called with not')
+      )).to.throw('IllegalMethodException: nor cannot be chained with not')
 
   describe '#And', ->
     it 'should start a new condition set with &&', ->
@@ -382,11 +382,11 @@ describe 'indeed', ->
     it 'should allow nor', ->
       expect(( ->
         indeed(true).And.neither(true).or(false)
-      )).to.throw('IllegalMethodException: or cannot be called with neither')
+      )).to.throw('IllegalMethodException: or cannot be chained with neither')
       
       expect(( ->
         indeed(true).And.neither(true).and(false)
-      )).to.throw('IllegalMethodException: and cannot be called with neither')
+      )).to.throw('IllegalMethodException: and cannot be chained with neither')
 
       expect(( ->
         indeed(true).And.neither(true).nor(false)
@@ -408,11 +408,11 @@ describe 'indeed', ->
     it 'should not be chainable with anything', ->
       expect(( ->
         indeed(true).And.neither(true).nor(false).and(true)
-      )).to.throw('IllegalMethodException: and cannot be called with neither/nor')
+      )).to.throw('IllegalMethodException: and cannot be chained with neither/nor')
 
       expect(( ->
         indeed(true).And.neither(true).nor(false).indeed(true)
-      )).to.throw('IllegalMethodException: indeed cannot be called with neither/nor')
+      )).to.throw('IllegalMethodException: indeed cannot be chained with neither/nor')
 
   describe '#either', ->
     it 'should start a new condition', ->
@@ -421,11 +421,11 @@ describe 'indeed', ->
     it 'should allow or', ->
       expect(( ->
         indeed(true).And.either(true).and(true)
-      )).to.throw('IllegalMethodException: and cannot be called with either')
+      )).to.throw('IllegalMethodException: and cannot be chained with either')
 
       expect(( ->
         indeed(true).And.either(true).nor(true)
-      )).to.throw('IllegalMethodException: nor cannot be called with either')
+      )).to.throw('IllegalMethodException: nor cannot be chained with either')
 
       expect(( ->
         indeed(true).And.either(true).or(true)
@@ -433,7 +433,7 @@ describe 'indeed', ->
 
       expect(( ->
         indeed(true).And.either(true).either(true)
-      )).to.throw('IllegalMethodException: either cannot be called with either')
+      )).to.throw('IllegalMethodException: either cannot be chained with either')
 
   describe '#both', ->
     it 'should start a new condition', ->
@@ -446,11 +446,11 @@ describe 'indeed', ->
 
       expect(( ->
         indeed(true).And.both(true).or(true)
-      )).to.throw('IllegalMethodException: or cannot be called with both')
+      )).to.throw('IllegalMethodException: or cannot be chained with both')
 
       expect(( ->
         indeed(true).And.both(true).and(true).and(true)
-      )).to.throw('IllegalMethodException: and cannot be called with both/and')
+      )).to.throw('IllegalMethodException: and cannot be chained with both/and')
 
   describe '#allOf', ->
     it 'should and all conditions', ->
@@ -460,11 +460,11 @@ describe 'indeed', ->
     it 'should allow and', ->
       expect(( ->
         indeed(true).And.allOf(true).and(true).or(true)
-      )).to.throw('IllegalMethodException: or cannot be called with allOf')
+      )).to.throw('IllegalMethodException: or cannot be chained with allOf')
 
       expect(( ->
         indeed(true).And.allOf(true).and(true).both(false)
-      )).to.throw('IllegalMethodException: both cannot be called with allOf')
+      )).to.throw('IllegalMethodException: both cannot be chained with allOf')
 
   describe '#oneOf', ->
     it 'should return true when exactly one condition is true', ->
@@ -473,11 +473,11 @@ describe 'indeed', ->
     it 'should allow and', ->
       expect(( ->
         indeed(true).And.oneOf(true).and(false).or(true)
-      )).to.throw('IllegalMethodException: or cannot be called with oneOf')
+      )).to.throw('IllegalMethodException: or cannot be chained with oneOf')
 
       expect(( ->
         indeed(true).And.oneOf(true).and(false).else(true)
-      )).to.throw('IllegalMethodException: else cannot be called with oneOf')
+      )).to.throw('IllegalMethodException: else cannot be chained with oneOf')
 
   describe '#anyOf', ->
     it 'should return true when any one condition is true', ->
@@ -489,11 +489,11 @@ describe 'indeed', ->
     it 'should allow and', ->
       expect(( ->
         indeed(true).And.anyOf(true).and(false).or(true)
-      )).to.throw('IllegalMethodException: or cannot be called with anyOf')
+      )).to.throw('IllegalMethodException: or cannot be chained with anyOf')
 
       expect(( ->
         indeed(true).And.anyOf(true).and(false).both(true)
-      )).to.throw('IllegalMethodException: both cannot be called with anyOf')
+      )).to.throw('IllegalMethodException: both cannot be chained with anyOf')
 
   describe '#noneOf', ->
     it 'should return true when all conditions are false', ->
@@ -503,135 +503,75 @@ describe 'indeed', ->
     it 'should allow and', ->
       expect(( ->
         indeed(true).And.noneOf(true).and(false).or(true)
-      )).to.throw('IllegalMethodException: or cannot be called with noneOf')
+      )).to.throw('IllegalMethodException: or cannot be chained with noneOf')
 
       expect(( ->
         indeed(true).And.noneOf(true).and(false).anyOf(false)
-      )).to.throw('IllegalMethodException: anyOf cannot be called with noneOf')
-
-  describe '#is', ->
-    context 'with a string', ->
-      it 'should be true with the same string', ->
-        expect(indeed('string').is('string').test()).to.be.true
-
-      it 'should be false with different strings', ->
-        expect(indeed('string').is('nope').test()).to.be.false
-
-    context 'with numbers', ->
-      it 'should be true for the same number', ->
-        expect(indeed(2).is(2).test()).to.be.true
-
-      it 'should be false for different numbers', ->
-        expect(indeed(2).is(4).test()).to.be.false
-
-    context 'with an array', ->
-      it 'should be true for reference equality', ->
-        @arr = [1,2,3]
-        expect(indeed(@arr).is(@arr).test()).to.be.true
-
-      it 'should be false for comparison equality', ->
-        expect(indeed([1,2,3]).is([1,2,3]).test()).to.be.false
-
-    context 'with object literals', ->
-      it 'should be true for reference equality', ->
-        @obj = key: 'value'
-        expect(indeed(@obj).is(@obj).test()).to.be.true
-
-      it 'should be false for comparison equality', ->
-        expect(indeed(key: 'value').is(key: 'value').test()).to.be.false
-
-    context 'with new-able objects', ->
-      it 'should be true for reference equality', ->
-        @d = new Date()
-        expect(indeed(@d).is(@d).test()).to.be.true
-
-      it 'should be false for comparison equality', ->
-        expect(indeed(new Date(2000, 9, 9)).is(new Date(2000, 9, 9)).test()).to.be.false
-
-    context 'with null', ->
-      it 'should be true when null', ->
-        expect(indeed(null).is(null).test()).to.be.true
-
-    context 'with undefined', ->
-      it 'should be true when undefined', ->
-        expect(indeed(undefined).is(undefined).test()).to.be.true
+      )).to.throw('IllegalMethodException: anyOf cannot be chained with noneOf')
 
   describe '#equal', ->
-    context 'with a string', ->
+    context 'shallow equals', ->
       it 'should be true with the same string', ->
         expect(indeed('string').equals('string').test()).to.be.true
 
       it 'should be false with different strings', ->
         expect(indeed('string').equals('nope').test()).to.be.false
 
-    context 'with numbers', ->
       it 'should be true for the same number', ->
         expect(indeed(2).equals(2).test()).to.be.true
 
       it 'should be false for different numbers', ->
         expect(indeed(2).equals(4).test()).to.be.false
 
-    context 'with an array', ->
+    context 'deep equals', ->
       it 'should be true for reference equality', ->
         @arr = [1,2,3]
-        expect(indeed(@arr).equals(@arr).test()).to.be.true
+        expect(indeed(@arr).deep.equals(@arr).test()).to.be.true
 
       it 'should be true for comparison equality', ->
-        expect(indeed([1,2,3]).equals([1,2,3]).test()).to.be.true
+        expect(indeed([1,2,3]).deep.equals([1,2,3]).test()).to.be.true
 
       it 'should be false for different arrays', ->
-        expect(indeed([1,2,3]).equals([4,5,6]).test()).to.be.false
+        expect(indeed([1,2,3]).deep.equals([4,5,6]).test()).to.be.false
 
-    context 'with object literals', ->
       it 'should be true for reference equality', ->
         @obj = key: 'value'
-        expect(indeed(@obj).equals(@obj).test()).to.be.true
+        expect(indeed(@obj).deep.equals(@obj).test()).to.be.true
 
       it 'should be true for comparison equality', ->
-        expect(indeed(key: 'value').equals(key: 'value').test()).to.be.true
+        expect(indeed(key: 'value').deep.equals(key: 'value').test()).to.be.true
 
       it 'should  be false for differnt objects', ->
-        expect(indeed(key: 'value').equals(hello: 'world').test()).to.be.false
+        expect(indeed(key: 'value').deep.equals(hello: 'world').test()).to.be.false
 
-    context 'with new-able objects', ->
       it 'should be true for reference equality', ->
         @d = new Date()
-        expect(indeed(@d).equals(@d).test()).to.be.true
+        expect(indeed(@d).deep.equals(@d).test()).to.be.true
 
       it 'should be true for comparison equality', ->
-        expect(indeed(new Date(2000, 9, 9)).equals(new Date(2000, 9, 9)).test()).to.be.true
+        expect(indeed(new Date(2000, 9, 9)).deep.equals(new Date(2000, 9, 9)).test()).to.be.true
         
       it 'should be false for different objects', ->
-        expect(indeed(new Date(2000, 9, 9)).equals(new Date(1999, 3, 8)).test()).to.be.false
+        expect(indeed(new Date(2000, 9, 9)).deep.equals(new Date(1999, 3, 8)).test()).to.be.false
 
-  describe '#isA', ->
+  describe '#a', ->
     it 'should return true if constructor name matches', ->
-      expect(indeed('string').isA('string').test()).to.be.true
-      expect(indeed(1).isA('number').test()).to.be.true
-      expect(indeed(true).isA('boolean').test()).to.be.true
-      expect(indeed(foo: 'bar').isA('object').test()).to.be.true
-      expect(indeed([1,2]).isA('Array').test()).to.be.true
-      expect(indeed(->).isA('function').test()).to.be.true
-      expect(indeed(new Date()).isA('date').test()).to.be.true
-      expect(indeed(new (class Foo)()).isA('foo').test()).to.be.true
+      expect(indeed('string').is.a('string').test()).to.be.true
+      expect(indeed(1).is.a('number').test()).to.be.true
+      expect(indeed(true).is.a('boolean').test()).to.be.true
+      expect(indeed(foo: 'bar').is.a('object').test()).to.be.true
+      expect(indeed([1,2]).is.a('Array').test()).to.be.true
+      expect(indeed(->).is.a('function').test()).to.be.true
+      expect(indeed(new Date()).is.a('date').test()).to.be.true
+      expect(indeed(new (class Foo)()).is.a('foo').test()).to.be.true
       
     it 'should return false if constructor name does not match', ->
-      expect(indeed('string').isA('object').test()).to.be.false
-      expect(indeed(foo: 'bar').isA('thing').test()).to.be.false
-      expect(indeed([1,2]).isA('string').test()).to.be.false
-      expect(indeed(->).isA('object').test()).to.be.false
-      expect(indeed(new Date()).isA('number').test()).to.be.false
-      expect(indeed(new (class Foo)()).isA('object').test()).to.be.false
-
-  describe '#isAn', ->
-    it 'should return true if constructor name matches', ->
-      expect(indeed(foo: 'bar').isAn('object').test()).to.be.true
-      expect(indeed([1,2]).isAn('array').test()).to.be.true
-      expect(indeed(new (class Aardvark)()).isAn('aardvark').test()).to.be.true
-    
-    it 'should return false if constructor name does not match', ->
-      expect(indeed(1).isAn('object').test()).to.be.false
-      expect(indeed(true).isAn('array').test()).to.be.false
+      expect(indeed('string').is.a('object').test()).to.be.false
+      expect(indeed(foo: 'bar').is.a('thing').test()).to.be.false
+      expect(indeed([1,2]).is.a('string').test()).to.be.false
+      expect(indeed(->).is.a('object').test()).to.be.false
+      expect(indeed(new Date()).is.a('number').test()).to.be.false
+      expect(indeed(new (class Foo)()).is.a('object').test()).to.be.false
 
   describe '#contains', ->
     it 'should return true if an array contains a value', ->
@@ -646,151 +586,101 @@ describe 'indeed', ->
     it 'should return false if a string does not contain a value', ->
       expect(indeed('hello world').contains('foo').test()).to.be.false
 
-  describe '#containsKey', ->
+  describe '#key', ->
     it 'should return true if an object has a key', ->
-      expect(indeed(foo: 'bar').containsKey('foo').test()).to.be.true
+      expect(indeed(foo: 'bar').key('foo').test()).to.be.true
 
     it 'should return false if an object does not have a key', ->
-      expect(indeed(foo: 'bar').containsKey('baz').test()).to.be.false
+      expect(indeed(foo: 'bar').key('baz').test()).to.be.false
 
-  describe '#containsValue', ->
+  describe '#value', ->
     it 'should return true if an object has a value', ->
-      expect(indeed(foo: 'bar').containsValue('bar').test()).to.be.true
+      expect(indeed(foo: 'bar').value('bar').test()).to.be.true
 
     it 'should return false if an object does not have a value', ->
-      expect(indeed(foo: 'bar').containsValue('baz').test()).to.be.false
+      expect(indeed(foo: 'bar').value('baz').test()).to.be.false
 
-  describe 'isDefined', ->
+  describe '#defined', ->
     it 'should return true when defined', ->
-      expect(indeed('a').isDefined().test()).to.be.true
-      expect(indeed([1,2]).isDefined().test()).to.be.true
-      expect(indeed(foo: 'bar').isDefined().test()).to.be.true
-      expect(indeed(new Date()).isDefined().test()).to.be.true
-      expect(indeed(1).isDefined().test()).to.be.true
-      expect(indeed(true).isDefined().test()).to.be.true
-      expect(indeed(null).isDefined().test()).to.be.true
+      expect(indeed('a').is.defined().test()).to.be.true
+      expect(indeed([1,2]).is.defined().test()).to.be.true
+      expect(indeed(foo: 'bar').is.defined().test()).to.be.true
+      expect(indeed(new Date()).is.defined().test()).to.be.true
+      expect(indeed(1).is.defined().test()).to.be.true
+      expect(indeed(true).is.defined().test()).to.be.true
+      expect(indeed(null).is.defined().test()).to.be.true
 
     it 'should return false when undefined', ->
-      expect(indeed(undefined).isDefined().test()).to.be.false
+      expect(indeed(undefined).is.defined().test()).to.be.false
 
-  describe 'isNull', ->
+  describe '#null', ->
     it 'should return true when null', ->
-      expect(indeed(null).isNull().test()).to.be.true
+      expect(indeed(null).is.null().test()).to.be.true
 
     it 'should return false when not null', ->
-      expect(indeed('string').isNull().test()).to.be.false
+      expect(indeed('string').is.null().test()).to.be.false
 
-  describe 'isNotNull', ->
-    it 'should return true when not null', ->
-      expect(indeed('a').isNotNull().test()).to.be.true
-      expect(indeed([1,2]).isNotNull().test()).to.be.true
-      expect(indeed(foo: 'bar').isNotNull().test()).to.be.true
-      expect(indeed(new Date()).isNotNull().test()).to.be.true
-      expect(indeed(1).isNotNull().test()).to.be.true
-      expect(indeed(true).isNotNull().test()).to.be.true
-      expect(indeed(undefined).isNotNull().test()).to.be.true
-
-  describe 'isTrue', ->
+  describe '#true', ->
     it 'should return true only when the value is literally "true"', ->
-      expect(indeed(true).isTrue().test()).to.be.true
+      expect(indeed(true).is.true().test()).to.be.true
 
     it 'should return false in all other cases', ->
-      expect(indeed(false).isTrue().test()).to.be.false
-      expect(indeed(1).isTrue().test()).to.be.false
-      expect(indeed([]).isTrue().test()).to.be.false
-      expect(indeed({}).isTrue().test()).to.be.false
+      expect(indeed(false).is.true().test()).to.be.false
+      expect(indeed(1).is.true().test()).to.be.false
+      expect(indeed([]).is.true().test()).to.be.false
+      expect(indeed({}).is.true().test()).to.be.false
 
-  describe 'isFalse', ->
+  describe '#false', ->
     it 'should return true only when the value is literally "false"', ->
-      expect(indeed(false).isFalse().test()).to.be.true
+      expect(indeed(false).is.false().test()).to.be.true
 
     it 'should return false in all other cases', ->
-      expect(indeed(true).isFalse().test()).to.be.false
-      expect(indeed(0).isFalse().test()).to.be.false
-      expect(indeed(undefined).isFalse().test()).to.be.false
-      expect(indeed(null).isFalse().test()).to.be.false
-      expect(indeed([]).isFalse().test()).to.be.false
-      expect(indeed({}).isFalse().test()).to.be.false
+      expect(indeed(true).is.false().test()).to.be.false
+      expect(indeed(0).is.false().test()).to.be.false
+      expect(indeed(undefined).is.false().test()).to.be.false
+      expect(indeed(null).is.false().test()).to.be.false
+      expect(indeed([]).is.false().test()).to.be.false
+      expect(indeed({}).is.false().test()).to.be.false
 
-  describe '#isGreaterThan', ->
+  describe '#greaterThan', ->
     it 'should return true when greater than', ->
-      expect(indeed(4).isGreaterThan(2).test()).to.be.true
+      expect(indeed(4).is.greaterThan(2).test()).to.be.true
 
     it 'should return false when equal', ->
-      expect(indeed(4).isGreaterThan(4).test()).to.be.false
+      expect(indeed(4).is.greaterThan(4).test()).to.be.false
 
     it 'should return false when less than', ->
-      expect(indeed(4).isGreaterThan(7).test()).to.be.false
+      expect(indeed(4).is.greaterThan(7).test()).to.be.false
 
-  describe '#isGt', ->
-    it 'should return true when greater than', ->
-      expect(indeed(4).isGt(2).test()).to.be.true
-    
-    it 'should return false when equal', ->
-      expect(indeed(4).isGt(4).test()).to.be.false
-
-    it 'should return false when less than', ->
-      expect(indeed(4).isGt(7).test()).to.be.false
-
-  describe '#isLessThan', ->
+  describe '#lessThan', ->
     it 'should return true when less than', ->
-      expect(indeed(2).isLessThan(4).test()).to.be.true
+      expect(indeed(2).is.lessThan(4).test()).to.be.true
 
     it 'should return false when equal', ->
-      expect(indeed(4).isLessThan(4).test()).to.be.false
+      expect(indeed(4).is.lessThan(4).test()).to.be.false
 
     it 'should return false when greater than', ->
-      expect(indeed(4).isLessThan(2).test()).to.be.false
+      expect(indeed(4).is.lessThan(2).test()).to.be.false
 
-  describe '#isLt', ->
-    it 'should return true when less than', ->
-      expect(indeed(2).isLt(4).test()).to.be.true
-
-    it 'should return false when equal', ->
-      expect(indeed(4).isLt(4).test()).to.be.false
-
-    it 'should return false when greater than', ->
-      expect(indeed(4).isLt(2).test()).to.be.false
-
-  describe '#isGreaterThanOrEqualTo', ->
+  describe '#greaterThanOrEqualTo', ->
     it 'should return true when greater than or equal to', ->
-      expect(indeed(4).isGreaterThanOrEqualTo(2).test()).to.be.true
+      expect(indeed(4).is.greaterThanOrEqualTo(2).test()).to.be.true
 
     it 'should return true when equal', ->
-      expect(indeed(2).isGreaterThanOrEqualTo(2).test()).to.be.true
+      expect(indeed(2).is.greaterThanOrEqualTo(2).test()).to.be.true
 
     it 'should return false when less than', ->
-      expect(indeed(1).isGreaterThanOrEqualTo(2).test()).to.be.false
+      expect(indeed(1).is.greaterThanOrEqualTo(2).test()).to.be.false
 
-  describe '#isGte', ->
-    it 'should return true when greater than or equal to', ->
-      expect(indeed(4).isGte(2).test()).to.be.true
-
-    it 'should return true when equal', ->
-      expect(indeed(2).isGte(2).test()).to.be.true
-
-    it 'should return false when less than', ->
-      expect(indeed(1).isGte(2).test()).to.be.false
-
-  describe '#isLessThanOrEqualTo', ->
+  describe '#is.lessThanOrEqualTo', ->
     it 'should return true when less than', ->
-      expect(indeed(2).isLessThanOrEqualTo(4).test()).to.be.true
+      expect(indeed(2).is.lessThanOrEqualTo(4).test()).to.be.true
 
     it 'should return true when equal', ->
-      expect(indeed(4).isLessThanOrEqualTo(4).test()).to.be.true
+      expect(indeed(4).is.lessThanOrEqualTo(4).test()).to.be.true
 
     it 'should return false when greater than', ->
-      expect(indeed(4).isLessThanOrEqualTo(2).test()).to.be.false
-
-  describe '#isLte', ->
-    it 'should return true when less than', ->
-      expect(indeed(2).isLte(4).test()).to.be.true
-
-    it 'should return true when equal', ->
-      expect(indeed(4).isLte(4).test()).to.be.true
-
-    it 'should return false when greater than', ->
-      expect(indeed(4).isLte(2).test()).to.be.false
+      expect(indeed(4).is.lessThanOrEqualTo(2).test()).to.be.false
 
   describe '#mixin', ->
     it 'should add a new compare method to Indeed.prototype', ->

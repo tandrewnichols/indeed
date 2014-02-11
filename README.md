@@ -426,8 +426,6 @@ expect(a).to.have.property('thing').assert()
 expect(a).to.have.been.calledWith('foo')
 ```
 
-Note that this means that you cannot use the assertion library "should" in conjunction with this library (not sure why you would want to).
-
 #### Assert
 
 `assert` is an alias to `eval`, `val`, and `test`. Once again, it's only purpose is to convey testing semantics.
@@ -437,7 +435,21 @@ Note that this means that you cannot use the assertion library "should" in conju
 Returns true if the passed function reference throws an error. An optional string, regex, error, or function can be passed for more refined assertion:
 
 ```javascript
-//TODO
+expect(fn).to.throw().assert();
+expect(fn).to.throw('Inconceivable!').assert();
+expect(fn).to.throw(new Error('Mischief is afoot')).assert();
+expect(fn).to.throw(/timeout/).assert();
+expect(fn).to.throw(function(e) {
+  return ~e.message.indexOf('!');
+}).assert();
+```
+
+#### With
+
+Assign parameters to pass to the invocation of a method to assert with throw:
+
+```javascript
+expect(fn).with('foo', 'bar').to.throw('FOO BAR').assert();
 ```
 
 Indeed will work well with [mocha-given](https://github.com/rendro/mocha-given) or [jasmine-given](https://github.com/searls/jasmine-given), but it isn't a _full_ assertion library to be used in every project since it doesn't throw AssertionErrors or accept or generate messages (at least for now - perhaps in the next version I will get more abmitious). But because `Then -> true` is a passing test in Given style testing, it works well in that limited capacity.

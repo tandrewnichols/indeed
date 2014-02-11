@@ -1,3 +1,4 @@
+utils = require('./../lib/utils')
 require('./../lib')()
 expect = require('chai').expect
 xpect = require('./../lib').expect
@@ -98,6 +99,3 @@ describe 'expect', ->
     it 'should return true when the property exists', ->
       expect(xpect(foo: 'bar').to.have.property('foo').assert()).to.be.true
 
-  describe '#match', ->
-    it 'should return true on a match', ->
-      expect(xpect('thingy').to.match(/^thin/).assert()).to.be.true

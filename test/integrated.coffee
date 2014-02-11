@@ -12,18 +12,18 @@ describe 'integration', ->
     expect(indeed.not(true).andNot(false).Or.either(true).or(false).test()).to.be.true
     
   it 'should allow and/or/etc with comparisons', ->
-    expect(indeed('hello').isA('string').and(4).isGt(2).test()).to.be.true
-    expect(indeed([1,2]).contains(3).and('foo').is('foo').And.also(foo: 'bar').containsValue('bar').and(undefined).isDefined().test()).to.be.false
+    expect(indeed('hello').is.a('string').and(4).is.gt(2).test()).to.be.true
+    expect(indeed([1,2]).contains(3).and('foo').equals('foo').And.also(foo: 'bar').containsValue('bar').and(undefined).is.defined().test()).to.be.false
 
   it 'should allow comparisons with all entry points', ->
-    expect(neither(3).isLt(2).nor(foo: 'bar').containsKey('baz').test()).to.be.true
-    expect(either(null).isNull().or(false).isTrue().test()).to.be.true
-    expect(allOf('hello').is('hello').and(foo: 'bar').isAn('object').and(3).isGte(3).test()).to.be.true
-    expect(anyOf(1).equals(2).and([2,3]).contains(1).and(undefined).isDefined().test()).to.be.false
-    expect(both(foo: 'bar').containsValue('bar').and(3).isNull().test()).to.be.false
-    expect(n(2).of('a').isA('string').and(new Date(2000, 9, 9)).equals(new Date(2000, 9, 9)).and('hello world').contains('foo').test()).to.be.true
-    expect(noneOf(2).isLte(1).and([1,2,3]).isAn('array').and(true).isFalse().test()).to.be.false
-    expect(oneOf(2).isLte(1).and([1,2,3]).isAn('object').and(true).isTrue().test()).to.be.true
+    expect(neither(3).is.lt(2).nor(foo: 'bar').containsKey('baz').test()).to.be.true
+    expect(either(null).is.null().or(false).is.true().test()).to.be.true
+    expect(allOf('hello').equals('hello').and(foo: 'bar').is.an('object').and(3).is.gte(3).test()).to.be.true
+    expect(anyOf(1).equals(2).and([2,3]).contains(1).and(undefined).is.defined().test()).to.be.false
+    expect(both(foo: 'bar').containsValue('bar').and(3).is.null().test()).to.be.false
+    expect(n(2).of('a').is.a('string').and(new Date(2000, 9, 9)).deep.equals(new Date(2000, 9, 9)).and('hello world').contains('foo').test()).to.be.true
+    expect(noneOf(2).is.lte(1).and([1,2,3]).is.an('array').and(true).is.false().test()).to.be.false
+    expect(oneOf(2).is.lte(1).and([1,2,3]).is.an('object').and(true).is.true().test()).to.be.true
 
   it 'should allow mixin methods on all entry points', ->
     indeed.mixin
@@ -41,5 +41,5 @@ describe 'integration', ->
     expect(oneOf(false).and(false).and('').hasLength().test()).to.be.true
 
   it 'should allow comparisons followed by joins', ->
-    expect(either(2).isLt(1).or('string').isAn('object').Or.else(true).isFalse().test()).to.be.false
-    expect(neither(false).nor('string').equals(3).And.either(3).isGte(3).or([1,2]).contains(4).test()).to.be.true
+    expect(either(2).is.lt(1).or('string').is.an('object').Or.else(true).is.false().test()).to.be.false
+    expect(neither(false).nor('string').equals(3).And.either(3).is.gte(3).or([1,2]).contains(4).test()).to.be.true
