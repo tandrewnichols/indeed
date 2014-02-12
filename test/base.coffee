@@ -11,10 +11,12 @@ describe 'base', ->
 
   describe '#_compare', ->
     it 'should update current', ->
+      base.flags =
+        not: false
       expect(base._compare((actual) ->
         return actual + ' baby'
       ).current).to.eql [
-        val: 'thing baby'
+        val: true
         actual: 'thing'
         compare: true
       ]
