@@ -72,9 +72,9 @@ describe 'expect', ->
         result = xpect(true)
         expect(result.assert()).to.be.true
 
-      it 'should apply groupNegate', ->
+      it 'should apply flags.groupNot', ->
         result = xpect(true)
-        result.groupNegate = true
+        result.flags.groupNot = true
         expect(result.assert()).to.be.false
 
     context 'with previous values', ->

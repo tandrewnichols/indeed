@@ -26,7 +26,7 @@ describe 'indeed', ->
       negate: true
       actual: true
     ]
-    expect(indeed.Not(true).groupNegate).to.be.true
+    expect(indeed.Not(true).flags.groupNot).to.be.true
 
   it 'should allow and, andNot, or, orNot, and butNot', ->
     expect((->
@@ -76,9 +76,9 @@ describe 'indeed', ->
         result = indeed(true)
         expect(result.test()).to.be.true
 
-      it 'should apply groupNegate', ->
+      it 'should apply flags.groupNot', ->
         result = indeed(true)
-        result.groupNegate = true
+        result.flags.groupNot = true
         expect(result.test()).to.be.false
 
     context 'with previous values', ->
@@ -103,9 +103,9 @@ describe 'indeed', ->
         result = indeed(true)
         expect(result.eval()).to.be.true
 
-      it 'should apply groupNegate', ->
+      it 'should apply flags.groupNot', ->
         result = indeed(true)
-        result.groupNegate = true
+        result.flags.groupNot = true
         expect(result.eval()).to.be.false
 
     context 'with previous values', ->
@@ -130,9 +130,9 @@ describe 'indeed', ->
         result = indeed(true)
         expect(result.val()).to.be.true
 
-      it 'should apply groupNegate', ->
+      it 'should apply flags.groupNot', ->
         result = indeed(true)
-        result.groupNegate = true
+        result.flags.groupNot = true
         expect(result.val()).to.be.false
 
     context 'with previous values', ->
@@ -353,7 +353,7 @@ describe 'indeed', ->
       expect(result.previous[0]).to.eql
         val: true
         join: 'and'
-      expect(result.groupNegate).to.be.true
+      expect(result.flags.groupNot).to.be.true
       expect(result.test()).to.be.true
 
     it 'should negate an or', ->
@@ -363,7 +363,7 @@ describe 'indeed', ->
       expect(result.previous[0]).to.eql
         val: false
         join: 'or'
-      expect(result.groupNegate).to.be.true
+      expect(result.flags.groupNot).to.be.true
       expect(result.test()).to.be.true
 
   describe '#Xor', ->
