@@ -262,18 +262,6 @@ describe 'indeed', ->
         indeed(true).And.indeed(true).nor(false)
       )).to.throw('IllegalMethodException: nor cannot be chained with indeed')
 
-  describe '#not', ->
-    it 'should reset current and negate the first element', ->
-      cur = indeed(true).And.not(false).current.pop()
-      expect(cur.val).to.be.false
-      expect(cur.negate).to.be.true
-      expect(indeed(true).And.not(false).test()).to.be.true
-
-    it 'should not allow nor', ->
-      expect((->
-        indeed(true).And.not(true).nor(false)
-      )).to.throw('IllegalMethodException: nor cannot be chained with not')
-
   describe '#And', ->
     it 'should start a new condition set with &&', ->
       result = indeed(true).and(false).And.indeed(true).and(true)

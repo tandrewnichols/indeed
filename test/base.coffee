@@ -471,3 +471,15 @@ describe 'base', ->
 
     it 'should be false for non-numbers', ->
       expect(base.is.lessThanOrEqualTo(2).current[0].val).to.be.false
+
+  describe '#not', ->
+    it 'should negate strings', ->
+      expect(base.should.not.equal(foo: 'bar').current[0].val).to.be.true
+
+    it 'should negate objects', ->
+      base.current = [
+        val: false
+        actual:
+          foo: 'bar'
+      ]
+      expect(base.to.not.equal(foo: 'bar').current[0].val).to.be.true
