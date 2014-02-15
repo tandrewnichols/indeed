@@ -43,3 +43,7 @@ describe 'integration', ->
   it 'should allow comparisons followed by joins', ->
     expect(either(2).is.lt(1).or('string').is.an('object').Or.else(true).is.false().test()).to.be.false
     expect(neither(false).nor('string').equals(3).And.either(3).is.gte(3).or([1,2]).contains(4).test()).to.be.true
+
+  it 'should allow multiple comparisons?', ->
+    expect(indeed(foo: 'bar').to.be.an('object').andTo.have.property('foo').andTo.have.value('bar').test()).to.be.true
+    expect(xpect([1,2,3]).to.contain(3).andTo.be.an('array').test()).to.be.true

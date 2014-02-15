@@ -9,6 +9,11 @@ describe 'base', ->
       actual: 'thing'
     ]
 
+  beforeEach ->
+    base.flags.deep = false
+    base.flags.not = false
+    base.flags.groupNot = false
+
   describe '#_compare', ->
     it 'should update current', ->
       base.flags =
@@ -18,7 +23,6 @@ describe 'base', ->
       ).current).to.eql [
         val: true
         actual: 'thing'
-        compare: true
       ]
 
   describe '#equals', ->
@@ -483,3 +487,17 @@ describe 'base', ->
           foo: 'bar'
       ]
       expect(base.to.not.equal(foo: 'bar').current[0].val).to.be.true
+
+    it 'should work with deep', ->
+      base.current = [
+        val: false
+        actual:
+          some:
+            nested:
+              obj: ['with', 'an', 'array']
+      ]
+      expect(base.to.not.deeply.equal
+        some:
+          nested:
+            obj: ['with', 'an', 'array']
+      .current[0].val).to.be.false
