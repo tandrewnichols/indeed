@@ -24,43 +24,43 @@ describe 'expect', ->
       it 'should return true when the method throws an exception', ->
         fn = ->
           throw new Error('blah')
-        expect(xpect(fn).throws().assert()).to.be.true
+        expect(xpect(fn).throws()).to.be.true
 
       it 'should return true for a matching Error object', ->
         fn = ->
           throw new Error('blah')
-        expect(xpect(fn).throw(new Error('blah')).assert()).to.be.true
+        expect(xpect(fn).throw(new Error('blah'))).to.be.true
 
       it 'should return true for a matching string', ->
         fn = ->
           throw new Error('blah')
-        expect(xpect(fn).throw('blah').assert()).to.be.true
+        expect(xpect(fn).throw('blah')).to.be.true
 
       it 'should return true for a matching regex', ->
         fn = ->
           throw new Error('blah')
-        expect(xpect(fn).throw(/blah/).assert()).to.be.true
+        expect(xpect(fn).throw(/blah/)).to.be.true
 
       it 'should return the error for a function', ->
         fn = ->
           throw new Error('blah')
-        expect(xpect(fn).throw((e) -> return ~e.message.indexOf('l')).assert()).to.be.true
+        expect(xpect(fn).throw((e) -> return ~e.message.indexOf('l'))).to.be.true
 
       it 'should convert an error string to an error object', ->
         fn = ->
           throw 'blah'
-        expect(xpect(fn).throw(new Error('blah')).assert()).to.be.true
+        expect(xpect(fn).throw(new Error('blah'))).to.be.true
 
     context 'with args', ->
       it 'should apply the args to the call', ->
         fn = (args...) ->
           throw new Error(args.join(' '))
-        expect(xpect(fn).with('foo', 'bar').throw('foo bar').assert()).to.be.true
+        expect(xpect(fn).with('foo', 'bar').throw('foo bar')).to.be.true
 
     context 'with no error', ->
       it 'should return false', ->
         fn = ->
-        expect(xpect(fn).to.throw().assert()).to.be.false
+        expect(xpect(fn).to.throw()).to.be.false
 
   describe '#assert', ->
     context 'no previous values', ->
@@ -94,8 +94,3 @@ describe 'expect', ->
       fn = ->
       xp = xpect(fn).with('arg', 'foo', ['bar'])
       expect(xp.throwArgs).to.eql ['arg', 'foo', ['bar']]
-
-  describe '#property', ->
-    it 'should return true when the property exists', ->
-      expect(xpect(foo: 'bar').to.have.property('foo').assert()).to.be.true
-

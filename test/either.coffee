@@ -10,30 +10,36 @@ describe 'either', ->
   describe 'or', ->
     context 'both true', ->
       it 'should return true', ->
-        expect(either(true).or(true).test()).to.be.true
+        expect(either(true).or(true)).to.be.true
     context 'the first true', ->
       it 'should return true', ->
-        expect(either(true).or(false).test()).to.be.true
+        expect(either(true).or(false)).to.be.true
     context 'the second true', ->
       it 'should return true', ->
-        expect(either(false).or(true).test()).to.be.true
+        expect(either(false).or(true)).to.be.true
     context 'both false', ->
       it 'should return false', ->
-        expect(either(false).or(false).test()).to.be.false
+        expect(either(false).or(false)).to.be.false
 
-    context 'called multiple times', ->
-      expect(( ->
-        either(true).or(true).or(true)
-      )).to.throw('IllegalMethodException: or cannot be called with either/or')
+    context 'called with errors', ->
+      it 'should throw IllegalMethodException when chaining', ->
+        expect(( ->
+          either.chain(true).or(true).or(true)
+        )).to.throw('IllegalMethodException: or cannot be called with either/or')
+
+      it 'should throw Object has no method when not chaining', ->
+        expect(( ->
+          either(true).or(true).or(true)
+        )).to.throw('Object true has no method \'or\'')
 
   describe '#And', ->
     it 'should delegate to indeed an and', ->
-      expect(either(true).or(false).And.indeed(true).and(true).test()).to.be.true
+      expect(either.chain(true).or(false).And.indeed(true).and(true).test()).to.be.true
 
   describe '#Or', ->
     it 'should delegate to indeed with an or', ->
-      expect(either(true).or(false).Or.else(true).or(false).test()).to.be.true
+      expect(either.chain(true).or(false).Or.else(true).or(false).test()).to.be.true
 
   describe '#Xor', ->
     it 'should delegate to indeed with an xor', ->
-      expect(either(true).or(false).Xor.indeed(true).or(false).test()).to.be.false
+      expect(either.chain(true).or(false).Xor.indeed(true).or(false).test()).to.be.false

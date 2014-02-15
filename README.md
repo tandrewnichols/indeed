@@ -212,6 +212,10 @@ Chain limit: none
 if (n(2).of(a).and(b).and(c)test())
 ```
 
+#### Expect
+
+`expect` is useful for using Indeed as an assertion framework. It has (roughly) the same interface as `indeed`, but sounds more test-ish. It also includes some additional comparitors and helpers (see [Matching](#matching) for more information).
+
 ## Grouping
 
 You can create groups of chains, which are also evaluated left to right, using the properties `And`, `But`, `Or`, and `Xor`. They do what you would expect:
@@ -223,7 +227,7 @@ if (indeed(a).and(b).Or.indeed(c).test())
 
 if (indeed(a).and(b).Xor.indeed(c).test())
 
-if (indeed(a).and(b).But.not(c).test())
+if (indeed(a).and(b).But.not.also(c).test())
 ```
 
 The first example evaluates `a || b` first and then the result of that with `&& c`. `But` is an alias to `And` because sometimes it feels more natural to say "but" than "and." `indeed` also has several aliases that can be used after joins depending on what you want to say next:
@@ -236,10 +240,16 @@ if (indeed(a).or(b).And.also(c).test()) { }
 if (indeed(a).and(b).Or.else(c).test()) { }
 
 // just like indeed, but negated
-if (indeed(a).and(b).But.not(c).test()) { }
+if (indeed(a).and(b).But.not.also(c).test()) { }
 
 // just like indeed, but negates the entire next group
-if (indeed(a).and(b).But.Not(c).or(d).test()) { }
+if (indeed(a).and(b).But.Not.also(c).or(d).test()) { }
+```
+
+Additionally, all of the entry points are chainable after a Grouping property:
+
+```javascript
+if (indeed(a).or(b).But.neither(c).nor(d).test()) { }
 ```
 
 ## Matching

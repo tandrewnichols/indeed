@@ -500,175 +500,175 @@ describe 'indeed', ->
   describe '#equal', ->
     context 'shallow equals', ->
       it 'should be true with the same string', ->
-        expect(indeed('string').equals('string').test()).to.be.true
+        expect(indeed('string').equals('string')).to.be.true
 
       it 'should be false with different strings', ->
-        expect(indeed('string').equals('nope').test()).to.be.false
+        expect(indeed('string').equals('nope')).to.be.false
 
       it 'should be true for the same number', ->
-        expect(indeed(2).equals(2).test()).to.be.true
+        expect(indeed(2).equals(2)).to.be.true
 
       it 'should be false for different numbers', ->
-        expect(indeed(2).equals(4).test()).to.be.false
+        expect(indeed(2).equals(4)).to.be.false
 
     context 'deep equals', ->
       it 'should be true for reference equality', ->
         @arr = [1,2,3]
-        expect(indeed(@arr).deep.equals(@arr).test()).to.be.true
+        expect(indeed(@arr).deep.equals(@arr)).to.be.true
 
       it 'should be true for comparison equality', ->
-        expect(indeed([1,2,3]).deep.equals([1,2,3]).test()).to.be.true
+        expect(indeed([1,2,3]).deep.equals([1,2,3])).to.be.true
 
       it 'should be false for different arrays', ->
-        expect(indeed([1,2,3]).deep.equals([4,5,6]).test()).to.be.false
+        expect(indeed([1,2,3]).deep.equals([4,5,6])).to.be.false
 
       it 'should be true for reference equality', ->
         @obj = key: 'value'
-        expect(indeed(@obj).deep.equals(@obj).test()).to.be.true
+        expect(indeed(@obj).deep.equals(@obj)).to.be.true
 
       it 'should be true for comparison equality', ->
-        expect(indeed(key: 'value').deep.equals(key: 'value').test()).to.be.true
+        expect(indeed(key: 'value').deep.equals(key: 'value')).to.be.true
 
       it 'should  be false for differnt objects', ->
-        expect(indeed(key: 'value').deep.equals(hello: 'world').test()).to.be.false
+        expect(indeed(key: 'value').deep.equals(hello: 'world')).to.be.false
 
       it 'should be true for reference equality', ->
         @d = new Date()
-        expect(indeed(@d).deep.equals(@d).test()).to.be.true
+        expect(indeed(@d).deep.equals(@d)).to.be.true
 
       it 'should be true for comparison equality', ->
-        expect(indeed(new Date(2000, 9, 9)).deep.equals(new Date(2000, 9, 9)).test()).to.be.true
+        expect(indeed(new Date(2000, 9, 9)).deep.equals(new Date(2000, 9, 9))).to.be.true
         
       it 'should be false for different objects', ->
-        expect(indeed(new Date(2000, 9, 9)).deep.equals(new Date(1999, 3, 8)).test()).to.be.false
+        expect(indeed(new Date(2000, 9, 9)).deep.equals(new Date(1999, 3, 8))).to.be.false
 
   describe '#a', ->
     it 'should return true if constructor name matches', ->
-      expect(indeed('string').is.a('string').test()).to.be.true
-      expect(indeed(1).is.a('number').test()).to.be.true
-      expect(indeed(true).is.a('boolean').test()).to.be.true
-      expect(indeed(foo: 'bar').is.a('object').test()).to.be.true
-      expect(indeed([1,2]).is.a('Array').test()).to.be.true
-      expect(indeed(->).is.a('function').test()).to.be.true
-      expect(indeed(new Date()).is.a('date').test()).to.be.true
-      expect(indeed(new (class Foo)()).is.a('foo').test()).to.be.true
+      expect(indeed('string').is.a('string')).to.be.true
+      expect(indeed(1).is.a('number')).to.be.true
+      expect(indeed(true).is.a('boolean')).to.be.true
+      expect(indeed(foo: 'bar').is.a('object')).to.be.true
+      expect(indeed([1,2]).is.a('Array')).to.be.true
+      expect(indeed(->).is.a('function')).to.be.true
+      expect(indeed(new Date()).is.a('date')).to.be.true
+      expect(indeed(new (class Foo)()).is.a('foo')).to.be.true
       
     it 'should return false if constructor name does not match', ->
-      expect(indeed('string').is.a('object').test()).to.be.false
-      expect(indeed(foo: 'bar').is.a('thing').test()).to.be.false
-      expect(indeed([1,2]).is.a('string').test()).to.be.false
-      expect(indeed(->).is.a('object').test()).to.be.false
-      expect(indeed(new Date()).is.a('number').test()).to.be.false
-      expect(indeed(new (class Foo)()).is.a('object').test()).to.be.false
+      expect(indeed('string').is.a('object')).to.be.false
+      expect(indeed(foo: 'bar').is.a('thing')).to.be.false
+      expect(indeed([1,2]).is.a('string')).to.be.false
+      expect(indeed(->).is.a('object')).to.be.false
+      expect(indeed(new Date()).is.a('number')).to.be.false
+      expect(indeed(new (class Foo)()).is.a('object')).to.be.false
 
   describe '#contains', ->
     it 'should return true if an array contains a value', ->
-      expect(indeed([1,2]).contains(2).test()).to.be.true
+      expect(indeed([1,2]).contains(2)).to.be.true
 
     it 'should return false if an array does not contain a value', ->
-      expect(indeed([1,2]).contains(4).test()).to.be.false
+      expect(indeed([1,2]).contains(4)).to.be.false
 
     it 'should return true if a string contains a value', ->
-      expect(indeed('hello world').contains('lo').test()).to.be.true
+      expect(indeed('hello world').contains('lo')).to.be.true
 
     it 'should return false if a string does not contain a value', ->
-      expect(indeed('hello world').contains('foo').test()).to.be.false
+      expect(indeed('hello world').contains('foo')).to.be.false
 
   describe '#key', ->
     it 'should return true if an object has a key', ->
-      expect(indeed(foo: 'bar').key('foo').test()).to.be.true
+      expect(indeed(foo: 'bar').key('foo')).to.be.true
 
     it 'should return false if an object does not have a key', ->
-      expect(indeed(foo: 'bar').key('baz').test()).to.be.false
+      expect(indeed(foo: 'bar').key('baz')).to.be.false
 
   describe '#value', ->
     it 'should return true if an object has a value', ->
-      expect(indeed(foo: 'bar').value('bar').test()).to.be.true
+      expect(indeed(foo: 'bar').value('bar')).to.be.true
 
     it 'should return false if an object does not have a value', ->
-      expect(indeed(foo: 'bar').value('baz').test()).to.be.false
+      expect(indeed(foo: 'bar').value('baz')).to.be.false
 
   describe '#defined', ->
     it 'should return true when defined', ->
-      expect(indeed('a').is.defined().test()).to.be.true
-      expect(indeed([1,2]).is.defined().test()).to.be.true
-      expect(indeed(foo: 'bar').is.defined().test()).to.be.true
-      expect(indeed(new Date()).is.defined().test()).to.be.true
-      expect(indeed(1).is.defined().test()).to.be.true
-      expect(indeed(true).is.defined().test()).to.be.true
-      expect(indeed(null).is.defined().test()).to.be.true
+      expect(indeed('a').is.defined()).to.be.true
+      expect(indeed([1,2]).is.defined()).to.be.true
+      expect(indeed(foo: 'bar').is.defined()).to.be.true
+      expect(indeed(new Date()).is.defined()).to.be.true
+      expect(indeed(1).is.defined()).to.be.true
+      expect(indeed(true).is.defined()).to.be.true
+      expect(indeed(null).is.defined()).to.be.true
 
     it 'should return false when undefined', ->
-      expect(indeed(undefined).is.defined().test()).to.be.false
+      expect(indeed(undefined).is.defined()).to.be.false
 
   describe '#null', ->
     it 'should return true when null', ->
-      expect(indeed(null).is.null().test()).to.be.true
+      expect(indeed(null).is.null()).to.be.true
 
     it 'should return false when not null', ->
-      expect(indeed('string').is.null().test()).to.be.false
+      expect(indeed('string').is.null()).to.be.false
 
   describe '#true', ->
     it 'should return true only when the value is literally "true"', ->
-      expect(indeed(true).is.true().test()).to.be.true
+      expect(indeed(true).is.true()).to.be.true
 
     it 'should return false in all other cases', ->
-      expect(indeed(false).is.true().test()).to.be.false
-      expect(indeed(1).is.true().test()).to.be.false
-      expect(indeed([]).is.true().test()).to.be.false
-      expect(indeed({}).is.true().test()).to.be.false
+      expect(indeed(false).is.true()).to.be.false
+      expect(indeed(1).is.true()).to.be.false
+      expect(indeed([]).is.true()).to.be.false
+      expect(indeed({}).is.true()).to.be.false
 
   describe '#false', ->
     it 'should return true only when the value is literally "false"', ->
-      expect(indeed(false).is.false().test()).to.be.true
+      expect(indeed(false).is.false()).to.be.true
 
     it 'should return false in all other cases', ->
-      expect(indeed(true).is.false().test()).to.be.false
-      expect(indeed(0).is.false().test()).to.be.false
-      expect(indeed(undefined).is.false().test()).to.be.false
-      expect(indeed(null).is.false().test()).to.be.false
-      expect(indeed([]).is.false().test()).to.be.false
-      expect(indeed({}).is.false().test()).to.be.false
+      expect(indeed(true).is.false()).to.be.false
+      expect(indeed(0).is.false()).to.be.false
+      expect(indeed(undefined).is.false()).to.be.false
+      expect(indeed(null).is.false()).to.be.false
+      expect(indeed([]).is.false()).to.be.false
+      expect(indeed({}).is.false()).to.be.false
 
   describe '#greaterThan', ->
     it 'should return true when greater than', ->
-      expect(indeed(4).is.greaterThan(2).test()).to.be.true
+      expect(indeed(4).is.greaterThan(2)).to.be.true
 
     it 'should return false when equal', ->
-      expect(indeed(4).is.greaterThan(4).test()).to.be.false
+      expect(indeed(4).is.greaterThan(4)).to.be.false
 
     it 'should return false when less than', ->
-      expect(indeed(4).is.greaterThan(7).test()).to.be.false
+      expect(indeed(4).is.greaterThan(7)).to.be.false
 
   describe '#lessThan', ->
     it 'should return true when less than', ->
-      expect(indeed(2).is.lessThan(4).test()).to.be.true
+      expect(indeed(2).is.lessThan(4)).to.be.true
 
     it 'should return false when equal', ->
-      expect(indeed(4).is.lessThan(4).test()).to.be.false
+      expect(indeed(4).is.lessThan(4)).to.be.false
 
     it 'should return false when greater than', ->
-      expect(indeed(4).is.lessThan(2).test()).to.be.false
+      expect(indeed(4).is.lessThan(2)).to.be.false
 
   describe '#greaterThanOrEqualTo', ->
     it 'should return true when greater than or equal to', ->
-      expect(indeed(4).is.greaterThanOrEqualTo(2).test()).to.be.true
+      expect(indeed(4).is.greaterThanOrEqualTo(2)).to.be.true
 
     it 'should return true when equal', ->
-      expect(indeed(2).is.greaterThanOrEqualTo(2).test()).to.be.true
+      expect(indeed(2).is.greaterThanOrEqualTo(2)).to.be.true
 
     it 'should return false when less than', ->
-      expect(indeed(1).is.greaterThanOrEqualTo(2).test()).to.be.false
+      expect(indeed(1).is.greaterThanOrEqualTo(2)).to.be.false
 
   describe '#is.lessThanOrEqualTo', ->
     it 'should return true when less than', ->
-      expect(indeed(2).is.lessThanOrEqualTo(4).test()).to.be.true
+      expect(indeed(2).is.lessThanOrEqualTo(4)).to.be.true
 
     it 'should return true when equal', ->
-      expect(indeed(4).is.lessThanOrEqualTo(4).test()).to.be.true
+      expect(indeed(4).is.lessThanOrEqualTo(4)).to.be.true
 
     it 'should return false when greater than', ->
-      expect(indeed(4).is.lessThanOrEqualTo(2).test()).to.be.false
+      expect(indeed(4).is.lessThanOrEqualTo(2)).to.be.false
 
   describe '#mixin', ->
     it 'should add a new compare method to Indeed.prototype', ->
@@ -677,5 +677,5 @@ describe 'indeed', ->
           return (val) -> _(val).isArray() && val.length == 5
         startsWith: (condition) ->
           return (val) -> val.charAt(0) == condition
-      expect(indeed([1,2,3,4,5]).isLengthFive().test()).to.be.true
-      expect(indeed('apple').startsWith('a').test()).to.be.true
+      expect(indeed([1,2,3,4,5]).isLengthFive()).to.be.true
+      expect(indeed('apple').startsWith('a')).to.be.true
