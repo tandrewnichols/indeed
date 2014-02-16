@@ -27,6 +27,18 @@ describe 'indeed', ->
       actual: true
     ]
     expect(indeed.Not(true).flags.groupNot).to.be.true
+    expect(indeed.chain(true).flags.chain).to.be.true
+    expect(indeed.not.chain(true).current).to.eql [
+      val: true
+      negate: true
+      actual: true
+    ]
+    expect(indeed.not.chain(true).flags.chain).to.be.true
+    expect(indeed.Not.chain(true).flags).to.eql
+      not: false
+      groupNot: true
+      chain: true
+      deep: false
 
   it 'should allow and, andNot, or, orNot, and butNot', ->
     expect((->
