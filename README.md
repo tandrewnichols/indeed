@@ -64,52 +64,43 @@ or
 require('indeed')();
 ```
 
-## Entry points
+## Usage
 
-Indeed is the name of the module, but in fact, requiring indeed gives you access to a variety of different "entry points" which begin new boolean chains. Those entry points are as follows:
+When you `require('indeed')`, you'll get an object with methods that begin boolean chains: `indeed`, `either`, `neither`, `both`, `allOf`, `oneOf`, `noneOf`, `anyOf`, `nOf`, and `expect`. These function are roughly the same - they allow you to assess conditions using natural language. These conditions are processed first in first out, so they can behave slightly differently than normal boolean logic. For example: `if (a && b || c)` becomes `if (indeed(a).and(b).or(c))` as you might expect. However, `if (indeed(a).or(b).and(c))` actually means `if( (a || b) && c)` because of how order of operations works. See [Grouping](#grouping) below for more information.
 
 #### Indeed
 
-Begins a chain. All of the helpers are chainable, though most limit which chain methods you can call and how many times (e.g. you cannot call either/or/or - that's numerically inconsistent - nor can you call either/and - that just doesn't make sense). `indeed` is chainable with the following methods: `and`, `andNot`, `or`, `orNot`, `butNot`, and `xor`. Most do what they sound like, but for completeness: `and` = `&&`, `andNot` = `&& !`, `or` = `||`, `orNot` = `|| !`, `butNot` = `andNot`, and `xor` = `(a || b) && !(a && b)`.
+Begins a generic chain.
 
-To evaluate the result of a helper, call one of `test`, `eval`, or `val` (whatever your preference) to get a boolean result. 
-
-```javascript
-if (indeed(a).and(b).or(c).test()) {
-  // do something
-}
-```
-
-Chainable methods are evaluated left to right, with no grouping, but with order. In other words, in the example above `a` and `b` are evaluated first, and then the result is `or`'d with c. So this example is equivalent to
+Chainable methods: `and`, `andNot`, `or`, `orNot`, `butNot`, and `xor`<br>
+Chain limit: none
 
 ```javascript
-if (a && b || c)
+if (indeed(a).and(b).butNot(c).or(d).test())
 ```
 
-however
+Chaining is off by default with `indeed`, so that you can make simple comparisons:
 
 ```javascript
-if (indeed(a).or(b).and(c).test())
+// returns 'true'
+indeed(a).is.true()
+
+// returns 'indeed' so that you can assert more conditions
+indeed.chain(a).is.true() // .and(b).is.false().test()
 ```
 
-is more closely equivalent to
-
-```javascript
-if ((a || b) && c)
-```
-
-(See [Grouping](#grouping) for more information.)
+When chaining, use `.test()`, `.val()`, or `.eval()` to terminate the chain and evaluate the total result of the expression. Non-chaining is optimized for [comparisons](#comparisons), so `indeed(a).is.defined()` will return `true` or `false` whereas `indeed(a)` by itself, will not. To assert on the definedness of a single thing, 1) chain: `if (indeed.chain(a).test())`, 2) use `defined()`: `if (indeed(a).is.defined())`, 3) use regular booleans: `if (a)`. Calling one of the chain methods without calling a comparison will automatically turn on chaining, so that you can say `if (indeed(a).and(b).and(c).test())` rather than `if (indeed.chain(a).and(b).and(c).test())`.
 
 `indeed` is also equipped with some negation tools: `not` and `Not`. `not` simply negates the first condition:
 
 ```javascript
-if (indeed.not(a).test())
+if (indeed.not(a).and(b).test())
 ```
 
 is equivalent to
 
 ```javascript
-if (!a)
+if (!a && b)
 ```
 
 `Not` negates the result of the chain, so
@@ -124,15 +115,26 @@ is equivalent to
 if (!(a && b))
 ```
 
+These too can be chained:
+
+```javascript
+if (indeed.not.chain(a).and(b).test())
+if (indeed.Not.chain(a).or(b).test())
+```
+
+Indeed (and all the chain starters) also has the chainable properties `does`, `should`, `has`, `have`, `is`, `to`, `be`, and `been`. In addition, `indeed` has `andDoes`, `andShould`, `andHas`, `andHave`, `andIs`, `andTo`, and `andBe`.
+
 #### Either
 
 Begins a chain where one of two conditions (or both) should be true.
 
 Chainable methods: `or`<br>
-Chain limit: 1
+Chain limit: 1<br>
+Optimized for: existence checks
 
 ```javascript
-if (either(a).or(b).test())
+if (either(a).or(b))
+if (either.chain(a).is.null().or(b).is.defined().test())
 ```
 
 #### Neither
@@ -140,10 +142,12 @@ if (either(a).or(b).test())
 Begins a chain where both conditions should be false. 
 
 Chainable methods: `nor`<br>
-Chain limit: 1
+Chain limit: 1<br>
+Optimized for: existence checks
 
 ```javascript
-if (neither(a).nor(b).test())
+if (neither(a).nor(b))
+if (neither.chain(a).equals('foo').nor(b).is.a('date').test())
 ```
 
 #### Both
@@ -151,10 +155,12 @@ if (neither(a).nor(b).test())
 Begins a chain where both conditions should be true.
 
 Chainable methods: `and`<br>
-Chain limit: 1
+Chain limit: 1<br>
+Optimized for: existence checks
 
 ```javascript
-if (both(a).and(b).test())
+if (both(a).and(b))
+if (both.chain(a).is.false().and(b).contains('bar').test())
 ```
 
 #### AllOf
@@ -162,7 +168,8 @@ if (both(a).and(b).test())
 Begins a chain where all conditions should be true. Incidentally, it only makes sense to use this with more than two conditions. With two conditions only, use `both`.
 
 Chainable methods: `and`<br>
-Chain limit: none
+Chain limit: none<br>
+Chaining is on by default and cannot be turned off since any number of `and`'s can be used
 
 ```javascript
 if (allOf(a).and(b).and(c).test())
@@ -173,7 +180,8 @@ if (allOf(a).and(b).and(c).test())
 Begins a chain where at least one condition should be true.
 
 Chainable methods: `and`<br>
-Chain limit: none
+Chain limit: none<br>
+Chaining is on by default and cannot be turned off since any number of `and`'s can be used
 
 ```javascript
 if (anyOf(a).and(b).and(c).test())
@@ -184,7 +192,8 @@ if (anyOf(a).and(b).and(c).test())
 Begins a chain where exactly one condition should be true.
 
 Chainable methods: `and`<br>
-Chain limit: none
+Chain limit: none<br>
+Chaining is on by default and cannot be turned off since any number of `and`'s can be used
 
 ```javascript
 if (oneOf(a).and(b).and(c).test())
@@ -195,7 +204,8 @@ if (oneOf(a).and(b).and(c).test())
 Begins a chain where all of the conditions should be false. With only two conditions, use `neither` instead.
 
 Chainable methods: `and`<br>
-Chain limit: none
+Chain limit: none<br>
+Chaining is on by default and cannot be turned off since any number of `and`'s can be used
 
 ```javascript
 if (noneOf(a).and(b).and(c).test())
@@ -206,15 +216,16 @@ if (noneOf(a).and(b).and(c).test())
 `nOf` is the only helper that deviates from the standard structure. It accepts a number, and then any number of conditions, of which _exactly_ that number must be true.
 
 Chainable methods: `and`<br>
-Chain limit: none
+Chain limit: none<br>
+Chaining is on by default and cannot be turned off since any number of `and`'s can be used
 
 ```javascript
-if (n(2).of(a).and(b).and(c)test())
+if (n(2).of(a).and(b).and(c).test())
 ```
 
 #### Expect
 
-`expect` is useful for using Indeed as an assertion framework. It has (roughly) the same interface as `indeed`, but sounds more test-ish. It also includes some additional comparitors and helpers (see [Matching](#matching) for more information).
+Expect is identical to indeed and has all it's additional properties. It adds only a couple things: a `throws` comparison function (detailed below) for asserting that a function throws an exception, a `with` function for passing args to a function that should throw, and `assert`, which is the same as `test` but sounds more test-ish.
 
 ## Grouping
 
