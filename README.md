@@ -89,7 +89,7 @@ indeed(a).is.true()
 indeed.chain(a).is.true() // .and(b).is.false().test()
 ```
 
-When chaining, use `.test()`, `.val()`, or `.eval()` to terminate the chain and evaluate the total result of the expression. Non-chaining is optimized for [comparisons](#comparisons), so `indeed(a).is.defined()` will return `true` or `false` whereas `indeed(a)` by itself, will not. To assert on the definedness of a single thing, 1) chain: `if (indeed.chain(a).test())`, 2) use `defined()`: `if (indeed(a).is.defined())`, 3) use regular booleans: `if (a)`. Calling one of the chain methods without calling a comparison will automatically turn on chaining, so that you can say `if (indeed(a).and(b).and(c).test())` rather than `if (indeed.chain(a).and(b).and(c).test())`.
+When chaining, use `.test()`, `.val()`, or `.eval()` to terminate the chain and evaluate the total result of the expression. Non-chaining is optimized for [comparisons](#matching), so `indeed(a).is.defined()` will return `true` or `false` whereas `indeed(a)` by itself, will not. To assert on the definedness of a single thing, 1) chain: `if (indeed.chain(a).test())`, 2) use `defined()`: `if (indeed(a).is.defined())`, 3) use regular booleans: `if (a)`. Calling one of the chain methods without calling a comparison will automatically turn on chaining, so that you can say `if (indeed(a).and(b).and(c).test())` rather than `if (indeed.chain(a).and(b).and(c).test())`.
 
 `indeed` is also equipped with some negation tools: `not` and `Not`. `not` simply negates the first condition:
 
@@ -121,8 +121,6 @@ These too can be chained:
 if (indeed.not.chain(a).and(b).test())
 if (indeed.Not.chain(a).or(b).test())
 ```
-
-Indeed (and all the chain starters) also has the chainable properties `does`, `should`, `has`, `have`, `is`, `to`, `be`, and `been`. In addition, `indeed` has `andDoes`, `andShould`, `andHas`, `andHave`, `andIs`, `andTo`, and `andBe`.
 
 #### Either
 
@@ -245,157 +243,184 @@ The first example evaluates `a || b` first and then the result of that with `&& 
 
 ```javascript
 // just like indeed
-if (indeed(a).or(b).And.also(c).test()) { }
+if (indeed(a).or(b).And.also(c).test())
 
 // also just like indeed
-if (indeed(a).and(b).Or.else(c).test()) { }
+if (indeed(a).and(b).Or.else(c).test())
 
 // just like indeed, but negated
-if (indeed(a).and(b).But.not.also(c).test()) { }
+if (indeed(a).and(b).But.not.also(c).test())
 
 // just like indeed, but negates the entire next group
-if (indeed(a).and(b).But.Not.also(c).or(d).test()) { }
+if (indeed(a).and(b).But.Not.also(c).or(d).test())
 ```
 
 Additionally, all of the entry points are chainable after a Grouping property:
 
 ```javascript
-if (indeed(a).or(b).But.neither(c).nor(d).test()) { }
+if (indeed(a).or(b).But.neither(c).nor(d).test())
 ```
 
 ## Matching
 
-All the examples so far have been simple checks for definedness (for simplicify), but `indeed` has a wide variety of comparison functions as well.
-
-#### Is
-
-Literal comparison (i.e. reference equality).
-
-```javascript
-if (indeed(a).is('foo').test())
-```
+All the examples so far have been simple checks for definedness (for simplicity), but `indeed` has a wide variety of comparison functions as well. All of the chain starters also have the chainable properties `does`, `should`, `has`, `have`, `is`, `to`, `be`, `been`, `deep`, `deeply`, `not`, `Not`, `noCase`, and `caseless`. In addition, `indeed` and `expect` have `andDoes`, `andShould`, `andHas`, `andHave`, `andIs`, `andTo`, and `andBe` which let you use multiple comparisons on the same object (chaining must be turned on). Most of these simply allow chaining with natural language. However, `deep` and `deeply` turn on deep object comparison when using `equal` (below), `not` and `Not` negate the comparison, and `caseless` and `noCase` turn on case insensitivity (for `equal`, `contains`, `key`, `keys`, `value`, and `values`).
 
 #### Equals
 
-Non-reference equality. This delegates to _.isEqual.
+Compares objects using `_.isEqual` when `deep` is applied and using `===` when it's not.
 
 ```javascript
-if (indeed(a).equals(b).test())
+if (indeed(1).equals(1))
+if (indeed({foo: { bar: 'baz'}}).deeply.equals({foo: { bar: 'baz'}})
 ```
 
-#### IsA
+Aliases: `equal`, `eql`
 
-For type comparisons. This is more strict that `typeof` however. It checks for constructor.name (allowing custom types) and, failing, that uses typeof. It is worth noting that both the type and comparison are lower cased, so 'string', 'String', 'strIng', etc. are all equivalent.
+#### Matches
+
+Checks whether a string matches the given regular expression. If given a string, it will convert it to a RegExp object.
 
 ```javascript
-if (indeed(a).isA('string').test())
+if (indeed('foobar').matches(/oba/)) // or .matches('oba')
 ```
 
-#### IsAn
+Aliases: `match`
+
+#### A
+
+For type comparisons. This is more strict that `typeof` however. It checks for constructor.name (allowing custom types) and, failing that, uses typeof. It is worth noting that both the type and comparison are lower cased, so 'string', 'String', 'strIng', etc. are all equivalent.
+
+```javascript
+if (indeed('hello').is.a('string'))
+```
+
+#### An
 
 Just like isA but preferable (for me anyway) for types beginning with vowels.
+
+```javascript
+if (indeed([1, 2, 3]).is.an('array'))
+```
 
 #### Contains
 
 Indicates if the string or array contains the given value.
 
 ```javascript
-if (indeed('foo bar').contains('foo').test()) {}
-if (indeed([1,2,3]).contains(1).test()) {}
+if (indeed('foo bar').contains('foo'))
+if (indeed([1,2,3]).contains(1))
 ```
 
-#### ContainsKey
+Aliases: `contain`, `indexOf`
+
+#### Key
 
 Indicates if the object (or array, though somewhat by accident) contains the given key.
 
 ```javascript
-if (indeed({foo: 'bar'}).containsKey('foo').test())
+if (indeed({foo: 'bar'}).has.key('foo'))
 ```
 
-#### ContainsValue
+Aliases: `containsKey`, `containKey`, `property`
+
+#### Keys
+
+Like `.key` but for multiple keys. Keys can be passed as an array or multiple strings.
+
+```javascript
+if (indeed({foo: 'bar', baz: 'quux'}).keys('foo', 'baz')
+if (indeed({foo: 'bar', baz: 'quux'}).keys(['foo', 'baz']))
+```
+
+Aliases: `containKeys`, `keys`, `properties`
+
+#### Value
 
 Indicates if the object (or array) contains the given value.
 
 ```javascript
-if (indeed({foo: 'bar'}).containsValue('bar').test())
+if (indeed({foo: 'bar'}).has.value('bar'))
 ```
 
-#### IsDefined
+Aliases: `containsValue`, `containValue`
+
+#### Values
+
+Like `.value` but for multiple values. Values can be passed as an array or multiple strings.
+
+```javascript
+if (indeed({foo: 'bar', baz: 'quux'}).has.values('bar', 'quux'))
+if (indeed({foo: 'bar', baz: 'quux'}).has.values(['bar', 'quux']))
+```
+
+Aliases: `containsValues`, `containValues`
+
+#### Defined
 
 Returns true for everthing except undefined. A little cleaner looking than `if (typeof thing !== 'undefined')`, though that's exactly what it does under the hood.
 
 ```javascript
-if (indeed('string').isDefined().test())
+if (indeed('string').is.defined())
+if (indeed(undefined).is.not.defined())
 ```
 
-#### IsUndefined
-
-Again, just a useful shortcut for `typeof thing === 'undefined'`, especially when `0` or even `false` is a valid value, making `if (thing)` impossible.
-
-```javascript
-if (indeed(undefined).isUndefined().test())
-```
-
-#### IsNull
+#### Null
 
 Returns true for null and false for everything else.
 
 ```javascript
-if (indeed(null).isNull().test())
+if (indeed(null).is.null())
+if (indeed('string').is.not.null())
 ```
 
-#### IsNotNull
-
-Opposite of `isNull`.
-
-```javascript
-if (indeed([1,2]).isNotNull().test())
-```
-
-#### IsTrue
+#### True
 
 Not to be confused with truthiness, this checks for the literal value `true`.
 
 ```javascript
-if (indeed(true).isTrue().test())
+if (indeed(true).is.true())
 ```
 
-#### IsFalse
+#### False
 
 Checks for the literal value `false`.
 
 ```javascript
-if (indeed(false).isFalse().test())
+if (indeed(false).is.false())
 ```
 
-#### IsGreaterThan / IsGt
+#### GreaterThan
 
 Compares two numbers
 
 ```javascript
-if (indeed(1).isGreaterThan(0).test())
-if (indeed(1).isGt(0).test())
+if (indeed(1).is.greaterThan(0))
 ```
 
-#### IsLessThan / IsLt
+Aliases: `gt`, `above`
+
+#### LessThan
 ```javascript
-if (indeed(1).isLessThan(2).test())
-if (indeed(1).isLt(2).test())
+if (indeed(1).is.lessThan(2))
 ```
 
-#### IsGreaterThanOrEqualTo / IsGte
+Aliases: `lt`, `below`
 
-```javascript
-if (indeed(1).isGreaterThanOrEqualTo(1).test())
-if (indeed(1).isGte(0).test())
-```
-
-#### IsLessThanOrEqualTo / IsLte
+#### GreaterThanOrEqualTo
 
 ```javascript
-if (indeed(1).isLessThanOrEqualTo(1).test())
-if (indeed(1).isLte(2).test())
+if (indeed(1).is.greaterThanOrEqualTo(1))
 ```
+
+Aliases: `gte`
+
+#### LessThanOrEqualTo
+
+```javascript
+if (indeed(1).is.lessThanOrEqualTo(1))
+```
+
+Aliases: `lte`
 
 ## Mixin
 
@@ -416,11 +441,19 @@ indeed.mixin({
 });
 ```
 
-The custom functions should be in this form, where `condition` is the thing to match against and `val` is the original object (which seems a little backwards, since val is "inside"). These methods,for example, would be called like this:
+The custom functions should be in this form, where `condition` is the thing to match against and `val` is the original object (which seems a little backwards, since val is "inside"). These methods, for example, would be called like this:
 
 ```javascript
 if (indeed({ foo: function() {} }).can('foo').test())
 if (indeed('hello').beginsWith('h').test())
+```
+
+#### Tap
+
+Executes a provided function, passing it `this`.
+
+```javascript
+if (indeed(a).and(b).tap(console.log).or(c))
 ```
 
 ## As an Assertion Library
@@ -434,43 +467,39 @@ I didn't write `indeed` to be an assertion library, but when I discovered that m
 ```coffee
 Given -> @thing = 'foo'
 When -> @subject.doSomethingNeat(@thing)
-Then -> expect(@thing).to.be('foo bar').assert()
-```
-
-#### Properties
-
-`expect` has extra properties for chaining purposes: `to`, `have`, and `been`.
-
-```javascript
-expect(a).to.equal(b).assert()
-expect(a).to.have.property('thing').assert()
-expect(a).to.have.been.calledWith('foo')
+Then -> expect(@thing).to.equal('foo bar')
 ```
 
 #### Assert
 
-`assert` is an alias to `eval`, `val`, and `test`. Once again, it's only purpose is to convey testing semantics.
+`assert` is an alias to `eval`, `val`, and `test`. Once again, it's only purpose is to convey testing semantics. This only needs to be called when chaining multiple conditions.
 
-#### Throw/Throws
+```coffee
+Then -> expect.chain('foo').to.be.a('string').and.to.match(/o$/).and(['bar']).to.contain('bar').assert()
+```
 
-Returns true if the passed function reference throws an error. An optional string, regex, error, or function can be passed for more refined assertion:
+#### Throw
+
+Returns true if the passed function throws an error. An optional string, regex, error, or function can be passed for more refined assertions:
 
 ```javascript
-expect(fn).to.throw().assert();
-expect(fn).to.throw('Inconceivable!').assert();
-expect(fn).to.throw(new Error('Mischief is afoot')).assert();
-expect(fn).to.throw(/timeout/).assert();
+expect(fn).to.throw();
+expect(fn).to.throw('Inconceivable!');
+expect(fn).to.throw(new Error('Mischief is afoot'));
+expect(fn).to.throw(/timeout/);
 expect(fn).to.throw(function(e) {
   return ~e.message.indexOf('!');
-}).assert();
+});
 ```
+
+Aliases: `throws`
 
 #### With
 
 Assign parameters to pass to the invocation of a method to assert with throw:
 
 ```javascript
-expect(fn).with('foo', 'bar').to.throw('FOO BAR').assert();
+expect(fn).with('foo', 'bar').to.throw('FOO BAR'); // Passes 'foo' and 'bar' to fn when it's called
 ```
 
 Indeed will work well with [mocha-given](https://github.com/rendro/mocha-given) or [jasmine-given](https://github.com/searls/jasmine-given), but it isn't a _full_ assertion library to be used in every project since it doesn't throw AssertionErrors or accept or generate messages (at least for now - perhaps in the next version I will get more abmitious). But because `Then -> true` is a passing test in Given style testing, it works well in that limited capacity.

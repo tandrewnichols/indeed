@@ -39,6 +39,7 @@ describe 'indeed', ->
       groupNot: true
       chain: true
       deep: false
+      noCase: false
 
   it 'should allow and, andNot, or, orNot, and butNot', ->
     expect((->
