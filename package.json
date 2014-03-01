@@ -1,7 +1,7 @@
 {
   "name": "indeed",
   "description": "Boolean helpers for node.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Andrew Nichols <tandrewnichols@gmail.com>",
   "repository": {
     "type": "git",
@@ -23,7 +23,12 @@
     "chai": "1.9.0",
     "sinon": "*"
   },
-  "keywords": ["boolean", "if", "else", "helpers"],
+  "keywords": [
+    "boolean",
+    "if",
+    "else",
+    "helpers"
+  ],
   "main": "./lib",
   "engines": {
     "node": ">=0.8.0"
