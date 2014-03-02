@@ -7,7 +7,7 @@ sinon = require('sinon')
 describe 'expect', ->
 
   describe '#new', ->
-    context 'with a spy', ->
+    context.only 'with a spy', ->
       it 'should extend expect when called with a spy', ->
         spy = sinon.spy()
         spy('foo')
@@ -18,6 +18,12 @@ describe 'expect', ->
         stub = sinon.stub()
         stub('foo')
         expect(xpect(stub).to.have.been.calledWith('foo')).to.be.true
+
+      it 'should not blow up when called with undefined', ->
+        expect(xpect(undefined).calledWith).to.not.be.defined
+
+      it 'should not blow up when called with null', ->
+        expect(xpect(null).calledWith).to.not.be.defined
 
   describe '#throws', ->
     context 'with no args', ->
