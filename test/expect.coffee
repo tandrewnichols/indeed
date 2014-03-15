@@ -7,7 +7,7 @@ sinon = require('sinon')
 describe 'expect', ->
 
   describe '#new', ->
-    context.only 'with a spy', ->
+    context 'with a spy', ->
       it 'should extend expect when called with a spy', ->
         spy = sinon.spy()
         spy('foo')
