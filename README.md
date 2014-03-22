@@ -502,4 +502,17 @@ Assign parameters to pass to the invocation of a method to assert with throw:
 expect(fn).with('foo', 'bar').to.throw('FOO BAR'); // Passes 'foo' and 'bar' to fn when it's called
 ```
 
+
+#### Spies
+
+`expect` also checks it's parameter to see if it's a sinon spy or stub, and if it is, it extends itself with the spy, letting you call sinon methods (which are sometimes awkward) in more natural English. For example:
+
+```javascript
+var spy = sinon.spy()
+// ... test things with the spy
+expect(spy).to.have.been.called // Doesn't this feel more natural than 'spy.called'
+```
+
+#### When to use indeed for asserting
+
 Indeed will work well with [mocha-given](https://github.com/rendro/mocha-given) or [jasmine-given](https://github.com/searls/jasmine-given), but it isn't a _full_ assertion library to be used in every project since it doesn't throw AssertionErrors or accept or generate messages (at least for now - perhaps in the next version I will get more abmitious). But because `Then -> true` is a passing test in Given style testing, it works well in that limited capacity.
