@@ -443,6 +443,148 @@ describe 'base', ->
     it 'should be false for non-booleans', ->
       expect(base.is.false().current[0].val).to.be.false
 
+  describe '#truthy', ->
+    it 'should be true for true', ->
+      base.current = [
+        val: true
+        actual: true
+      ]
+      expect(base.is.truthy().current[0].val).to.be.true
+
+    it 'should be true for 1', ->
+      base.current = [
+        val: 1
+        actual: 1
+      ]
+      expect(base.is.truthy().current[0].val).to.be.true
+
+    it 'should be true for []', ->
+      base.current = [
+        val: []
+        actual: []
+      ]
+      expect(base.is.truthy().current[0].val).to.be.true
+
+    it 'should be true for a string', ->
+      base.current = [
+        val: 'foo'
+        actual: 'foo'
+      ]
+      expect(base.is.truthy().current[0].val).to.be.true
+
+    it 'should be true for {}', ->
+      base.current = [
+        val: {}
+        actual: {}
+      ]
+      expect(base.is.truthy().current[0].val).to.be.true
+
+    it 'should be false for false', ->
+      base.current = [
+        val: false
+        actual: false
+      ]
+      expect(base.is.truthy().current[0].val).to.be.false
+
+    it 'should be false for 0', ->
+      base.current = [
+        val: 0
+        actual: 0
+      ]
+      expect(base.is.truthy().current[0].val).to.be.false
+
+    it 'should be false for empty string', ->
+      base.current = [
+        val: ''
+        actual: ''
+      ]
+      expect(base.is.truthy().current[0].val).to.be.false
+
+    it 'should be false for undefined', ->
+      base.current = [
+        val: undefined
+        actual: undefined
+      ]
+      expect(base.is.truthy().current[0].val).to.be.false
+
+    it 'should be false for null', ->
+      base.current = [
+        val: null
+        actual: null
+      ]
+      expect(base.is.truthy().current[0].val).to.be.false
+
+  describe '#falsy', ->
+    it 'should be false for true', ->
+      base.current = [
+        val: true
+        actual: true
+      ]
+      expect(base.is.falsy().current[0].val).to.be.false
+
+    it 'should be false for 1', ->
+      base.current = [
+        val: 1
+        actual: 1
+      ]
+      expect(base.is.falsy().current[0].val).to.be.false
+
+    it 'should be false for []', ->
+      base.current = [
+        val: []
+        actual: []
+      ]
+      expect(base.is.falsy().current[0].val).to.be.false
+
+    it 'should be false for a string', ->
+      base.current = [
+        val: 'foo'
+        actual: 'foo'
+      ]
+      expect(base.is.falsy().current[0].val).to.be.false
+
+    it 'should be false for {}', ->
+      base.current = [
+        val: {}
+        actual: {}
+      ]
+      expect(base.is.falsy().current[0].val).to.be.false
+
+    it 'should be true for false', ->
+      base.current = [
+        val: false
+        actual: false
+      ]
+      expect(base.is.falsy().current[0].val).to.be.true
+
+    it 'should be true for 0', ->
+      base.current = [
+        val: 0
+        actual: 0
+      ]
+      expect(base.is.falsy().current[0].val).to.be.true
+
+    it 'should be true for empty string', ->
+      base.current = [
+        val: ''
+        actual: ''
+      ]
+      expect(base.is.falsy().current[0].val).to.be.true
+
+    it 'should be true for undefined', ->
+      base.current = [
+        val: undefined
+        actual: undefined
+      ]
+      expect(base.is.falsy().current[0].val).to.be.true
+
+    it 'should be true for null', ->
+      base.current = [
+        val: null
+        actual: null
+      ]
+      expect(base.is.falsy().current[0].val).to.be.true
+
   describe '#greaterThan', ->
     it 'should be true for bigger numbers', ->
       base.current = [
