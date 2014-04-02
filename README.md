@@ -389,6 +389,22 @@ Checks for the literal value `false`.
 if (indeed(false).is.false())
 ```
 
+#### Truthy
+
+Checks for truthiness.
+
+```javascript
+if (indeed(1).is.truthy())
+```
+
+#### Falsy
+
+Checks for falsiness.
+
+```javascript
+if (indeed(0).is.falsy())
+```
+
 #### GreaterThan
 
 Compares two numbers
