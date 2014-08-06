@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tandrewnichols/indeed.png)](https://travis-ci.org/tandrewnichols/indeed) [![downloads](http://img.shields.io/npm/dm/indeed.svg)](https://npmjs.org/package/indeed) [![npm](http://img.shields.io/npm/v/indeed.svg)](https://npmjs.org/package/indeed)
+[![Build Status](https://travis-ci.org/tandrewnichols/indeed.png)](https://travis-ci.org/tandrewnichols/indeed) [![downloads](http://img.shields.io/npm/dm/indeed.svg)](https://npmjs.org/package/indeed) [![npm](http://img.shields.io/npm/v/indeed.svg)](https://npmjs.org/package/indeed) [![Code Climate](https://codeclimate.com/github/tandrewnichols/indeed/badges/gpa.svg)](https://codeclimate.com/github/tandrewnichols/indeed)
 
 # Indeed
 
