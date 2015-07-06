@@ -1,6 +1,6 @@
 expect = require('chai').expect
 indeed = require('./../lib/indeed')
-_ = require('underscore')
+_ = require('lodash')
 
 describe 'indeed', ->
   it 'should return a function', ->
