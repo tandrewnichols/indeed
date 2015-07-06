@@ -22,9 +22,9 @@ AllOf.prototype.and = function(condition) {
 };
 
 AllOf.prototype.test = function () {
-  return _.chain(this.current).pluck('val').every(function(cond) {
+  return _(this.current).pluck('val').every(function(cond) {
     return !!cond;
-  }).value();
+  });
 };
 
 module.exports = allOf;
@@ -101,9 +101,9 @@ AnyOf.prototype.and = function(condition) {
 };
 
 AnyOf.prototype.test = function() {
-  return _.chain(this.current).pluck('val').any(function(cond) {
+  return _(this.current).pluck('val').any(function(cond) {
     return !!cond;
-  }).value();
+  });
 };
 
 module.exports = anyOf;
@@ -125,17 +125,17 @@ var Base = function Base(condition, negate) {
     negate: negate,
     actual: condition
   }];
-  _(['And', 'But', 'Or', 'Xor']).each(function(joiner) {
+  _.each(['And', 'But', 'Or', 'Xor'], function(joiner) {
     self.__defineGetter__(joiner, function() {
       return utils.delegate(self.test(), joiner.toLowerCase());
     });
   });
-  _(['does', 'should', 'has', 'have', 'is', 'to', 'be', 'been']).each(function(getter) {
+  _.each(['does', 'should', 'has', 'have', 'is', 'to', 'be', 'been'], function(getter) {
     self.__defineGetter__(getter, function() {
       return self;
     });
   });
-  _(['deep', 'deeply']).each(function(getter) {
+  _.each(['deep', 'deeply'], function(getter) {
     self.__defineGetter__(getter, function() {
       self.flags.deep = true;
       return self;
@@ -149,7 +149,7 @@ var Base = function Base(condition, negate) {
     self.flags.groupNot = true;
     return this;
   });
-  _(['noCase', 'caseless']).each(function(getter) {
+  _.each(['noCase', 'caseless'], function(getter) {
     self.__defineGetter__(getter, function() {
       self.flags.noCase = true;
       return self;
@@ -175,12 +175,12 @@ Base.prototype.equals = Base.prototype.equal = Base.prototype.eql = function(con
   var self = this,
       cond, v;
   return this._compare(function(val) {
-    if (self.flags.noCase && _(val).isString()) {
+    if (self.flags.noCase && _.isString(val)) {
       cond = condition.toLowerCase();
       v = val.toLowerCase();
     }
     if (self.flags.deep) {
-      return _(( v || val )).isEqual(( cond || condition ));
+      return _.isEqual(( v || val ), ( cond || condition ));
     } else {
       return (v || val) === (cond || condition);
     }
@@ -211,7 +211,7 @@ Base.prototype.contains = Base.prototype.contain = Base.prototype.indexOf = func
   var self = this,
       cond, v;
   return this._compare(function(val) {
-    if (self.flags.noCase && _(val).isString()) {
+    if (self.flags.noCase && _.isString(val)) {
       cond = condition.toLowerCase();
       v = val.toLowerCase();
     }
@@ -226,12 +226,12 @@ Base.prototype.contains = Base.prototype.contain = Base.prototype.indexOf = func
 Base.prototype.containsKey = Base.prototype.containKey = Base.prototype.key = Base.prototype.property = function(condition) {
   var self = this;
   return this._compare(function(val) {
-    if (_(val).isObject()) {
+    if (_.isObject(val)) {
       if (self.flags.noCase) {
         var c = condition.toLowerCase();
-        return _.chain(val).keys().any(function(k) {
+        return _(val).keys().any(function(k) {
           return k.toLowerCase() === c;
-        }).value();
+        });
       } else {
         return condition in val;
       }
@@ -242,19 +242,19 @@ Base.prototype.containsKey = Base.prototype.containKey = Base.prototype.key = Ba
 };
 
 Base.prototype.containsKeys = Base.prototype.containKeys = Base.prototype.keys = Base.prototype.properties = function() {
-  var args = _(arguments[0]).isArray() ? arguments[0] : [].slice.call(arguments);
+  var args = _.isArray(arguments[0]) ? arguments[0] : [].slice.call(arguments);
   var self = this;
   return this._compare(function(val) {
-    if (_(val).isObject()) {
+    if (_.isObject(val)) {
       if (self.flags.noCase) {
-        return _(args).every(function(condition) {
+        return _.every(args, function(condition) {
           var c = condition.toLowerCase();
-          return _.chain(val).keys().any(function(k) {
+          return _(val).keys().any(function(k) {
             return k.toLowerCase() === c;
           });
         });
       } else {
-        return _(args).every(function(condition) {
+        return _.every(args, function(condition) {
           return condition in val;
         });
       }
@@ -268,14 +268,14 @@ Base.prototype.containsKeys = Base.prototype.containKeys = Base.prototype.keys =
 Base.prototype.containsValue = Base.prototype.containValue = Base.prototype.value = function(condition) {
   var self = this;
   return this._compare(function(val) {
-    if (_(val).isObject()) {
+    if (_.isObject(val)) {
       if (self.flags.noCase) {
         var c = condition.toLowerCase();
-        return _.chain(val).values().any(function(v) {
+        return _(val).values().any(function(v) {
           return v.toLowerCase() === c;
         });
       } else {
-        return _.chain(val).values().contains(condition).value();
+        return _(val).values().contains(condition);
       }
     } else {
       return false;
@@ -284,20 +284,20 @@ Base.prototype.containsValue = Base.prototype.containValue = Base.prototype.valu
 };
 
 Base.prototype.containsValues = Base.prototype.containValues = Base.prototype.values = function() {
-  var args = _(arguments[0]).isArray() ? arguments[0] : [].slice.call(arguments);
+  var args = _.isArray(arguments[0]) ? arguments[0] : [].slice.call(arguments);
   var self = this;
   return this._compare(function(val) {
-    if (_(val).isObject()) {
+    if (_.isObject(val)) {
       if (self.flags.noCase) {
-        return _(args).every(function(condition) {
+        return _.every(args, function(condition) {
           var c = condition.toLowerCase();
-          return _.chain(val).values().any(function(v) {
+          return _(val).values().any(function(v) {
             return v.toLowerCase() === c;
           });
         });
       } else {
-        return _(args).every(function(condition) {
-          return ~_(val).values().indexOf(condition);
+        return _.every(args, function(condition) {
+          return ~_.values(val).indexOf(condition);
         });
       }
     } else {
@@ -344,25 +344,25 @@ Base.prototype.falsy = function() {
 
 Base.prototype.greaterThan = Base.prototype.gt = Base.prototype.above = function(condition) {
   return this._compare(function(val) {
-    return _(val).isNumber() && val > condition;
+    return _.isNumber(val) && val > condition;
   });
 };
 
 Base.prototype.lessThan = Base.prototype.lt = Base.prototype.below = function(condition) {
   return this._compare(function(val) {
-    return _(val).isNumber() && val < condition;
+    return _.isNumber(val) && val < condition;
   });
 };
 
 Base.prototype.greaterThanOrEqualTo = Base.prototype.gte = function(condition) {
   return this._compare(function(val) {
-    return _(val).isNumber() && val >= condition;
+    return _.isNumber(val) && val >= condition;
   });
 };
 
 Base.prototype.lessThanOrEqualTo = Base.prototype.lte = function(condition) {
   return this._compare(function(val) {
-    return _(val).isNumber() && val <= condition;
+    return _.isNumber(val) && val <= condition;
   });
 };
 
@@ -500,7 +500,7 @@ var Expect = expect.Expect = function Expect (condition) {
 
   // Duck-typing: condition is a sinon spy
   if (condition && condition.displayName && condition.args && condition.calledWith) {
-    _(this).extend(condition);
+    _.extend(this, condition);
   }
 };
 
@@ -523,7 +523,7 @@ Expect.prototype.throws = function (condition) {
         if (condition) {
           switch (condition.constructor.name) {
             case 'Error':
-              return _(err).isEqual(condition);
+              return _.isEqual(err, condition);
             case 'String':
               return err.message === condition;
             case 'RegExp':
@@ -604,12 +604,12 @@ indeed.Not.chain = function(condition) {
 };
 
 indeed.mixin = function(obj) {
-  _.chain(obj).keys().each(function(key) {
+  _(obj).keys().each(function(key) {
     var fn = function(condition) {
       return this._compare(obj[key](condition), key);
     };
     Base.prototype[key] = fn;
-  });
+  }).value();
 };
 
 var Indeed = indeed.Indeed = function Indeed () {
@@ -638,7 +638,7 @@ var Indeed = indeed.Indeed = function Indeed () {
     this.calls = [];
     return this;
   });
-  _(['andDoes', 'andShould', 'andHas', 'andHave', 'andIs', 'andTo', 'andBe']).each(function(getter) {
+  _.each(['andDoes', 'andShould', 'andHas', 'andHave', 'andIs', 'andTo', 'andBe'], function(getter) {
     self.__defineGetter__(getter, function() {
       return self;
     });
@@ -655,7 +655,7 @@ Indeed.prototype.test = function(currentOnly) {
     val = !!((last.val ^ last.negate) ^ this.flags.groupNot);
   }
   if (this.previous.length && !currentOnly) {
-    var method = _(this.previous).last().join;
+    var method = _.last(this.previous).join;
     var result = this._getPrevious(this.previous, this.previous.pop());
     return _[method](result, val);
   } else {
@@ -665,7 +665,7 @@ Indeed.prototype.test = function(currentOnly) {
 
 Indeed.prototype._getPrevious = function(list, item) {
   if (list.length) {
-    var method = _(list).last().join;
+    var method = _.last(list).join;
     var result = this._getPrevious(list, list.pop());
     return !!(_[method](result, item.val) ^ item.negate);
   } else {
@@ -685,9 +685,9 @@ Indeed.prototype._getCurrent = function(list, item) {
 Indeed.prototype._chain = function(name, condition, join, negate) {
   var calls = this.calls;
   var allow = allowed[(calls[0] || name)];
-  var ok = _.chain([calls, name]).flatten().all(function(c) {
-    return _.chain([allow.list, (calls[0] || name)]).flatten().contains(c).value();
-  }).value();
+  var ok = _([calls, name]).flatten().all(function(c) {
+    return _([allow.list, (calls[0] || name)]).flatten().contains(c);
+  });
   if (!ok || (allow.list.length === 1 && calls.length === 2 && !allow.chain) || (calls.length === 1 && calls[0] === name)) {
     var display = (allow.list.length === 1 && calls.length === 2 && !allow.chain) ? calls[0] + '/' + calls[1] : calls[0];
     throw new Error('IllegalMethodException: ' + name + ' cannot be chained with ' + display);
@@ -769,13 +769,13 @@ Indeed.prototype.both = function(condition) {
 
 Indeed.prototype.allOf = function(condition) {
   return this._rewrite('allOf', condition, function(conditions) {
-    return _(conditions).all();
+    return _.all(conditions);
   });
 };
 
 Indeed.prototype.oneOf = function(condition) {
   return this._rewrite('oneOf', condition, function(conditions) {
-    return _(conditions).countBy(function(cond) {
+    return _.countBy(conditions, function(cond) {
       return !!cond ? 'true' : 'false';
     })['true'] === 1; 
   });
@@ -783,13 +783,13 @@ Indeed.prototype.oneOf = function(condition) {
 
 Indeed.prototype.anyOf = function(condition) {
   return this._rewrite('anyOf', condition, function(conditions) {
-    return _(conditions).any();
+    return _.any(conditions);
   });
 };
 
 Indeed.prototype.noneOf = function(condition) {
   return this._rewrite('noneOf', condition, function(conditions) {
-    return _(conditions).all(function(c) {
+    return _.all(conditions, function(c) {
       return !c;
     });
   });
@@ -883,7 +883,7 @@ NOf.prototype.and = function(condition) {
 };
 
 NOf.prototype.test = function() {
-  return _.chain(this.current).pluck('val').countBy(function(cond) {
+  return _(this.current).pluck('val').countBy(function(cond) {
     return !!cond ? 'true' : 'false';
   }).value()['true'] === this.count;
 };
@@ -957,9 +957,9 @@ NoneOf.prototype.and = function(condition) {
 };
 
 NoneOf.prototype.test = function() {
-  return _.chain(this.current).pluck('val').every(function(cond) {
+  return _(this.current).pluck('val').every(function(cond) {
     return !cond;
-  }).value();
+  });
 };
 
 module.exports = noneOf;
@@ -988,7 +988,7 @@ OneOf.prototype.and = function(condition) {
 };
 
 OneOf.prototype.test = function() {
-  return _.chain(this.current).pluck('val').countBy(function(cond) {
+  return _(this.current).pluck('val').countBy(function(cond) {
     return !!cond ? 'true': 'false';
   }).value()['true'] === 1;
 };

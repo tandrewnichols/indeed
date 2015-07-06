@@ -2,7 +2,6 @@ module.exports = {
   browser: {
     src: [
       'dist/indeed.js',
-      'test/helpers/setup.js',
       'node_modules/chai/chai.js',
       'test/*.coffee'
     ],

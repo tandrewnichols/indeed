@@ -282,7 +282,7 @@ describe 'indeed', ->
       expect(result.previous[0]).to.eql
         val: false
         join: 'and'
-      expect(_(result.current).last().val).to.be.true
+      expect(_.last(result.current).val).to.be.true
       expect(result.test()).to.be.false
 
     it 'should work with multiple conditions', ->
@@ -297,10 +297,10 @@ describe 'indeed', ->
       expect(result.previous[2]).to.eql
         val: true
         join: 'and'
-      last = _(result.current).last()
+      last = _.last(result.current)
       expect(last.val).to.be.false
       expect(last.negate).to.be.true
-      first = _(result.current).first()
+      first = _.first(result.current)
       expect(first.val).to.be.true
       expect(result.test()).to.be.true
 
@@ -311,9 +311,9 @@ describe 'indeed', ->
       expect(result.previous[0]).to.eql
         val: false
         join: 'and'
-      first = _(result.current).first()
+      first = _.first(result.current)
       expect(first.val).to.be.true
-      last = _(result.current).last()
+      last = _.last(result.current)
       expect(last.val).to.be.true
       expect(result.test()).to.be.false
 
@@ -329,8 +329,8 @@ describe 'indeed', ->
       expect(result.previous[2]).to.eql
         val: true
         join: 'and'
-      expect(_(result.current).first().val).to.be.true
-      last = _(result.current).last()
+      expect(_.first(result.current).val).to.be.true
+      last = _.last(result.current)
       expect(last.val).to.be.false
       expect(last.negate).to.be.true
       expect(result.test()).to.be.true
@@ -342,15 +342,15 @@ describe 'indeed', ->
       expect(result.previous[0]).to.eql
         val: false
         join: 'or'
-      expect(_(result.current).first().val).to.be.true
-      expect(_(result.current).last().val).to.be.true
+      expect(_.first(result.current).val).to.be.true
+      expect(_.last(result.current).val).to.be.true
       expect(result.test()).to.be.true
 
   describe '#Not', ->
     it 'should negate a set', ->
       result = indeed(true).and(true).And.Not.also(true).and(false)
-      expect(_(result.current).first().val).to.be.true
-      expect(_(result.current).last().val).to.be.false
+      expect(_.first(result.current).val).to.be.true
+      expect(_.last(result.current).val).to.be.false
       expect(result.previous[0]).to.eql
         val: true
         join: 'and'
@@ -359,8 +359,8 @@ describe 'indeed', ->
 
     it 'should negate an or', ->
       result = indeed(true).and(false).Or.Not.also(true).and(false)
-      expect(_(result.current).first().val).to.be.true
-      expect(_(result.current).last().val).to.be.false
+      expect(_.first(result.current).val).to.be.true
+      expect(_.last(result.current).val).to.be.false
       expect(result.previous[0]).to.eql
         val: false
         join: 'or'
@@ -687,7 +687,7 @@ describe 'indeed', ->
     it 'should add a new compare method to Indeed.prototype', ->
       indeed.mixin
         isLengthFive: (condition) ->
-          return (val) -> _(val).isArray() && val.length == 5
+          return (val) -> _.isArray(val) && val.length == 5
         startsWith: (condition) ->
           return (val) -> val.charAt(0) == condition
       expect(indeed([1,2,3,4,5]).isLengthFive()).to.be.true
