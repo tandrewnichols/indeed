@@ -47,5 +47,12 @@
   "main": "./lib",
   "engines": {
     "node": ">=0.8.0"
+  },
+  "config": {
+    "blanket": {
+      "pattern": [
+        "indeed/lib"
+      ]
+    }
   }
 }
