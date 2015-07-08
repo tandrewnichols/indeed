@@ -504,7 +504,7 @@ expect(fn).to.throw('Inconceivable!');
 expect(fn).to.throw(new Error('Mischief is afoot'));
 expect(fn).to.throw(/timeout/);
 expect(fn).to.throw(function(e) {
-  return ~e.message.indexOf('!');
+  return e.message.indexOf('!') > -1;
 });
 ```
 

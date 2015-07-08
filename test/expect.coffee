@@ -43,7 +43,7 @@ describe 'expect', ->
       it 'should return the error for a function', ->
         fn = ->
           throw new Error('blah')
-        expect(xpect(fn).throw((e) -> return ~e.message.indexOf('l'))).to.be.true
+        expect(xpect(fn).throw((e) -> return e.message.indexOf('l') > -1)).to.be.true
 
       it 'should convert an error string to an error object', ->
         fn = ->

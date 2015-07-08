@@ -216,7 +216,7 @@ Base.prototype.contains = Base.prototype.contain = Base.prototype.indexOf = func
       v = val.toLowerCase();
     }
     if (val.indexOf) {
-      return !!~(v || val).indexOf(( cond || condition ));
+      return (v || val).indexOf(( cond || condition )) > -1;
     } else {
       return false;
     }
@@ -297,7 +297,7 @@ Base.prototype.containsValues = Base.prototype.containValues = Base.prototype.va
         });
       } else {
         return _.every(args, function(condition) {
-          return ~_.values(val).indexOf(condition);
+          return _.values(val).indexOf(condition) > -1;
         });
       }
     } else {
