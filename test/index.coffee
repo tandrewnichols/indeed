@@ -1,9 +1,6 @@
-expect = require('chai').expect
-
 describe 'index', ->
   context 'non-global', ->
     it 'should return all helpers in an object', ->
-      lib = require('./../lib')
       expect(lib).to.have.property('indeed')
       expect(lib).to.have.property('expect')
       expect(lib).to.have.property('neither')
@@ -16,14 +13,14 @@ describe 'index', ->
 
   context 'global', ->
     it 'should set global helpers', ->
-      require('./../lib')()
-      expect(global.indeed).to.be.a('function')
-      expect(global.expect).to.be.a('function')
-      expect(global.either).to.be.a('function')
-      expect(global.neither).to.be.a('function')
-      expect(global.both).to.be.a('function')
-      expect(global.noneOf).to.be.a('function')
-      expect(global.allOf).to.be.a('function')
-      expect(global.anyOf).to.be.a('function')
-      expect(global.oneOf).to.be.a('function')
-      expect(global.n).to.be.a('function')
+      root = if typeof window == 'object' then window else global
+      expect(root.indeed).to.be.a('function')
+      expect(root.expect).to.be.a('function')
+      expect(root.either).to.be.a('function')
+      expect(root.neither).to.be.a('function')
+      expect(root.both).to.be.a('function')
+      expect(root.noneOf).to.be.a('function')
+      expect(root.allOf).to.be.a('function')
+      expect(root.anyOf).to.be.a('function')
+      expect(root.oneOf).to.be.a('function')
+      expect(root.n).to.be.a('function')

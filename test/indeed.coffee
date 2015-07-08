@@ -1,7 +1,3 @@
-expect = require('chai').expect
-indeed = require('./../lib/indeed')
-_ = require('lodash')
-
 describe 'indeed', ->
   it 'should return a function', ->
     expect(indeed).to.be.a('function')

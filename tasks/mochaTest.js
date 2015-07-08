@@ -4,6 +4,6 @@ module.exports = {
     require: 'coffee-script/register'
   },
   test: {
-    src: ['test/**/*.coffee']
+    src: '<%= files.nodeTests %>'
   }
 };

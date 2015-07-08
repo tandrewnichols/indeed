@@ -1,6 +1,3 @@
-expect = require('chai').expect
-either = require('./../lib/either')
-
 describe 'either', ->
   it 'should return an object with or', ->
     expect(either(true)).to.be.an.instanceOf(either.Either)

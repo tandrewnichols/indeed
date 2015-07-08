@@ -1,6 +1,3 @@
-expect = require('chai').expect
-neither = require('./../lib/neither')
-
 describe 'neither', ->
   it 'should accept a boolean and return an object with nor', ->
     expect(neither(true)).to.be.an.instanceOf(neither.Neither)

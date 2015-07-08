@@ -1,8 +1,3 @@
-sinon = require('sinon')
-require('./../lib')()
-expect = require('chai').expect
-xpect = require('./../lib').expect
-
 describe 'integration', ->
   it 'should work as expected', ->
     expect(indeed(true).and(false).Or.else(true).or(false).test()).to.be.true

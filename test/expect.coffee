@@ -1,11 +1,4 @@
-utils = require('./../lib/utils')
-require('./../lib')()
-expect = require('chai').expect
-xpect = require('./../lib').expect
-sinon = require('sinon')
-
 describe 'expect', ->
-
   describe '#new', ->
     context 'with a spy', ->
       it 'should extend expect when called with a spy', ->

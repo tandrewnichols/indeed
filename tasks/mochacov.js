@@ -6,7 +6,7 @@ module.exports = {
       require: 'coffee-script/register',
       output: 'coverage/coverage.lcov'
     },
-    src: ['test/**/*.coffee'],
+    src: '<%= files.nodeTests %>',
   },
   html: {
     options: {
@@ -14,6 +14,6 @@ module.exports = {
       require: 'coffee-script/register',
       output: 'coverage/coverage.html'
     },
-    src: ['test/**/*.coffee']
+    src: '<%= files.nodeTests %>'
   }
 };

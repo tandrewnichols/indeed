@@ -1,6 +1,3 @@
-expect = require('chai').expect
-anyOf = require('./../lib/anyOf')
-
 describe 'anyOf', ->
   it 'should return an object with and', ->
     expect(anyOf(true)).to.be.an.instanceOf(anyOf.AnyOf)

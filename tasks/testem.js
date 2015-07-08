@@ -3,6 +3,9 @@ module.exports = {
     src: [
       'dist/indeed.js',
       'node_modules/chai/chai.js',
+      'node_modules/sinon/pkg/sinon.js',
+      'node_modules/lodash/index.js',
+      'test/browser/*.coffee',
       'test/*.coffee'
     ],
     options: {

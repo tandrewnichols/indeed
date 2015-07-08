@@ -1,5 +1,4 @@
-expect = require('chai').expect
-Base = require('./../lib/base')
+Base = indeed.Indeed.super_
 base = new Base()
 
 describe 'base', ->

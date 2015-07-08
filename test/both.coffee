@@ -1,6 +1,3 @@
-expect = require('chai').expect
-both = require('./../lib/both')
-
 describe 'both', ->
   it 'should return an object with and', ->
     expect(both(true)).to.be.an.instanceOf(both.Both)

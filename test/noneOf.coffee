@@ -1,6 +1,3 @@
-expect = require('chai').expect
-noneOf = require('./../lib/noneOf')
-
 describe 'noneOf', ->
   it 'should return an object with and', ->
     expect(noneOf(true)).to.be.an.instanceOf(noneOf.NoneOf)

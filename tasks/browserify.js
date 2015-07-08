@@ -1,11 +1,10 @@
 module.exports = {
   dist: {
-    src: ['lib/**'],
+    src: ['lib/index.js'],
     dest: 'dist/indeed.js',
     options: {
       browserifyOptions: {
-        entry: 'lib/index',
-        standalone: 'indeed'
+        standalone: 'indeedLib'
       }
     }
   }
