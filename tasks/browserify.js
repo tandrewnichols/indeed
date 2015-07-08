@@ -4,7 +4,7 @@ module.exports = {
     dest: 'dist/indeed.js',
     options: {
       browserifyOptions: {
-        standalone: 'indeedLib'
+        standalone: '_indeed'
       }
     }
   }

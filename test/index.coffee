@@ -1,15 +1,15 @@
 describe 'index', ->
   context 'non-global', ->
     it 'should return all helpers in an object', ->
-      expect(lib).to.have.property('indeed')
-      expect(lib).to.have.property('expect')
-      expect(lib).to.have.property('neither')
-      expect(lib).to.have.property('either')
-      expect(lib).to.have.property('both')
-      expect(lib).to.have.property('noneOf')
-      expect(lib).to.have.property('allOf')
-      expect(lib).to.have.property('oneOf')
-      expect(lib).to.have.property('n')
+      expect(_indeed).to.have.property('indeed')
+      expect(_indeed).to.have.property('expect')
+      expect(_indeed).to.have.property('neither')
+      expect(_indeed).to.have.property('either')
+      expect(_indeed).to.have.property('both')
+      expect(_indeed).to.have.property('noneOf')
+      expect(_indeed).to.have.property('allOf')
+      expect(_indeed).to.have.property('oneOf')
+      expect(_indeed).to.have.property('n')
 
   context 'global', ->
     it 'should set global helpers', ->

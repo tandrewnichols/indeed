@@ -27,7 +27,7 @@ describe 'either', ->
       it 'should throw Object has no method when not chaining', ->
         expect(( ->
           either(true).or(true).or(true)
-        )).to.throw('Object true has no method \'or\'')
+        )).to.throw()
 
   describe '#And', ->
     it 'should delegate to indeed an and', ->

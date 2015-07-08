@@ -1,4 +1,3 @@
-window.indeedLib()
-window.lib = window.indeedLib
+window._indeed()
 window.xpect = window.expect
 window.expect = window.chai.expect

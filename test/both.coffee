@@ -24,7 +24,7 @@ describe 'both', ->
       it 'should throw Object false has no method when not chaining', ->
         expect(( ->
           both(true).and(true).and(true)
-        )).to.throw('Object true has no method \'and\'')
+        )).to.throw()
 
   describe '#And', ->
     it 'should delegate to indeed an and', ->
