@@ -23,7 +23,7 @@ AllOf.prototype.and = function(condition) {
 
 AllOf.prototype.test = function () {
   return _(this.current).pluck('val').every(function(cond) {
-    return !!cond;
+    return Boolean(cond);
   });
 };
 
@@ -102,7 +102,7 @@ AnyOf.prototype.and = function(condition) {
 
 AnyOf.prototype.test = function() {
   return _(this.current).pluck('val').any(function(cond) {
-    return !!cond;
+    return Boolean(cond);
   });
 };
 
@@ -160,7 +160,7 @@ var Base = function Base(condition, negate) {
 Base.prototype._compare = function(tester) {
   var current = this.current.pop();
   var newVal = tester(current.actual);
-  current.val = this.flags.not ? !newVal : !!newVal;
+  current.val = this.flags.not ? !newVal : Boolean(newVal);
   this.flags.not = false;
   this.flags.noCase = false;
   if (!this.flags.chain && this.canChainComparisons) {
@@ -650,9 +650,9 @@ util.inherits(Indeed, Base);
 Indeed.prototype.test = function(currentOnly) {
   var last = this.current.pop(), val;
   if (this.current.length) {
-    val = !!(_[last.join](this._getCurrent(this.current, this.current.pop()), (last.val ^ last.negate)) ^ this.flags.groupNot);
+    val = Boolean(_[last.join](this._getCurrent(this.current, this.current.pop()), (last.val ^ last.negate)) ^ this.flags.groupNot);
   } else {
-    val = !!((last.val ^ last.negate) ^ this.flags.groupNot);
+    val = Boolean((last.val ^ last.negate) ^ this.flags.groupNot);
   }
   if (this.previous.length && !currentOnly) {
     var method = _.last(this.previous).join;
@@ -667,18 +667,18 @@ Indeed.prototype._getPrevious = function(list, item) {
   if (list.length) {
     var method = _.last(list).join;
     var result = this._getPrevious(list, list.pop());
-    return !!(_[method](result, item.val) ^ item.negate);
+    return Boolean(_[method](result, item.val) ^ item.negate);
   } else {
-    return !!(item.val ^ item.negate);
+    return Boolean(item.val ^ item.negate);
   }
 };
 
 Indeed.prototype._getCurrent = function(list, item) {
   if (list.length) {
     var result = this._getCurrent(list, list.pop());
-    return !!(_[item.join](result, item.val) ^ item.negate);
+    return Boolean(_[item.join](result, item.val) ^ item.negate);
   } else {
-    return !!(item.val ^ item.negate);
+    return Boolean(item.val ^ item.negate);
   }
 };
 
@@ -776,7 +776,7 @@ Indeed.prototype.allOf = function(condition) {
 Indeed.prototype.oneOf = function(condition) {
   return this._rewrite('oneOf', condition, function(conditions) {
     return _.countBy(conditions, function(cond) {
-      return !!cond ? 'true' : 'false';
+      return Boolean(cond) ? 'true' : 'false';
     })['true'] === 1; 
   });
 };
@@ -884,7 +884,7 @@ NOf.prototype.and = function(condition) {
 
 NOf.prototype.test = function() {
   return _(this.current).pluck('val').countBy(function(cond) {
-    return !!cond ? 'true' : 'false';
+    return Boolean(cond) ? 'true' : 'false';
   }).value()['true'] === this.count;
 };
 
@@ -989,7 +989,7 @@ OneOf.prototype.and = function(condition) {
 
 OneOf.prototype.test = function() {
   return _(this.current).pluck('val').countBy(function(cond) {
-    return !!cond ? 'true': 'false';
+    return Boolean(cond) ? 'true': 'false';
   }).value()['true'] === 1;
 };
 
