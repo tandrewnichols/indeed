@@ -713,3 +713,9 @@ describe 'base', ->
   describe '#noCase', ->
     it 'should set no case to false', ->
       expect(base.noCase.flags.noCase).to.be.true
+
+  describe '#tap', ->
+    it 'should call the intermediate method', ->
+      a = ''
+      base.tap( (self) -> a = self.current[0].actual)
+      expect(a).to.equal 'thing'

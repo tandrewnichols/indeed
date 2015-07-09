@@ -180,11 +180,11 @@ Base.prototype.equals = Base.prototype.equal = Base.prototype.eql = function(con
       v = val.toLowerCase();
     }
     if (self.flags.deep) {
+      self.flags.deep = false;
       return _.isEqual(( v || val ), ( cond || condition ));
     } else {
       return (v || val) === (cond || condition);
     }
-    self.flags.deep = false;
   });
 };
 
