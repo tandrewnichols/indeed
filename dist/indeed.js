@@ -496,7 +496,8 @@ expect.Not.chain = function(condition) {
 };
 
 var Expect = expect.Expect = function Expect (condition) {
-  Indeed.call(this, condition);
+  Indeed.apply(this, arguments);
+  this.calls = ['expect'];
 
   // Duck-typing: condition is a sinon spy
   if (condition && condition.displayName && condition.args && condition.calledWith) {
