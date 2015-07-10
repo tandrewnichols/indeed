@@ -3,11 +3,7 @@ var _ = require('lodash');
 var Base = require('./base');
 var util = require('util');
 
-var allOf = function(condition) {
-  return new AllOf(condition);
-};
-
-var AllOf = allOf.AllOf = function AllOf (condition) {
+var AllOf = function AllOf (condition) {
   Base.call(this, condition);
 };
 
@@ -27,7 +23,11 @@ AllOf.prototype.test = function () {
   });
 };
 
-module.exports = allOf;
+var allOf = module.exports = function(condition) {
+  return new AllOf(condition);
+};
+
+allOf.AllOf = AllOf;
 
 },{"./base":4,"lodash":19,"util":18}],2:[function(require,module,exports){
 module.exports={
@@ -112,6 +112,16 @@ module.exports = anyOf;
 var _ = require('lodash');
 var utils = require('./utils');
 
+/**
+ * Base
+ *
+ * Underlying class for the other boolean helpers
+ * @private
+ * @constructor
+ * @param {*} condition - The thing to be evaluated
+ * @param {boolean} negate - Whether the first group is negated
+ *
+ */
 var Base = function Base(condition, negate) {
   var self = this;
   this.flags = {
@@ -157,12 +167,27 @@ var Base = function Base(condition, negate) {
   });
 };
 
+/**
+ * Base#_compare
+ *
+ * Handles the comparison of actual and expected
+ *
+ * @param {Function} tester = The function that evaluates the condition
+ * @returns {(Base|*)}
+ *
+ */
 Base.prototype._compare = function(tester) {
+  // Evaluate the current value via the tester
   var current = this.current.pop();
   var newVal = tester(current.actual);
+
+  // Handle negation if necessary and reset any flags
   current.val = this.flags.not ? !newVal : Boolean(newVal);
   this.flags.not = false;
   this.flags.noCase = false;
+
+  // If chaining, return the instance;
+  // otherwise, return the value
   if (!this.flags.chain && this.canChainComparisons) {
     return current.val;
   } else {
@@ -1061,7 +1086,7 @@ Indeed.prototype.noneOf = function(condition) {
  *
  * @param {string} method - The method being invoked. Passed on to _chain.
  * @param {*} condition - The thing to be evaluated
- * @param {function} testFunc - The function that will evaluate the conditions when "test" is called
+ * @param {Function} testFunc - The function that will evaluate the conditions when "test" is called
  * @returns {Indeed}
  *
  */
