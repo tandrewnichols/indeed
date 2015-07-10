@@ -89,7 +89,7 @@ indeed(a).is.true()
 indeed.chain(a).is.true() // .and(b).is.false().test()
 ```
 
-When chaining, use `.test()`, `.val()`, or `.eval()` to terminate the chain and evaluate the total result of the expression. Non-chaining is optimized for [comparisons](#matching), so `indeed(a).is.defined()` will return `true` or `false` whereas `indeed(a)` by itself, will not. To assert on the definedness of a single thing, 1) chain: `if (indeed.chain(a).test())`, 2) use `defined()`: `if (indeed(a).is.defined())`, 3) use regular booleans: `if (a)`. Calling one of the chain methods without calling a comparison will automatically turn on chaining, so that you can say `if (indeed(a).and(b).and(c).test())` rather than `if (indeed.chain(a).and(b).and(c).test())`.
+When chaining, use `.test()` or `.val()` to terminate the chain and evaluate the total result of the expression. Non-chaining is optimized for [comparisons](#matching), so `indeed(a).is.defined()` will return `true` or `false` whereas `indeed(a)` by itself, will not. To assert on the definedness of a single thing, 1) chain: `if (indeed.chain(a).test())`, 2) use `defined()`: `if (indeed(a).is.defined())`, 3) use regular booleans: `if (a)`. Calling one of the chain methods without calling a comparison will automatically turn on chaining, so that you can say `if (indeed(a).and(b).and(c).test())` rather than `if (indeed.chain(a).and(b).and(c).test())`.
 
 `indeed` is also equipped with some negation tools: `not` and `Not`. `not` simply negates the first condition:
 
@@ -263,7 +263,7 @@ if (indeed(a).or(b).But.neither(c).nor(d).test())
 
 ## Matching
 
-All the examples so far have been simple checks for definedness (for simplicity), but `indeed` has a wide variety of comparison functions as well. All of the chain starters also have the chainable properties `does`, `should`, `has`, `have`, `is`, `to`, `be`, `been`, `deep`, `deeply`, `not`, `Not`, `noCase`, and `caseless`. In addition, `indeed` and `expect` have `andDoes`, `andShould`, `andHas`, `andHave`, `andIs`, `andTo`, and `andBe` which let you use multiple comparisons on the same object (chaining must be turned on). Most of these simply allow chaining with natural language. However, `deep` and `deeply` turn on deep object comparison when using `equal` (below), `not` and `Not` negate the comparison, and `caseless` and `noCase` turn on case insensitivity (for `equal`, `contains`, `key`, `keys`, `value`, and `values`).
+Most of the examples so far have been simple checks for definedness (for simplicity), but `indeed` has a wide variety of comparison functions as well. All of the chain starters also have the chainable properties `does`, `should`, `has`, `have`, `is`, `to`, `be`, `been`, `deep`, `deeply`, `not`, `Not`, `noCase`, and `caseless`. In addition, `indeed` and `expect` have `andDoes`, `andShould`, `andHas`, `andHave`, `andIs`, `andTo`, and `andBe` which let you use multiple comparisons on the same object (chaining must be turned on). Most of these simply allow chaining with natural language. However, `deep` and `deeply` turn on deep object comparison when using `equal` (below), `not` and `Not` negate the comparison, and `caseless` and `noCase` turn on case insensitivity (for `equal`, `contains`, `key`, `keys`, `value`, and `values`).
 
 #### Equals
 
@@ -328,8 +328,8 @@ Aliases: `containsKey`, `containKey`, `property`
 Like `.key` but for multiple keys. Keys can be passed as an array or multiple strings.
 
 ```javascript
-if (indeed({foo: 'bar', baz: 'quux'}).keys('foo', 'baz')
-if (indeed({foo: 'bar', baz: 'quux'}).keys(['foo', 'baz']))
+if (indeed({foo: 'bar', baz: 'quux'}).has.keys('foo', 'baz')
+if (indeed({foo: 'bar', baz: 'quux'}).has.keys(['foo', 'baz']))
 ```
 
 Aliases: `containKeys`, `keys`, `properties`
@@ -488,7 +488,7 @@ Then -> expect(@thing).to.equal('foo bar')
 
 #### Assert
 
-`assert` is an alias to `eval`, `val`, and `test`. Once again, it's only purpose is to convey testing semantics. This only needs to be called when chaining multiple conditions.
+`assert` is an alias to `val` and `test`. Once again, it's only purpose is to convey testing semantics. This only needs to be called when chaining multiple conditions.
 
 ```coffee
 Then -> expect.chain('foo').to.be.a('string').and.to.match(/o$/).and(['bar']).to.contain('bar').assert()

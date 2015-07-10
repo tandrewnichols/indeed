@@ -73,7 +73,7 @@ describe 'indeed', ->
         i.calls = ['neither']
         expect(( ->
           i._chain('and', true, 'and')
-        )).to.throw('IllegalMethodException: and cannot be chained with neither')
+        )).to.throw('IllegalMethodException: "and" cannot be chained with "neither"')
 
   describe '#test', ->
     context 'no previous values', ->
@@ -101,33 +101,6 @@ describe 'indeed', ->
             join: 'or'
         ]
         expect(result.test()).to.be.true
-
-  describe '#eval', ->
-    context 'no previous values', ->
-      it 'should return basic values', ->
-        expect(indeed(true).eval()).to.be.true
-        expect(indeed(false).eval()).to.be.false
-
-      it 'should return the value of current', ->
-        result = indeed(true)
-        expect(result.eval()).to.be.true
-
-      it 'should apply flags.groupNot', ->
-        result = indeed(true)
-        result.flags.groupNot = true
-        expect(result.eval()).to.be.false
-
-    context 'with previous values', ->
-      it 'should join all the previous values correctly', ->
-        result = indeed(true)
-        result.previous = [
-            val: true
-            join: 'and'
-          ,
-            val: false
-            join: 'or'
-        ]
-        expect(result.eval()).to.be.true
 
   describe '#val', ->
     context 'no previous values', ->
@@ -185,10 +158,10 @@ describe 'indeed', ->
     it 'should not allow anything after both', ->
       expect((->
         indeed(true).And.both(true).and(true).and(true)
-      )).to.throw('IllegalMethodException: and cannot be chained with both/and')
+      )).to.throw('IllegalMethodException: "and" cannot be chained with "both/and"')
       expect((->
         indeed(true).And.both(true).and(true).or(true)
-      )).to.throw('IllegalMethodException: or cannot be chained with both/and')
+      )).to.throw('IllegalMethodException: "or" cannot be chained with "both/and"')
 
   describe '#or', ->
     it 'should "or" the previous result', ->
@@ -217,10 +190,10 @@ describe 'indeed', ->
     it 'should not allow anything after either', ->
       expect((->
         indeed(true).And.either(true).or(true).and(true)
-      )).to.throw('IllegalMethodException: and cannot be chained with either/or')
+      )).to.throw('IllegalMethodException: "and" cannot be chained with "either/or"')
       expect((->
         indeed(true).And.either(true).or(true).or(true)
-      )).to.throw('IllegalMethodException: or cannot be chained with either/or')
+      )).to.throw('IllegalMethodException: "or" cannot be chained with "either/or"')
 
   describe '#andNot', ->
     it 'should "and not" the previous result', ->
@@ -249,7 +222,7 @@ describe 'indeed', ->
     it 'should not allow nor', ->
       expect((->
         indeed(true).And.indeed(true).nor(false)
-      )).to.throw('IllegalMethodException: nor cannot be chained with indeed')
+      )).to.throw('IllegalMethodException: "nor" cannot be chained with "indeed"')
       
   describe '#also', ->
     it 'should reset current', ->
@@ -259,7 +232,7 @@ describe 'indeed', ->
     it 'should not allow nor', ->
       expect((->
         indeed(true).And.indeed(true).nor(false)
-      )).to.throw('IllegalMethodException: nor cannot be chained with indeed')
+      )).to.throw('IllegalMethodException: "nor" cannot be chained with "indeed"')
 
   describe '#else', ->
     it 'should reset current', ->
@@ -269,7 +242,7 @@ describe 'indeed', ->
     it 'should not allow nor', ->
       expect((->
         indeed(true).And.indeed(true).nor(false)
-      )).to.throw('IllegalMethodException: nor cannot be chained with indeed')
+      )).to.throw('IllegalMethodException: "nor" cannot be chained with "indeed"')
 
   describe '#And', ->
     it 'should start a new condition set with &&', ->
@@ -379,11 +352,11 @@ describe 'indeed', ->
     it 'should allow nor', ->
       expect(( ->
         indeed(true).And.neither(true).or(false)
-      )).to.throw('IllegalMethodException: or cannot be chained with neither')
+      )).to.throw('IllegalMethodException: "or" cannot be chained with "neither"')
       
       expect(( ->
         indeed(true).And.neither(true).and(false)
-      )).to.throw('IllegalMethodException: and cannot be chained with neither')
+      )).to.throw('IllegalMethodException: "and" cannot be chained with "neither"')
 
       expect(( ->
         indeed(true).And.neither(true).nor(false)
@@ -405,11 +378,11 @@ describe 'indeed', ->
     it 'should not be chainable with anything', ->
       expect(( ->
         indeed(true).And.neither(true).nor(false).and(true)
-      )).to.throw('IllegalMethodException: and cannot be chained with neither/nor')
+      )).to.throw('IllegalMethodException: "and" cannot be chained with "neither/nor"')
 
       expect(( ->
         indeed(true).And.neither(true).nor(false).indeed(true)
-      )).to.throw('IllegalMethodException: indeed cannot be chained with neither/nor')
+      )).to.throw('IllegalMethodException: "indeed" cannot be chained with "neither/nor"')
 
   describe '#either', ->
     it 'should start a new condition', ->
@@ -418,11 +391,11 @@ describe 'indeed', ->
     it 'should allow or', ->
       expect(( ->
         indeed(true).And.either(true).and(true)
-      )).to.throw('IllegalMethodException: and cannot be chained with either')
+      )).to.throw('IllegalMethodException: "and" cannot be chained with "either"')
 
       expect(( ->
         indeed(true).And.either(true).nor(true)
-      )).to.throw('IllegalMethodException: nor cannot be chained with either')
+      )).to.throw('IllegalMethodException: "nor" cannot be chained with "either"')
 
       expect(( ->
         indeed(true).And.either(true).or(true)
@@ -430,7 +403,7 @@ describe 'indeed', ->
 
       expect(( ->
         indeed(true).And.either(true).either(true)
-      )).to.throw('IllegalMethodException: either cannot be chained with either')
+      )).to.throw('IllegalMethodException: "either" cannot be chained with "either"')
 
   describe '#both', ->
     it 'should start a new condition', ->
@@ -443,11 +416,11 @@ describe 'indeed', ->
 
       expect(( ->
         indeed(true).And.both(true).or(true)
-      )).to.throw('IllegalMethodException: or cannot be chained with both')
+      )).to.throw('IllegalMethodException: "or" cannot be chained with "both"')
 
       expect(( ->
         indeed(true).And.both(true).and(true).and(true)
-      )).to.throw('IllegalMethodException: and cannot be chained with both/and')
+      )).to.throw('IllegalMethodException: "and" cannot be chained with "both/and"')
 
   describe '#allOf', ->
     it 'should and all conditions', ->
@@ -457,11 +430,11 @@ describe 'indeed', ->
     it 'should allow and', ->
       expect(( ->
         indeed(true).And.allOf(true).and(true).or(true)
-      )).to.throw('IllegalMethodException: or cannot be chained with allOf')
+      )).to.throw('IllegalMethodException: "or" cannot be chained with "allOf"')
 
       expect(( ->
         indeed(true).And.allOf(true).and(true).both(false)
-      )).to.throw('IllegalMethodException: both cannot be chained with allOf')
+      )).to.throw('IllegalMethodException: "both" cannot be chained with "allOf"')
 
   describe '#oneOf', ->
     it 'should return true when exactly one condition is true', ->
@@ -470,11 +443,11 @@ describe 'indeed', ->
     it 'should allow and', ->
       expect(( ->
         indeed(true).And.oneOf(true).and(false).or(true)
-      )).to.throw('IllegalMethodException: or cannot be chained with oneOf')
+      )).to.throw('IllegalMethodException: "or" cannot be chained with "oneOf"')
 
       expect(( ->
         indeed(true).And.oneOf(true).and(false).else(true)
-      )).to.throw('IllegalMethodException: else cannot be chained with oneOf')
+      )).to.throw('IllegalMethodException: "else" cannot be chained with "oneOf"')
 
   describe '#anyOf', ->
     it 'should return true when any one condition is true', ->
@@ -486,11 +459,11 @@ describe 'indeed', ->
     it 'should allow and', ->
       expect(( ->
         indeed(true).And.anyOf(true).and(false).or(true)
-      )).to.throw('IllegalMethodException: or cannot be chained with anyOf')
+      )).to.throw('IllegalMethodException: "or" cannot be chained with "anyOf"')
 
       expect(( ->
         indeed(true).And.anyOf(true).and(false).both(true)
-      )).to.throw('IllegalMethodException: both cannot be chained with anyOf')
+      )).to.throw('IllegalMethodException: "both" cannot be chained with "anyOf"')
 
   describe '#noneOf', ->
     it 'should return true when all conditions are false', ->
@@ -500,11 +473,11 @@ describe 'indeed', ->
     it 'should allow and', ->
       expect(( ->
         indeed(true).And.noneOf(true).and(false).or(true)
-      )).to.throw('IllegalMethodException: or cannot be chained with noneOf')
+      )).to.throw('IllegalMethodException: "or" cannot be chained with "noneOf"')
 
       expect(( ->
         indeed(true).And.noneOf(true).and(false).anyOf(false)
-      )).to.throw('IllegalMethodException: anyOf cannot be chained with noneOf')
+      )).to.throw('IllegalMethodException: "anyOf" cannot be chained with "noneOf"')
 
   describe '#equal', ->
     context 'shallow equals', ->
