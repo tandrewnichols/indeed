@@ -196,6 +196,29 @@ Base.prototype._compare = function(tester) {
   }
 };
 
+Base.prototype._testIllegalMethod = function(currentMethod, prevMethods, negate, condition) {
+  if (this.current.length === 2) {
+    throw new Error('IllegalMethodException: "' + currentMethod + '" cannot be called with "' + prevMethods + '"');
+  } else {
+    var obj = {
+      val: condition,
+      actual: condition
+    };
+
+    if (negate) {
+      obj.negate = negate;
+    }
+
+    this.current.push(obj);
+
+    if (this.current.length === 2 && !this.flags.chain) {
+      return this.test();
+    } else {
+      return this;
+    }
+  }
+};
+
 Base.prototype.equals = Base.prototype.equal = Base.prototype.eql = function(condition) {
   var self = this,
       cond, v;
@@ -367,29 +390,28 @@ Base.prototype.falsy = function() {
   });
 };
 
-Base.prototype.greaterThan = Base.prototype.gt = Base.prototype.above = function(condition) {
-  return this._compare(function(val) {
-    return _.isNumber(val) && val > condition;
-  });
+var _evalRelation = function (op) {
+  return function(condition) {
+    return this._compare(function(val) {
+      var isNum = _.isNumber(val);
+      switch (op) {
+        case 'gt':
+          return isNum && val > condition;
+        case 'lt':
+          return isNum && val < condition;
+        case 'gte':
+          return isNum && val >= condition;
+        default:
+          return isNum && val <= condition;
+      }
+    });
+  };
 };
 
-Base.prototype.lessThan = Base.prototype.lt = Base.prototype.below = function(condition) {
-  return this._compare(function(val) {
-    return _.isNumber(val) && val < condition;
-  });
-};
-
-Base.prototype.greaterThanOrEqualTo = Base.prototype.gte = function(condition) {
-  return this._compare(function(val) {
-    return _.isNumber(val) && val >= condition;
-  });
-};
-
-Base.prototype.lessThanOrEqualTo = Base.prototype.lte = function(condition) {
-  return this._compare(function(val) {
-    return _.isNumber(val) && val <= condition;
-  });
-};
+Base.prototype.greaterThan = Base.prototype.gt = Base.prototype.above = _evalRelation('gt');
+Base.prototype.lessThan = Base.prototype.lt = Base.prototype.below = _evalRelation('lt');
+Base.prototype.greaterThanOrEqualTo = Base.prototype.gte = _evalRelation('gte');
+Base.prototype.lessThanOrEqualTo = Base.prototype.lte = _evalRelation('lte');
 
 Base.prototype.tap = function(fn) {
   fn(this);
@@ -400,7 +422,6 @@ module.exports = Base;
 
 },{"./utils":14,"lodash":19}],5:[function(require,module,exports){
 var util = require('util');
-var utils = require('./utils');
 var Base = require('./base');
 
 var Both = function Both(condition) {
@@ -410,7 +431,7 @@ var Both = function Both(condition) {
 util.inherits(Both, Base);
 
 Both.prototype.and = function(condition) {
-  return utils.commonTest.call(this, 'and', 'both/and', false, condition);
+  return this._testIllegalMethod('and', 'both/and', false, condition);
 };
 
 Both.prototype.test = function() {
@@ -429,9 +450,8 @@ both.chain = function(condition) {
 
 both.Both = Both;
 
-},{"./base":4,"./utils":14,"util":18}],6:[function(require,module,exports){
+},{"./base":4,"util":18}],6:[function(require,module,exports){
 var util = require('util');
-var utils = require('./utils');
 var Base = require('./base');
 
 var Either = function Either(condition) {
@@ -441,7 +461,7 @@ var Either = function Either(condition) {
 util.inherits(Either, Base);
 
 Either.prototype.or = function(condition) {
-  return utils.commonTest.call(this, 'or', 'either/or', false, condition);
+  return this._testIllegalMethod('or', 'either/or', false, condition);
 };
 
 Either.prototype.test = function() {
@@ -460,7 +480,7 @@ either.chain = function(condition) {
 
 either.Either = Either;
 
-},{"./base":4,"./utils":14,"util":18}],7:[function(require,module,exports){
+},{"./base":4,"util":18}],7:[function(require,module,exports){
 var Indeed = require('./indeed').Indeed;
 var util = require('util');
 var _ = require('lodash');
@@ -1170,7 +1190,6 @@ n.NOf = NOf;
 
 },{"./base":4,"lodash":19,"util":18}],11:[function(require,module,exports){
 var util = require('util');
-var utils = require('./utils');
 var Base = require('./base');
 
 var Neither = function Neither(condition) {
@@ -1180,7 +1199,7 @@ var Neither = function Neither(condition) {
 util.inherits(Neither, Base);
 
 Neither.prototype.nor = function (condition) {
-  return utils.commonTest.call(this, 'nor', 'neither/nor', true, condition);
+  return this._testIllegalMethod('nor', 'neither/nor', true, condition);
 };
 
 Neither.prototype.test = function() {
@@ -1199,7 +1218,7 @@ neither.chain = function(condition) {
 
 neither.Neither = Neither;
 
-},{"./base":4,"./utils":14,"util":18}],12:[function(require,module,exports){
+},{"./base":4,"util":18}],12:[function(require,module,exports){
 var _ = require('lodash');
 var util = require('util');
 var Base = require('./base');
@@ -1269,29 +1288,6 @@ exports.delegate = function(condition, join) {
   i.calls = [];
   i.flags.chain = true;
   return i;
-};
-
-exports.commonTest = function(currentMethod, prevMethods, negate, condition) {
-  if (this.current.length === 2) {
-    throw new Error('IllegalMethodException: "' + currentMethod + '" cannot be called with "' + prevMethods + '"');
-  } else {
-    var obj = {
-      val: condition,
-      actual: condition
-    };
-
-    if (negate) {
-      obj.negate = negate;
-    }
-
-    this.current.push(obj);
-
-    if (this.current.length === 2 && !this.flags.chain) {
-      return this.test();
-    } else {
-      return this;
-    }
-  }
 };
 
 },{"./indeed":8}],15:[function(require,module,exports){
