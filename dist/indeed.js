@@ -82,11 +82,7 @@ var _ = require('lodash');
 var util = require('util');
 var Base = require('./base');
 
-var anyOf = function(condition) {
-  return new AnyOf(condition); 
-};
-
-var AnyOf = anyOf.AnyOf = function AnyOf(condition) {
+var AnyOf = function AnyOf(condition) {
   Base.call(this, condition);
 };
 
@@ -106,7 +102,11 @@ AnyOf.prototype.test = function() {
   });
 };
 
-module.exports = anyOf;
+var anyOf = module.exports = function(condition) {
+  return new AnyOf(condition); 
+};
+
+anyOf.AnyOf = AnyOf;
 
 },{"./base":4,"lodash":19,"util":18}],4:[function(require,module,exports){
 var _ = require('lodash');
@@ -402,17 +402,7 @@ module.exports = Base;
 var util = require('util');
 var Base = require('./base');
 
-var both = function(condition) {
-  return new Both(condition);
-};
-
-both.chain = function(condition) {
-  var b = new Both(condition);
-  b.flags.chain = true;
-  return b;
-};
-
-var Both = both.Both = function Both(condition) {
+var Both = function Both(condition) {
   Base.call(this, condition);
 };
 
@@ -438,23 +428,23 @@ Both.prototype.test = function() {
   return this.current[0].val && this.current[1].val;
 };
 
-module.exports = both;
+var both = module.exports = function(condition) {
+  return new Both(condition);
+};
+
+both.chain = function(condition) {
+  var b = new Both(condition);
+  b.flags.chain = true;
+  return b;
+};
+
+both.Both = Both;
 
 },{"./base":4,"util":18}],6:[function(require,module,exports){
 var util = require('util');
 var Base = require('./base');
 
-var either = function(condition) {
-  return new Either(condition);
-};
-
-either.chain = function(condition) {
-  var e = new Either(condition);
-  e.flags.chain = true;
-  return e;
-};
-
-var Either = either.Either = function Either(condition) {
+var Either = function Either(condition) {
   Base.call(this, condition);
 };
 
@@ -480,47 +470,24 @@ Either.prototype.test = function() {
   return this.current[0].val || this.current[1].val;
 };
 
-module.exports = either;
+var either = module.exports = function(condition) {
+  return new Either(condition);
+};
+
+either.chain = function(condition) {
+  var e = new Either(condition);
+  e.flags.chain = true;
+  return e;
+};
+
+either.Either = Either;
 
 },{"./base":4,"util":18}],7:[function(require,module,exports){
 var Indeed = require('./indeed').Indeed;
 var util = require('util');
 var _ = require('lodash');
 
-var expect = function(condition) {
-  return new Expect(condition);
-};
-
-expect.not = function(condition) {
-  return new Expect(condition, true);
-};
-
-expect.Not = function(condition) {
-  var e = new Expect(condition);
-  e.flags.groupNot = true;
-  return e;
-};
-
-expect.chain = function(condition) {
-  var e = new Expect(condition);
-  e.flags.chain = true;
-  return e;
-};
-
-expect.not.chain = function(condition) {
-  var e = new Expect(condition, true);
-  e.flags.chain = true;
-  return e;
-};
-
-expect.Not.chain = function(condition) {
-  var e = new Expect(condition);
-  e.flags.groupNot = true;
-  e.flags.chain = true;
-  return e;
-};
-
-var Expect = expect.Expect = function Expect (condition) {
+var Expect = function Expect (condition) {
   Indeed.apply(this, arguments);
   this.calls = ['expect'];
 
@@ -576,7 +543,40 @@ Expect.prototype['with'] = function() {
 
 Expect.prototype.assert = Expect.prototype.test;
 
-module.exports = expect;
+var expect = module.exports = function(condition) {
+  return new Expect(condition);
+};
+
+expect.not = function(condition) {
+  return new Expect(condition, true);
+};
+
+expect.Not = function(condition) {
+  var e = new Expect(condition);
+  e.flags.groupNot = true;
+  return e;
+};
+
+expect.chain = function(condition) {
+  var e = new Expect(condition);
+  e.flags.chain = true;
+  return e;
+};
+
+expect.not.chain = function(condition) {
+  var e = new Expect(condition, true);
+  e.flags.chain = true;
+  return e;
+};
+
+expect.Not.chain = function(condition) {
+  var e = new Expect(condition);
+  e.flags.groupNot = true;
+  e.flags.chain = true;
+  return e;
+};
+
+expect.Expect = Expect;
 
 },{"./indeed":8,"lodash":19,"util":18}],8:[function(require,module,exports){
 var _ = require('lodash');
@@ -598,118 +598,12 @@ _.mixin({
 });
 
 /**
- * ~indeed
- *
- * The main entry point
- *
- * @param {*} condition - The thing to be evaluated
- * @returns {Indeed}
- *
- */
-var indeed = function(condition) {
-  return new Indeed(condition);
-};
-
-/**
- *
- * .not
- *
- * The entry point with the first condition negated
- *
- * @param {*} condition - The thing to be evaluated
- * @returns {Indeed}
- *
- */
-indeed.not = function(condition) {
-  return new Indeed(condition, true);
-};
-
-/**
- * .Not
- *
- * The entry point with the first group negated
- *
- * @param {*} condition - The thing to be evaluated
- * @returns {Indeed}
- *
- */
-indeed.Not = function(condition) {
-  var i = new Indeed(condition);
-  i.flags.groupNot = true;
-  return i;
-};
-
-/**
- *
- * .chain
- *
- * The entry point with chaining enabled
- *
- * @param {*} condition - The thing to be evaluated
- * @returns {Indeed}
- *
- */
-indeed.chain = function(condition) {
-  var i = new Indeed(condition);
-  i.flags.chain = true;
-  return i;
-};
-
-/**
- * .not.chain
- *
- * The entry point with chaining enabled and the first condition negated
- *
- * @param {*} condition - The thing to be evaluated
- * @returns {Indeed}
- *
- */
-indeed.not.chain = function(condition) {
-  var i = new Indeed(condition, true);
-  i.flags.chain = true;
-  return i;
-};
-
-/**
- * .Not.chain
- *
- * The entry point with chaining enabled and the first group negated
- *
- * @param {*} condition - The thing to be evaluated
- * @returns {Indeed}
- *
- */
-indeed.Not.chain = function(condition) {
-  var i = new Indeed(condition);
-  i.flags.groupNot = true;
-  i.flags.chain = true;
-  return i;
-};
-
-/**
- * .mixin
- *
- * Adds custom comparison functions to the Indeed object
- *
- * @param {Object} obj - An object where the keys are the function names to add to the prototype and the values are the functions to execute
- *
- */
-indeed.mixin = function(obj) {
-  _(obj).keys().each(function(key) {
-    var fn = function(condition) {
-      return this._compare(obj[key](condition), key);
-    };
-    Base.prototype[key] = fn;
-  }).value();
-};
-
-/**
  * Indeed
  *
  * @constructor
  * 
  */
-var Indeed = indeed.Indeed = function Indeed () {
+var Indeed = function Indeed () {
   // Setup initial values
   Base.apply(this, arguments);
   var self = this;
@@ -1118,7 +1012,114 @@ Indeed.prototype._rewrite = function(method, condition, testFunc) {
  */
 Indeed.prototype.val = Indeed.prototype.test;
 
-module.exports = indeed;
+
+/**
+ * ~indeed
+ *
+ * The main entry point
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {Indeed}
+ *
+ */
+var indeed = module.exports = function(condition) {
+  return new Indeed(condition);
+};
+
+/**
+ *
+ * .not
+ *
+ * The entry point with the first condition negated
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {Indeed}
+ *
+ */
+indeed.not = function(condition) {
+  return new Indeed(condition, true);
+};
+
+/**
+ * .Not
+ *
+ * The entry point with the first group negated
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {Indeed}
+ *
+ */
+indeed.Not = function(condition) {
+  var i = new Indeed(condition);
+  i.flags.groupNot = true;
+  return i;
+};
+
+/**
+ *
+ * .chain
+ *
+ * The entry point with chaining enabled
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {Indeed}
+ *
+ */
+indeed.chain = function(condition) {
+  var i = new Indeed(condition);
+  i.flags.chain = true;
+  return i;
+};
+
+/**
+ * .not.chain
+ *
+ * The entry point with chaining enabled and the first condition negated
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {Indeed}
+ *
+ */
+indeed.not.chain = function(condition) {
+  var i = new Indeed(condition, true);
+  i.flags.chain = true;
+  return i;
+};
+
+/**
+ * .Not.chain
+ *
+ * The entry point with chaining enabled and the first group negated
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {Indeed}
+ *
+ */
+indeed.Not.chain = function(condition) {
+  var i = new Indeed(condition);
+  i.flags.groupNot = true;
+  i.flags.chain = true;
+  return i;
+};
+
+/**
+ * .mixin
+ *
+ * Adds custom comparison functions to the Indeed object
+ *
+ * @param {Object} obj - An object where the keys are the function names to add to the prototype and the values are the functions to execute
+ *
+ */
+indeed.mixin = function(obj) {
+  _(obj).keys().each(function(key) {
+    var fn = function(condition) {
+      return this._compare(obj[key](condition), key);
+    };
+    Base.prototype[key] = fn;
+  }).value();
+};
+
+indeed.Indeed = Indeed;
 
 },{"./allowed":2,"./base":4,"lodash":19,"util":18}],9:[function(require,module,exports){
 (function (global){
@@ -1154,11 +1155,7 @@ var _ = require('lodash');
 var util = require('util');
 var Base = require('./base');
 
-var n = function(count) {
-  return new NOf(count);
-};
-
-var NOf = n.NOf = function NOf(count) {
+var NOf = function NOf(count) {
   this.count = count;
 };
 
@@ -1187,23 +1184,17 @@ NOf.prototype.test = function() {
   }).value()['true'] === this.count;
 };
 
-module.exports = n;
+var n = module.exports = function(count) {
+  return new NOf(count);
+};
+
+n.NOf = NOf;
 
 },{"./base":4,"lodash":19,"util":18}],11:[function(require,module,exports){
 var util = require('util');
 var Base = require('./base');
 
-var neither = function(condition) {
-  return new Neither(condition);
-};
-
-neither.chain = function(condition) {
-  var n = new Neither(condition);
-  n.flags.chain = true;
-  return n;
-};
-
-var Neither = neither.Neither = function Neither(condition) {
+var Neither = function Neither(condition) {
   Base.call(this, condition, true);
 };
 
@@ -1230,18 +1221,24 @@ Neither.prototype.test = function() {
   return !this.current[0].val && !this.current[1].val;
 };
 
-module.exports = neither;
+var neither = module.exports = function(condition) {
+  return new Neither(condition);
+};
+
+neither.chain = function(condition) {
+  var n = new Neither(condition);
+  n.flags.chain = true;
+  return n;
+};
+
+neither.Neither = Neither;
 
 },{"./base":4,"util":18}],12:[function(require,module,exports){
 var _ = require('lodash');
 var util = require('util');
 var Base = require('./base');
 
-var noneOf = function(condition) {
-  return new NoneOf(condition);
-};
-
-var NoneOf = noneOf.NoneOf = function NoneOf(condition) {
+var NoneOf = function NoneOf(condition) {
   Base.call(this, condition);
 };
 
@@ -1261,18 +1258,18 @@ NoneOf.prototype.test = function() {
   });
 };
 
-module.exports = noneOf;
+var noneOf = module.exports = function(condition) {
+  return new NoneOf(condition);
+};
+
+noneOf.NoneOf = NoneOf;
 
 },{"./base":4,"lodash":19,"util":18}],13:[function(require,module,exports){
 var _ = require('lodash');
 var util = require('util');
 var Base = require('./base');
 
-var oneOf = function(condition) {
-  return new OneOf(condition);
-};
-
-var OneOf = oneOf.OneOf = function OneOf(condition) {
+var OneOf = function OneOf(condition) {
   Base.call(this, condition);
 };
 
@@ -1292,7 +1289,11 @@ OneOf.prototype.test = function() {
   }).value()['true'] === 1;
 };
 
-module.exports = oneOf;
+var oneOf = module.exports = function(condition) {
+  return new OneOf(condition);
+};
+
+oneOf.OneOf = OneOf;
 
 },{"./base":4,"lodash":19,"util":18}],14:[function(require,module,exports){
 exports.delegate = function(condition, join) {
