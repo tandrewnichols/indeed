@@ -322,34 +322,24 @@ describe 'base', ->
         expect(base.noCase.has.keys('akey', 'anotherkey').current[0].val).to.be.true
 
   describe '#value', ->
-    context 'with case', ->
-      it 'should be true for objects with the value', ->
-        base.current = [
-          val: false
-          actual:
-            foo: 'bar'
-        ]
-        expect(base.has.value('bar').current[0].val).to.be.true
+    it 'should be true for objects with the value', ->
+      base.current = [
+        val: false
+        actual:
+          foo: 'bar'
+      ]
+      expect(base.has.value('bar').current[0].val).to.be.true
 
-      it 'should be false for objects without the value', ->
-        base.current = [
-          val: true
-          actual:
-            foo: 'bar'
-        ]
-        expect(base.has.value('thing').current[0].val).to.be.false
+    it 'should be false for objects without the value', ->
+      base.current = [
+        val: true
+        actual:
+          foo: 'bar'
+      ]
+      expect(base.has.value('thing').current[0].val).to.be.false
 
-      it 'should be false for other types', ->
-        expect(base.has.value('i').current[0].val).to.be.false
-
-    context 'with noCase', ->
-      it 'should ignore case', ->
-        base.current = [
-          val: false
-          actual:
-            foo: 'Something Caseful'
-        ]
-        expect(base.noCase.value('something caseful').current[0].val).to.be.true
+    it 'should be false for other types', ->
+      expect(base.has.value('i').current[0].val).to.be.false
 
   describe '#values', ->
     context 'with case', ->

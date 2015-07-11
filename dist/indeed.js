@@ -242,7 +242,7 @@ var Base = function Base(condition, negate) {
  * Handles the comparison of actual and expected
  *
  * @param {Function} tester = The function that evaluates the condition
- * @returns {(Base|*)}
+ * @returns {(Base|boolean)}
  *
  */
 Base.prototype._compare = function(tester) {
@@ -276,7 +276,7 @@ Base.prototype._compare = function(tester) {
  * @param {string} prevMethods - The methods called prior to this
  * @param {boolean} negate - Set "negate" on the "current" object
  * @param {*} condition - The condition to be evaluated
- * @returns {boolean|Base}
+ * @returns {(Base|boolean)}
  *
  */
 Base.prototype._testIllegalMethod = function(currentMethod, prevMethods, negate, condition) {
@@ -343,7 +343,7 @@ Base.prototype.equals = Base.prototype.equal = Base.prototype.eql = function(exp
  * Assert that condition matches a pattern
  *
  * @param {string|RegExp} regex - The pattern to test against
- * @returns {boolean|Base}
+ * @returns {(Base|boolean)}
  *
  */
 Base.prototype.matches = Base.prototype.match = function(regex) {
@@ -363,7 +363,7 @@ Base.prototype.matches = Base.prototype.match = function(regex) {
  * Assert that the condition is of a particular type
  *
  * @param {string} type - The type expected
- * @returns {boolean|Base}
+ * @returns {(Base|boolean)}
  *
  */
 Base.prototype.a = Base.prototype.an = function(type) {
@@ -384,7 +384,7 @@ Base.prototype.a = Base.prototype.an = function(type) {
  * Assert that the condition contains a substring
  *
  * @param {string} substr - The substring to check for
- * @returns {boolean|Base}
+ * @returns {(Base|boolean)}
  *
  */
 Base.prototype.contains = Base.prototype.contain = Base.prototype.indexOf = function(substring) {
@@ -409,17 +409,30 @@ Base.prototype.contains = Base.prototype.contain = Base.prototype.indexOf = func
   });
 };
 
-Base.prototype.containsKey = Base.prototype.containKey = Base.prototype.key = Base.prototype.property = function(condition) {
+/**
+ * Base#containsKey, Base#containKey, Base#key, Base#property
+ *
+ * Assert that an object contains a particular key
+ *
+ * @param {string} key - The key to look for
+ * @returns {(Base|boolean)}
+ *
+ */
+Base.prototype.containsKey = Base.prototype.containKey = Base.prototype.key = Base.prototype.property = function(key) {
   var self = this;
   return this._compare(function(val) {
     if (_.isObject(val)) {
+      // If noCase is set, we have to iterate over the keys
+      // and check the lowercase of each; otherwise, things
+      // are much simpler. We just need to no if the keys is
+      // in the object.
       if (self.flags.noCase) {
-        var c = condition.toLowerCase();
+        var c = key.toLowerCase();
         return _(val).keys().any(function(k) {
           return k.toLowerCase() === c;
         });
       } else {
-        return condition in val;
+        return key in val;
       }
     } else {
       return false;
@@ -427,20 +440,31 @@ Base.prototype.containsKey = Base.prototype.containKey = Base.prototype.key = Ba
   });
 };
 
+/**
+ * Base#containsKeys, Base#containKeys, Base#keys, Base#properties
+ *
+ * Assert that an object contains all of a set of keys
+ *
+ * @param {string[]|strings} keys - Any number of keys to check for
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype.containsKeys = Base.prototype.containKeys = Base.prototype.keys = Base.prototype.properties = function() {
-  var args = _.isArray(arguments[0]) ? arguments[0] : [].slice.call(arguments);
+  // Get the list of keys, either the first argument, or ALL the arguments
+  var keys = _.isArray(arguments[0]) ? arguments[0] : [].slice.call(arguments);
   var self = this;
   return this._compare(function(val) {
     if (_.isObject(val)) {
+      // Similar to containsKey, but we have to iterate over every key
       if (self.flags.noCase) {
-        return _.every(args, function(condition) {
+        return _.every(keys, function(condition) {
           var c = condition.toLowerCase();
           return _(val).keys().any(function(k) {
             return k.toLowerCase() === c;
           });
         });
       } else {
-        return _.every(args, function(condition) {
+        return _.every(keys, function(condition) {
           return condition in val;
         });
       }
@@ -450,84 +474,144 @@ Base.prototype.containsKeys = Base.prototype.containKeys = Base.prototype.keys =
   });
 };
 
-
-Base.prototype.containsValue = Base.prototype.containValue = Base.prototype.value = function(condition) {
+/**
+ * Base#containsValue, Base#containValue, Base#value
+ *
+ * Assert that an object contains a particular value
+ *
+ * @param {*} value - The value to check for
+ * @returns {(Base|boolean)}
+ *
+ */
+Base.prototype.containsValue = Base.prototype.containValue = Base.prototype.value = function(value) {
   var self = this;
   return this._compare(function(val) {
     if (_.isObject(val)) {
-      if (self.flags.noCase) {
-        var c = condition.toLowerCase();
-        return _(val).values().any(function(v) {
-          return v.toLowerCase() === c;
-        });
-      } else {
-        return _(val).values().contains(condition);
-      }
+      // Check that the list of values contains the value in question
+      return _(val).values().contains(value);
     } else {
       return false;
     }
   });
 };
 
+/**
+ * Base#containsValues, Base#containValues, Base#values
+ *
+ * Assert that an object contains all of a set of values
+ *
+ * @param {*[]} values - The list of values to check for
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype.containsValues = Base.prototype.containValues = Base.prototype.values = function() {
-  var args = _.isArray(arguments[0]) ? arguments[0] : [].slice.call(arguments);
+  var values = _.isArray(arguments[0]) ? arguments[0] : [].slice.call(arguments);
   var self = this;
   return this._compare(function(val) {
     if (_.isObject(val)) {
-      if (self.flags.noCase) {
-        return _.every(args, function(condition) {
-          var c = condition.toLowerCase();
-          return _(val).values().any(function(v) {
-            return v.toLowerCase() === c;
-          });
-        });
-      } else {
-        return _.every(args, function(condition) {
-          return _.values(val).indexOf(condition) > -1;
-        });
-      }
+      // Check that the list of values contains all the values in question
+      return _.every(values, function(condition) {
+        return _.values(val).indexOf(condition) > -1;
+      });
     } else {
       return false;
     }
   });
 };
 
+/**
+ * Base#defined
+ *
+ * Assert on the definedness of the condition
+ *
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype.defined = function() {
   return this._compare(function(val) {
     return typeof val !== 'undefined';
   });
 };
 
+/**
+ * Base#null
+ *
+ * Assert that the condition is null
+ *
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype['null'] = function() {
   return this._compare(function(val) {
     return val === null;
   });
 };
 
+/**
+ * Base#true
+ *
+ * Assert that the condition is true
+ *
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype['true'] = function() {
   return this._compare(function(val) {
     return val === true;
   });
 };
 
+/**
+ * Base#false
+ *
+ * Assert that the condition is false
+ *
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype['false'] = function() {
   return this._compare(function(val) {
     return val === false;
   });
 };
 
+/**
+ * Base#truthy
+ *
+ * Assert that the condition is truthy
+ *
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype.truthy = function() {
   return this._compare(function(val) {
     return val ? true : false;
   });
 };
 
+/**
+ * Base#falsy
+ *
+ * Assert that the condition is falsy
+ *
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype.falsy = function() {
   return this._compare(function(val) {
     return val ? false : true;
   });
 };
 
+/**
+ * ~_evalRelation
+ *
+ * Generic wrapper for evaluating lessThan, greaterThan, lessThanOrEqualTo, and greaterThanOrEqualTo
+ *
+ * @param {string} op - The operator, one of 'gt', 'lt', 'gte', and 'lte'
+ * @returns {function}
+ *
+ */
 var _evalRelation = function (op) {
   return function(condition) {
     return this._compare(function(val) {
@@ -546,16 +630,65 @@ var _evalRelation = function (op) {
   };
 };
 
+/**
+ * Base#greaterThan, Base#gt, Base#above
+ *
+ * Assert that the condition is greater than a particular value
+ *
+ * @param {number} value - The value to check against
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype.greaterThan = Base.prototype.gt = Base.prototype.above = _evalRelation('gt');
+
+/**
+ * Base#lessThan, Base#lt, Base#below
+ *
+ * Assert that the condition is less than a particular value
+ *
+ * @param {number} value - The value to check against
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype.lessThan = Base.prototype.lt = Base.prototype.below = _evalRelation('lt');
+
+/**
+ * Base#greaterThanOrEqualTo, Base#gte
+ *
+ * Assert that the condition is greater than or equal to a particular value
+ *
+ * @param {number} value - The value to check against
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype.greaterThanOrEqualTo = Base.prototype.gte = _evalRelation('gte');
+
+/**
+ * Base#lessThanOrEqualTo, Base#lte
+ *
+ * Assert that the condition is less than or equal to a particular value
+ *
+ * @param {number} value - The value to check against
+ * @returns {(Base|boolean)}
+ *
+ */
 Base.prototype.lessThanOrEqualTo = Base.prototype.lte = _evalRelation('lte');
 
+/**
+ * Base#tap
+ *
+ * Call a function with the current instance object
+ *
+ * @param {function} fn - The function to call
+ * @returns {Base}
+ *
+ */
 Base.prototype.tap = function(fn) {
   fn(this);
   return this;
 };
 
+// export Base
 module.exports = Base;
 
 },{"./utils":14,"lodash":19}],5:[function(require,module,exports){
