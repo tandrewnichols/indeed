@@ -3,12 +3,27 @@ var _ = require('lodash');
 var Base = require('./base');
 var util = require('util');
 
+/**
+ * AllOf
+ *
+ * @constructor
+ * 
+ */
 var AllOf = function AllOf (condition) {
   Base.call(this, condition);
 };
 
 util.inherits(AllOf, Base);
 
+/**
+ * AllOf#and
+ *
+ * Add another condition to the chain
+ *
+ * @param {*} condition - The condition to be evaluated
+ * @returns {AllOf}
+ *
+ */
 AllOf.prototype.and = function(condition) {
   this.current.push({
     val: condition,
@@ -17,16 +32,33 @@ AllOf.prototype.and = function(condition) {
   return this;
 };
 
+/**
+ * AllOf#test
+ *
+ * Evaluate the result of the current boolean expression.
+ * @returns {boolean}
+ *
+ */
 AllOf.prototype.test = function () {
   return _(this.current).pluck('val').every(function(cond) {
     return Boolean(cond);
   });
 };
 
+/**
+ * ~allOf
+ *
+ * The main entry point for allOf
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {AllOf}
+ *
+ */
 var allOf = module.exports = function(condition) {
   return new AllOf(condition);
 };
 
+// Expose constructor
 allOf.AllOf = AllOf;
 
 },{"./base":4,"lodash":19,"util":18}],2:[function(require,module,exports){
@@ -82,12 +114,27 @@ var _ = require('lodash');
 var util = require('util');
 var Base = require('./base');
 
+/**
+ * AnyOf
+ *
+ * @constructor
+ * 
+ */
 var AnyOf = function AnyOf(condition) {
   Base.call(this, condition);
 };
 
 util.inherits(AnyOf, Base);
 
+/**
+ * AnyOf#and
+ *
+ * Add another condition to the chain
+ *
+ * @param {*} condition - The condition to be evaluated
+ * @returns {AnyOf}
+ *
+ */
 AnyOf.prototype.and = function(condition) {
   this.current.push({
     val: condition,
@@ -96,16 +143,33 @@ AnyOf.prototype.and = function(condition) {
   return this;
 };
 
+/**
+ * AnyOf#test
+ *
+ * Evaluate the result of the current boolean expression.
+ * @returns {boolean}
+ *
+ */
 AnyOf.prototype.test = function() {
   return _(this.current).pluck('val').any(function(cond) {
     return Boolean(cond);
   });
 };
 
+/**
+ * ~anyOf
+ *
+ * The main entry point for anyOf
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {AnyOf}
+ *
+ */
 var anyOf = module.exports = function(condition) {
   return new AnyOf(condition); 
 };
 
+// Expose constructor
 anyOf.AnyOf = AnyOf;
 
 },{"./base":4,"lodash":19,"util":18}],4:[function(require,module,exports){
@@ -123,6 +187,7 @@ var utils = require('./utils');
  *
  */
 var Base = function Base(condition, negate) {
+  // Set up flags
   var self = this;
   this.flags = {
     not: false,
@@ -130,11 +195,15 @@ var Base = function Base(condition, negate) {
     chain: false,
     noCase: false
   };
+
+  // Add this condition to the current list
   this.current = [{
     val: condition,
     negate: negate,
     actual: condition
   }];
+
+  // Set up helpers
   _.each(['And', 'But', 'Or', 'Xor'], function(joiner) {
     self.__defineGetter__(joiner, function() {
       return utils.delegate(self.test(), joiner.toLowerCase());
@@ -196,10 +265,26 @@ Base.prototype._compare = function(tester) {
   }
 };
 
+/**
+ * Base#_testIllegalMethod
+ *
+ * Assert that a particular function can be called. If not, throw an exception;
+ * otherwise, test the current chain.
+ *
+ * @private
+ * @param {string} currentMethod - The method being invoked
+ * @param {string} prevMethods - The methods called prior to this
+ * @param {boolean} negate - Set "negate" on the "current" object
+ * @param {*} condition - The condition to be evaluated
+ * @returns {boolean|Base}
+ *
+ */
 Base.prototype._testIllegalMethod = function(currentMethod, prevMethods, negate, condition) {
+  // If two methods have already been called, throw an exception
   if (this.current.length === 2) {
     throw new Error('IllegalMethodException: "' + currentMethod + '" cannot be called with "' + prevMethods + '"');
   } else {
+    // Otherwise, add to the list of current objects
     var obj = {
       val: condition,
       actual: condition
@@ -211,6 +296,7 @@ Base.prototype._testIllegalMethod = function(currentMethod, prevMethods, negate,
 
     this.current.push(obj);
 
+    // If we're not chaining, test
     if (this.current.length === 2 && !this.flags.chain) {
       return this.test();
     } else {
@@ -219,52 +305,104 @@ Base.prototype._testIllegalMethod = function(currentMethod, prevMethods, negate,
   }
 };
 
-Base.prototype.equals = Base.prototype.equal = Base.prototype.eql = function(condition) {
-  var self = this,
-      cond, v;
+/**
+ * Base#equal, Base#equal, Base#eql
+ * 
+ * Assert equality
+ *
+ * @param {*} expected - The expected value of the current condition
+ * @returns {boolean}
+ *
+ */
+Base.prototype.equals = Base.prototype.equal = Base.prototype.eql = function(expected) {
+  var self = this;
+  var cond;
+  var v;
+
   return this._compare(function(val) {
+    // If noCase was set, lowercase all the things
     if (self.flags.noCase && _.isString(val)) {
-      cond = condition.toLowerCase();
+      cond = expected.toLowerCase();
       v = val.toLowerCase();
     }
+    
+    // If this is a deep comparison, delegate to _.isEqual;
+    // otherwise, use type/value comparison
     if (self.flags.deep) {
       self.flags.deep = false;
-      return _.isEqual(( v || val ), ( cond || condition ));
+      return _.isEqual(( v || val ), ( cond || expected ));
     } else {
-      return (v || val) === (cond || condition);
+      return (v || val) === (cond || expected);
     }
   });
 };
 
+/**
+ * Base#matches, Base#match
+ *
+ * Assert that condition matches a pattern
+ *
+ * @param {string|RegExp} regex - The pattern to test against
+ * @returns {boolean|Base}
+ *
+ */
 Base.prototype.matches = Base.prototype.match = function(regex) {
+  // If the regex is a string, convert it to a RegExp
   if (typeof regex === 'string') {
     regex = new RegExp(regex);
   }
+
   return this._compare(function(val) {
     return regex.test(val);
   });
 };
 
-Base.prototype.a = Base.prototype.an = function(condition) {
+/**
+ * Base#a, Base#an
+ *
+ * Assert that the condition is of a particular type
+ *
+ * @param {string} type - The type expected
+ * @returns {boolean|Base}
+ *
+ */
+Base.prototype.a = Base.prototype.an = function(type) {
   return this._compare(function(val) {
     try {
-      return val.constructor.name.toLowerCase() === condition.toLowerCase();
+      // Try comparing the constructor name first
+      return val.constructor.name.toLowerCase() === type.toLowerCase();
     } catch (e) {
-      return typeof val === condition && val !== null && typeof val !== 'undefined';
+      // If that fails, try typeof
+      return typeof val === type && val !== null && typeof val !== 'undefined';
     }
   });
 };
 
-Base.prototype.contains = Base.prototype.contain = Base.prototype.indexOf = function(condition) {
-  var self = this,
-      cond, v;
+/**
+ * Base#contains, Base#contain, Base#indexOf
+ *
+ * Assert that the condition contains a substring
+ *
+ * @param {string} substr - The substring to check for
+ * @returns {boolean|Base}
+ *
+ */
+Base.prototype.contains = Base.prototype.contain = Base.prototype.indexOf = function(substring) {
+  var self = this;
+  var cond;
+  var v;
+
   return this._compare(function(val) {
+    // If noCase was set, lowercase all the things
     if (self.flags.noCase && _.isString(val)) {
-      cond = condition.toLowerCase();
+      cond = substring.toLowerCase();
       v = val.toLowerCase();
     }
+
+    // If this val is a string or array, call indexOf on it
+    // otherwise, return false
     if (val.indexOf) {
-      return (v || val).indexOf(( cond || condition )) > -1;
+      return (v || val).indexOf(( cond || substring )) > -1;
     } else {
       return false;
     }
@@ -1036,6 +1174,7 @@ indeed.mixin = function(obj) {
   }).value();
 };
 
+// Attach utils methods and expose the constructor
 indeed.Not = utils.groupNegate(Indeed);
 indeed.chain = utils.chain(Indeed);
 indeed.not.chain = utils.chainNegate(Indeed);
