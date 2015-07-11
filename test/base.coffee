@@ -364,16 +364,6 @@ describe 'base', ->
       it 'should be false for other types', ->
         expect(base.has.values('i').current[0].val).to.be.false
 
-    context 'with noCase', ->
-      it 'should ignore case', ->
-        base.current = [
-          val: false
-          actual:
-            foo: 'a Foo'
-            bar: 'a Bar'
-        ]
-        expect(base.noCase.values('a foo', 'a bar').current[0].val).to.be.true
-
   describe '#defined', ->
     it 'should be false for undefined', ->
       base.current = [
