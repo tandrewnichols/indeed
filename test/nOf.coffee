@@ -16,7 +16,7 @@ describe 'nOf', ->
     context 'called multiple times', ->
       expect(( ->
         n(2).of(true).of(false)
-      )).to.throw('IllegalMethodException: of cannot be called with of/and')
+      )).to.throw('IllegalMethodException: "of" cannot be called with "of/and"')
 
   describe '#And', ->
     it 'should delegate to indeed an and', ->

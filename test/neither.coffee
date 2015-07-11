@@ -19,7 +19,7 @@ describe 'neither', ->
       it 'should throw IllegalMethodException when chaining', ->
         expect(( ->
           neither.chain(true).nor(true).nor(true)
-        )).to.throw('IllegalMethodException: nor cannot be called with neither/nor')
+        )).to.throw('IllegalMethodException: "nor" cannot be called with "neither/nor"')
 
       it 'should throw Object has no method when not chaining', ->
         expect(( ->

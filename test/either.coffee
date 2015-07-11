@@ -22,7 +22,7 @@ describe 'either', ->
       it 'should throw IllegalMethodException when chaining', ->
         expect(( ->
           either.chain(true).or(true).or(true)
-        )).to.throw('IllegalMethodException: or cannot be called with either/or')
+        )).to.throw('IllegalMethodException: "or" cannot be called with "either/or"')
 
       it 'should throw Object has no method when not chaining', ->
         expect(( ->

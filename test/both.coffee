@@ -19,7 +19,7 @@ describe 'both', ->
       it 'should throw IllegalMethodException when chaining', ->
         expect((->
           both.chain(true).and(true).and(true)
-        )).to.throw('IllegalMethodException: and cannot be called with both/and')
+        )).to.throw('IllegalMethodException: "and" cannot be called with "both/and"')
 
       it 'should throw Object false has no method when not chaining', ->
         expect(( ->

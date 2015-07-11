@@ -400,6 +400,7 @@ module.exports = Base;
 
 },{"./utils":14,"lodash":19}],5:[function(require,module,exports){
 var util = require('util');
+var utils = require('./utils');
 var Base = require('./base');
 
 var Both = function Both(condition) {
@@ -409,19 +410,7 @@ var Both = function Both(condition) {
 util.inherits(Both, Base);
 
 Both.prototype.and = function(condition) {
-  if (this.current.length === 2) {
-    throw new Error('IllegalMethodException: and cannot be called with both/and');
-  } else {
-    this.current.push({
-      val: condition,
-      actual: condition
-    });
-    if (this.current.length === 2 && !this.flags.chain) {
-      return this.test();
-    } else {
-      return this;
-    }
-  }
+  return utils.commonTest.call(this, 'and', 'both/and', false, condition);
 };
 
 Both.prototype.test = function() {
@@ -440,8 +429,9 @@ both.chain = function(condition) {
 
 both.Both = Both;
 
-},{"./base":4,"util":18}],6:[function(require,module,exports){
+},{"./base":4,"./utils":14,"util":18}],6:[function(require,module,exports){
 var util = require('util');
+var utils = require('./utils');
 var Base = require('./base');
 
 var Either = function Either(condition) {
@@ -451,19 +441,7 @@ var Either = function Either(condition) {
 util.inherits(Either, Base);
 
 Either.prototype.or = function(condition) {
-  if (this.current.length === 2) {
-    throw new Error('IllegalMethodException: or cannot be called with either/or');
-  } else {
-    this.current.push({
-      val: condition,
-      actual: condition
-    });
-    if (this.current.length === 2 && !this.flags.chain) {
-      return this.test();
-    } else {
-      return this;
-    }
-  }
+  return utils.commonTest.call(this, 'or', 'either/or', false, condition);
 };
 
 Either.prototype.test = function() {
@@ -482,7 +460,7 @@ either.chain = function(condition) {
 
 either.Either = Either;
 
-},{"./base":4,"util":18}],7:[function(require,module,exports){
+},{"./base":4,"./utils":14,"util":18}],7:[function(require,module,exports){
 var Indeed = require('./indeed').Indeed;
 var util = require('util');
 var _ = require('lodash');
@@ -1163,7 +1141,7 @@ util.inherits(NOf, Base);
 
 NOf.prototype.of = function(condition) {
   if (this.current) {
-    throw new Error('IllegalMethodException: of cannot be called with of/and');
+    throw new Error('IllegalMethodException: "of" cannot be called with "of/and"');
   } else {
     Base.call(this, condition);
     return this;
@@ -1192,6 +1170,7 @@ n.NOf = NOf;
 
 },{"./base":4,"lodash":19,"util":18}],11:[function(require,module,exports){
 var util = require('util');
+var utils = require('./utils');
 var Base = require('./base');
 
 var Neither = function Neither(condition) {
@@ -1201,20 +1180,7 @@ var Neither = function Neither(condition) {
 util.inherits(Neither, Base);
 
 Neither.prototype.nor = function (condition) {
-  if (this.current.length === 2) {
-    throw new Error('IllegalMethodException: nor cannot be called with neither/nor');
-  } else {
-    this.current.push({
-      val: condition,
-      actual: condition,
-      negate: true
-    });
-    if (this.current.length === 2 && !this.flags.chain) {
-      return this.test();
-    } else {
-      return this;
-    }
-  }
+  return utils.commonTest.call(this, 'nor', 'neither/nor', true, condition);
 };
 
 Neither.prototype.test = function() {
@@ -1233,7 +1199,7 @@ neither.chain = function(condition) {
 
 neither.Neither = Neither;
 
-},{"./base":4,"util":18}],12:[function(require,module,exports){
+},{"./base":4,"./utils":14,"util":18}],12:[function(require,module,exports){
 var _ = require('lodash');
 var util = require('util');
 var Base = require('./base');
@@ -1303,6 +1269,29 @@ exports.delegate = function(condition, join) {
   i.calls = [];
   i.flags.chain = true;
   return i;
+};
+
+exports.commonTest = function(currentMethod, prevMethods, negate, condition) {
+  if (this.current.length === 2) {
+    throw new Error('IllegalMethodException: "' + currentMethod + '" cannot be called with "' + prevMethods + '"');
+  } else {
+    var obj = {
+      val: condition,
+      actual: condition
+    };
+
+    if (negate) {
+      obj.negate = negate;
+    }
+
+    this.current.push(obj);
+
+    if (this.current.length === 2 && !this.flags.chain) {
+      return this.test();
+    } else {
+      return this;
+    }
+  }
 };
 
 },{"./indeed":8}],15:[function(require,module,exports){
