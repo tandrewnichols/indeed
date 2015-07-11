@@ -483,6 +483,7 @@ either.Either = Either;
 },{"./base":4,"util":18}],7:[function(require,module,exports){
 var Indeed = require('./indeed').Indeed;
 var util = require('util');
+var utils = require('./utils');
 var _ = require('lodash');
 
 var Expect = function Expect (condition) {
@@ -549,37 +550,17 @@ expect.not = function(condition) {
   return new Expect(condition, true);
 };
 
-expect.Not = function(condition) {
-  var e = new Expect(condition);
-  e.flags.groupNot = true;
-  return e;
-};
-
-expect.chain = function(condition) {
-  var e = new Expect(condition);
-  e.flags.chain = true;
-  return e;
-};
-
-expect.not.chain = function(condition) {
-  var e = new Expect(condition, true);
-  e.flags.chain = true;
-  return e;
-};
-
-expect.Not.chain = function(condition) {
-  var e = new Expect(condition);
-  e.flags.groupNot = true;
-  e.flags.chain = true;
-  return e;
-};
-
+expect.Not = utils.groupNegate(Expect);
+expect.chain = utils.chain(Expect);
+expect.not.chain = utils.chainNegate(Expect);
+expect.Not.chain = utils.groupChainNegate(Expect);
 expect.Expect = Expect;
 
-},{"./indeed":8,"lodash":19,"util":18}],8:[function(require,module,exports){
+},{"./indeed":8,"./utils":14,"lodash":19,"util":18}],8:[function(require,module,exports){
 var _ = require('lodash');
 var Base = require('./base');
 var util = require('util');
+var utils = require('./utils');
 var allowed = require('./allowed');
 
 // Mixin comparison methods for evaluating chains easily
@@ -1039,68 +1020,6 @@ indeed.not = function(condition) {
 };
 
 /**
- * .Not
- *
- * The entry point with the first group negated
- *
- * @param {*} condition - The thing to be evaluated
- * @returns {Indeed}
- *
- */
-indeed.Not = function(condition) {
-  var i = new Indeed(condition);
-  i.flags.groupNot = true;
-  return i;
-};
-
-/**
- *
- * .chain
- *
- * The entry point with chaining enabled
- *
- * @param {*} condition - The thing to be evaluated
- * @returns {Indeed}
- *
- */
-indeed.chain = function(condition) {
-  var i = new Indeed(condition);
-  i.flags.chain = true;
-  return i;
-};
-
-/**
- * .not.chain
- *
- * The entry point with chaining enabled and the first condition negated
- *
- * @param {*} condition - The thing to be evaluated
- * @returns {Indeed}
- *
- */
-indeed.not.chain = function(condition) {
-  var i = new Indeed(condition, true);
-  i.flags.chain = true;
-  return i;
-};
-
-/**
- * .Not.chain
- *
- * The entry point with chaining enabled and the first group negated
- *
- * @param {*} condition - The thing to be evaluated
- * @returns {Indeed}
- *
- */
-indeed.Not.chain = function(condition) {
-  var i = new Indeed(condition);
-  i.flags.groupNot = true;
-  i.flags.chain = true;
-  return i;
-};
-
-/**
  * .mixin
  *
  * Adds custom comparison functions to the Indeed object
@@ -1117,9 +1036,13 @@ indeed.mixin = function(obj) {
   }).value();
 };
 
+indeed.Not = utils.groupNegate(Indeed);
+indeed.chain = utils.chain(Indeed);
+indeed.not.chain = utils.chainNegate(Indeed);
+indeed.Not.chain = utils.groupChainNegate(Indeed);
 indeed.Indeed = Indeed;
 
-},{"./allowed":2,"./base":4,"lodash":19,"util":18}],9:[function(require,module,exports){
+},{"./allowed":2,"./base":4,"./utils":14,"lodash":19,"util":18}],9:[function(require,module,exports){
 (function (global){
 var globalize = function() {
   var root = typeof window === 'object' ? window : global;
@@ -1288,6 +1211,77 @@ exports.delegate = function(condition, join) {
   i.calls = [];
   i.flags.chain = true;
   return i;
+};
+
+/**
+ * .groupNegate
+ *
+ * The entry point for Indeed and Expect with the first group negated
+ *
+ * @param {Constructor} Clss - The class to be instantiated
+ * @returns {function}
+ *
+ */
+exports.groupNegate = function(Clss) {
+  return function(condition) {
+    var c = new Clss(condition);
+    c.flags.groupNot = true;
+    return c;
+  };
+};
+
+/**
+ *
+ * .chain
+ *
+ * The entry point for Indeed and Expect with chaining enabled
+ *
+ * @param {Constructor} Clss - The class to be instantiated
+ * @returns {function}
+ *
+ */
+exports.chain = function(Clss) {
+  return function(condition) {
+    var c = new Clss(condition);
+    c.flags.chain = true;
+    return c;
+  };
+};
+
+/**
+ * .chainNegate
+ *
+ * The entry point for Indeed and Expect with chaining enabled
+ * and the first condition negated
+ *
+ * @param {Constructor} Clss - The class to be instantiated
+ * @returns {function}
+ *
+ */
+exports.chainNegate = function(Clss) {
+  return function(condition) {
+    var c = new Clss(condition, true);
+    c.flags.chain = true;
+    return c;
+  };
+};
+
+/**
+ * .groupNegate
+ *
+ * The entry point for Indeed and Expect with chaining enabled and the first group negated
+ *
+ * @param {Constructor} Clss - The class to be instantiated
+ * @returns {function}
+ *
+ */
+exports.groupChainNegate = function(Clss) {
+  return function(condition) {
+    var c = new Clss(condition);
+    c.flags.groupNot = true;
+    c.flags.chain = true;
+    return c;
+  };
 };
 
 },{"./indeed":8}],15:[function(require,module,exports){
