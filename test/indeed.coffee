@@ -36,6 +36,7 @@ describe 'indeed', ->
       chain: true
       deep: false
       noCase: false
+      unordered: false
 
   it 'should allow and, andNot, or, orNot, and butNot', ->
     expect((->
@@ -523,6 +524,19 @@ describe 'indeed', ->
         
       it 'should be false for different objects', ->
         expect(indeed(new Date(2000, 9, 9)).deep.equals(new Date(1999, 3, 8))).to.be.false
+
+    context 'roughly equal', ->
+      it 'should be true for arrays with the same elements', ->
+        expect(indeed([1, 2, 3]).roughly.equals([3, 1, 2])).to.be.true
+
+      it 'should be false for arrays with different elements', ->
+        expect(indeed([1, 2, 3]).roughly.equals([3, 4, 2])).to.be.false
+
+      it 'should be false for arrays with different number of elements', ->
+        expect(indeed([1, 2, 3]).roughly.equals([3, 1])).to.be.false
+
+      it 'should ignore non-array types', ->
+        expect(indeed('foo').roughly.equals('oof')).to.be.false
 
   describe '#a', ->
     it 'should return true if constructor name matches', ->

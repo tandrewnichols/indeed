@@ -26,6 +26,7 @@ describe 'expect', ->
       chain: true
       deep: false
       noCase: false
+      unordered: false
 
   describe '#new', ->
     context 'with a spy', ->
