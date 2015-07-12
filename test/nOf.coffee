@@ -1,6 +1,6 @@
 describe 'nOf', ->
   it 'should return an object with and', ->
-    expect(n(2)).to.be.an.instanceOf(n.NOf)
+    expect(n(2)).to.be.an.instanceOf(n.N)
     expect(n(2).and).to.be.a.Function
     expect(n(2).test).to.be.a.Function
     expect(n(2).of).to.be.a.Function
