@@ -40,6 +40,23 @@ describe 'expect', ->
         stub('foo')
         expect(xpect(stub).to.have.been.calledWith('foo')).to.be.true
 
+      it 'should allow negation on spy methods and properties', ->
+        stub = sinon.stub()
+        stub2 = sinon.stub()
+        expect(xpect(stub).not.to.have.been.called).to.be.true
+        stub('foo')
+        expect(xpect(stub).not.to.have.been.calledWith('bar')).to.be.true
+        obj = {}
+        stub2.apply(obj, ['foo'])
+        expect(xpect(stub).not.to.have.been.calledAfter(stub2)).to.be.true
+        expect(xpect(stub2).not.to.have.been.calledOn(obj)).to.be.false
+        stub({ foo: 'bar', baz: 'quux' })
+        expect(xpect(stub).not.to.have.been.calledWithMatch({ foo: 'baz' })).to.be.true
+        expect(xpect(stub).not.to.have.been.calledThrice).to.be.true
+        expect(xpect(stub).not.to.have.been.calledTwice).to.be.false
+        new stub2()
+        expect(xpect(stub2).not.to.have.been.calledWithNew()).to.be.false
+
       it 'should not blow up when called with undefined', ->
         expect(xpect(undefined).calledWith).to.not.be.defined
 

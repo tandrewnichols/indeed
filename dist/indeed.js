@@ -822,12 +822,63 @@ var _ = require('lodash');
  * 
  */
 var Expect = function Expect (condition) {
+  var self = this;
   Indeed.apply(this, arguments);
   this.calls = ['expect'];
 
   // Duck-typing: condition is a sinon spy
   if (condition && condition.displayName && condition.args && condition.calledWith) {
+    // Extend expect with spy assertions
     _.extend(this, condition);
+
+    // We need to change the functionality of "not" for spies, because
+    // expect(spy).not.to.have.been.called doesn't act as expected otherwise.
+    this.__defineGetter__('not', function() {
+      // Still set this flag in case, by some chance,
+      // a build in method is called instead
+      self.flags.not = true;
+
+      // Wrapper to create a function for negating spy methods
+      var createFunc = function(fn) {
+        // Save off the existing spy method as __functionName
+        var newName = '__' + fn;
+        self[newName] = self[fn];
+
+        // This is the actual function that will be called when,
+        // for example, calledWith() is invoked
+        return function() {
+          var func = self[newName];
+          
+          // If this thing is a function, invoke it with all arguments;
+          // otherwise, just grab the value of the property.
+          var val = typeof func === 'function' ? func.apply(condition, arguments) : func;
+
+          // Negate and return
+          return !val;
+        };
+      };
+
+      // Thought about saving a literal list of spy functions to replace,
+      // but I don't want this lib to be dependent on a particular version
+      // of sinon. So instead, we're just doing them all, which should be safe
+      // since this only happens when "not" is called. But . . . it would
+      // be weird to do expect(spy).not.to.yieldTo(/*...*/) or such.
+      for (var fn in condition) {
+        if (condition.hasOwnProperty(fn)) {
+          // Keep the API the same as sinon. If this thing is a function,
+          // replace it with a function. If it's a property, replace it with
+          // a getter, so that every can be used exactly the same way.
+          if (typeof condition[fn] === 'function') {
+            self[fn] = createFunc(fn);
+          } else {
+            self.__defineGetter__(fn, createFunc(fn));
+          }
+        }
+      }
+
+      // For chaining purposes.
+      return this;
+    });
   }
 };
 
