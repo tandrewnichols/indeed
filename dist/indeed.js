@@ -7,6 +7,7 @@ var util = require('util');
  * AllOf
  *
  * @constructor
+ * @param {*} condition - The condition to be evaluated
  * 
  */
 var AllOf = function AllOf (condition) {
@@ -118,6 +119,7 @@ var Base = require('./base');
  * AnyOf
  *
  * @constructor
+ * @param {*} condition - The condition to be evaluated
  * 
  */
 var AnyOf = function AnyOf(condition) {
@@ -693,70 +695,134 @@ module.exports = Base;
 
 },{"./utils":14,"lodash":19}],5:[function(require,module,exports){
 var util = require('util');
+var utils = require('./utils');
 var Base = require('./base');
 
+/**
+ * Both
+ *
+ * @constructor
+ * 
+ */
 var Both = function Both(condition) {
   Base.call(this, condition);
 };
 
 util.inherits(Both, Base);
 
+/**
+ * Both#and
+ *
+ * Add another condition to the chain
+ *
+ * @param {*} condition - The condition to be evaluated
+ * @returns {Both}
+ *
+ */
 Both.prototype.and = function(condition) {
   return this._testIllegalMethod('and', 'both/and', false, condition);
 };
 
+/**
+ * Both#test
+ *
+ * Evaluate the result of the current boolean expression.
+ * @returns {boolean}
+ *
+ */
 Both.prototype.test = function() {
   return this.current[0].val && this.current[1].val;
 };
 
+/**
+ * ~both
+ *
+ * The main entry point for both
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {Both}
+ *
+ */
 var both = module.exports = function(condition) {
   return new Both(condition);
 };
 
-both.chain = function(condition) {
-  var b = new Both(condition);
-  b.flags.chain = true;
-  return b;
-};
-
+// Add chaining and expose constructor
+both.chain = utils.chain(Both);
 both.Both = Both;
 
-},{"./base":4,"util":18}],6:[function(require,module,exports){
+},{"./base":4,"./utils":14,"util":18}],6:[function(require,module,exports){
 var util = require('util');
+var utils = require('./utils');
 var Base = require('./base');
 
+/**
+ * Either
+ *
+ * @constructor
+ * @param {*} condition - The condition to be evaluated
+ * 
+ */
 var Either = function Either(condition) {
   Base.call(this, condition);
 };
 
 util.inherits(Either, Base);
 
+/**
+ * Either#or
+ *
+ * Add an or condition to the chain
+ *
+ * @param {*} condition - The condition to be evaluated
+ * @returns {Either}
+ *
+ */
 Either.prototype.or = function(condition) {
   return this._testIllegalMethod('or', 'either/or', false, condition);
 };
 
+/**
+ * Either#test
+ *
+ * Evaluate the result of the current boolean expression.
+ * @returns {boolean}
+ *
+ */
 Either.prototype.test = function() {
   return this.current[0].val || this.current[1].val;
 };
 
+/**
+ * ~either
+ *
+ * The main entry point for either
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {Either}
+ *
+ */
 var either = module.exports = function(condition) {
   return new Either(condition);
 };
 
-either.chain = function(condition) {
-  var e = new Either(condition);
-  e.flags.chain = true;
-  return e;
-};
-
+// Add chaining and expose constructor
+either.chain = utils.chain(Either);
 either.Either = Either;
 
-},{"./base":4,"util":18}],7:[function(require,module,exports){
+},{"./base":4,"./utils":14,"util":18}],7:[function(require,module,exports){
 var Indeed = require('./indeed').Indeed;
 var util = require('util');
 var utils = require('./utils');
 var _ = require('lodash');
 
+/**
+ * Expect
+ *
+ * @constructor
+ * @param {*} condition - The condition to be evaluated
+ * 
+ */
 var Expect = function Expect (condition) {
   Indeed.apply(this, arguments);
   this.calls = ['expect'];
@@ -769,12 +835,23 @@ var Expect = function Expect (condition) {
 
 util.inherits(Expect, Indeed);
 
+/**
+ * Expect#throw, Expect#throws
+ *
+ * Assert that a function throws an exception
+ *
+ * @param {*} condition - The condition to be evaluated
+ * @returns {(Expect|boolean)}
+ *
+ */
 Expect.prototype['throw'] =
-Expect.prototype.throws = function (condition) {
+Expect.prototype.throws = function (exception) {
   var self = this;
   return this._compare(function(fn) {
     if (typeof fn === 'function') {
       try {
+        // Try calling the function, with arguments
+        // if there are any
         if (self.throwArgs) {
           fn.apply(fn, self.throwArgs);
         } else {
@@ -782,17 +859,18 @@ Expect.prototype.throws = function (condition) {
         }
         return false;
       } catch (e) {
+        // Catch the exception and evaluate based on the constructor
         var err = (e instanceof Error) ? e : new Error(e);
-        if (condition) {
-          switch (condition.constructor.name) {
+        if (exception && exception.constructor) {
+          switch (exception.constructor.name) {
             case 'Error':
-              return _.isEqual(err, condition);
+              return _.isEqual(err, exception);
             case 'String':
-              return err.message === condition;
+              return err.message === exception;
             case 'RegExp':
-              return condition.test(err.message);
+              return exception.test(err.message);
             case 'Function':
-              return condition(err);
+              return exception(err);
             default:
               return false;
           }
@@ -806,17 +884,44 @@ Expect.prototype.throws = function (condition) {
   });
 };
 
+/**
+ * Expect#with
+ *
+ * Provide arguments to pass to the function to evaluate with fn.
+ *
+ * @param {*[]} condition - Any number of arguments to evaluate with throws
+ * @returns {Expect}
+ *
+ */
 Expect.prototype['with'] = function() {
   this.throwArgs = [].slice.call(arguments);
   return this;
 };
 
+/**
+ * Expect#assert
+ *
+ * Test the condition chain via #test . . . but in a testier way
+ *
+ * @returns {boolean}
+ *
+ */
 Expect.prototype.assert = Expect.prototype.test;
 
+/**
+ * ~expect
+ *
+ * The main entry point for expect
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {Expect}
+ *
+ */
 var expect = module.exports = function(condition) {
   return new Expect(condition);
 };
 
+// Add chaining and negation, and expose constructor
 expect.not = function(condition) {
   return new Expect(condition, true);
 };
@@ -851,6 +956,8 @@ _.mixin({
  * Indeed
  *
  * @constructor
+ * @param {*} condition - The condition to be evaluated
+ * @param {boolean} negate - Whether to negate the current expression
  * 
  */
 var Indeed = function Indeed () {
@@ -1316,6 +1423,12 @@ indeed.Indeed = Indeed;
 
 },{"./allowed":2,"./base":4,"./utils":14,"lodash":19,"util":18}],9:[function(require,module,exports){
 (function (global){
+/**
+ * ~ globallize
+ *
+ * Expose the various helpers on the global/window object
+ *
+ */
 var globalize = function() {
   var root = typeof window === 'object' ? window : global;
   root.indeed = require('./indeed');
@@ -1330,6 +1443,7 @@ var globalize = function() {
   root.n = require('./nOf');
 };
 
+// Expose all the helpers on the exported object
 globalize.indeed = require('./indeed');
 globalize.expect = require('./expect');
 globalize.either = require('./either');
@@ -1348,13 +1462,29 @@ var _ = require('lodash');
 var util = require('util');
 var Base = require('./base');
 
-var NOf = function NOf(count) {
+/**
+ * N
+ *
+ * @constructor
+ * @param {number} count - The number of truthy conditions to expect
+ * 
+ */
+var N = function N(count) {
   this.count = count;
 };
 
-util.inherits(NOf, Base);
+util.inherits(N, Base);
 
-NOf.prototype.of = function(condition) {
+/**
+ * N#of
+ *
+ * Start a series
+ *
+ * @param {*} condition - The condition to be evaluated
+ * @returns {N}
+ *
+ */
+N.prototype.of = function(condition) {
   if (this.current) {
     throw new Error('IllegalMethodException: "of" cannot be called with "of/and"');
   } else {
@@ -1363,7 +1493,16 @@ NOf.prototype.of = function(condition) {
   }
 };
 
-NOf.prototype.and = function(condition) {
+/**
+ * N#and
+ *
+ * Add another condition to the chain
+ *
+ * @param {*} condition - The condition to be evaluated
+ * @returns {N}
+ *
+ */
+N.prototype.and = function(condition) {
   this.current.push({
     val: condition,
     actual: condition
@@ -1371,59 +1510,121 @@ NOf.prototype.and = function(condition) {
   return this;
 };
 
-NOf.prototype.test = function() {
+/**
+ * N#test
+ *
+ * Evaluate the result of the current boolean expression.
+ * @returns {boolean}
+ *
+ */
+N.prototype.test = function() {
   return _(this.current).pluck('val').countBy(function(cond) {
     return Boolean(cond) ? 'true' : 'false';
   }).value()['true'] === this.count;
 };
 
+/**
+ * ~n
+ *
+ * The main entry point for n
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {N}
+ *
+ */
 var n = module.exports = function(count) {
-  return new NOf(count);
+  return new N(count);
 };
 
-n.NOf = NOf;
+// Expose constructor
+n.N = N;
 
 },{"./base":4,"lodash":19,"util":18}],11:[function(require,module,exports){
 var util = require('util');
+var utils = require('./utils');
 var Base = require('./base');
 
+/**
+ * Neither
+ *
+ * @constructor
+ * @param {*} condition - The condition to be evaluated
+ * 
+ */
 var Neither = function Neither(condition) {
   Base.call(this, condition, true);
 };
 
 util.inherits(Neither, Base);
 
+/**
+ * Neither#nor
+ *
+ * Add the contrary condition to the chain
+ *
+ * @param {*} condition - The condition to be evaluated
+ * @returns {Neither}
+ *
+ */
 Neither.prototype.nor = function (condition) {
   return this._testIllegalMethod('nor', 'neither/nor', true, condition);
 };
 
+/**
+ * Neither#test
+ *
+ * Evaluate the result of the current boolean expression.
+ * @returns {boolean}
+ *
+ */
 Neither.prototype.test = function() {
   return !this.current[0].val && !this.current[1].val;
 };
 
+/**
+ * ~neither
+ *
+ * The main entry point for neither
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {Neither}
+ *
+ */
 var neither = module.exports = function(condition) {
   return new Neither(condition);
 };
 
-neither.chain = function(condition) {
-  var n = new Neither(condition);
-  n.flags.chain = true;
-  return n;
-};
-
+// Add chaining and expose constructor
+neither.chain = utils.chain(Neither);
 neither.Neither = Neither;
 
-},{"./base":4,"util":18}],12:[function(require,module,exports){
+},{"./base":4,"./utils":14,"util":18}],12:[function(require,module,exports){
 var _ = require('lodash');
 var util = require('util');
 var Base = require('./base');
 
+/**
+ * NoneOf
+ *
+ * @constructor
+ * @param {*} condition - The condition to be evaluated
+ * 
+ */
 var NoneOf = function NoneOf(condition) {
   Base.call(this, condition);
 };
 
 util.inherits(NoneOf, Base);
 
+/**
+ * NoneOf#and
+ *
+ * Add another condition to the chain
+ *
+ * @param {*} condition - The condition to be evaluated
+ * @returns {NoneOf}
+ *
+ */
 NoneOf.prototype.and = function(condition) {
   this.current.push({
     val: condition,
@@ -1432,16 +1633,33 @@ NoneOf.prototype.and = function(condition) {
   return this;
 };
 
+/**
+ * NoneOf#test
+ *
+ * Evaluate the result of the current boolean expression.
+ * @returns {boolean}
+ *
+ */
 NoneOf.prototype.test = function() {
   return _(this.current).pluck('val').every(function(cond) {
     return !cond;
   });
 };
 
+/**
+ * ~noneOf
+ *
+ * The main entry point for noneOf
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {NoneOf}
+ *
+ */
 var noneOf = module.exports = function(condition) {
   return new NoneOf(condition);
 };
 
+// Expose constructor
 noneOf.NoneOf = NoneOf;
 
 },{"./base":4,"lodash":19,"util":18}],13:[function(require,module,exports){
@@ -1449,12 +1667,28 @@ var _ = require('lodash');
 var util = require('util');
 var Base = require('./base');
 
+/**
+ * OneOf
+ *
+ * @constructor
+ * @param {*} condition - The condition to be evaluated
+ * 
+ */
 var OneOf = function OneOf(condition) {
   Base.call(this, condition);
 };
 
 util.inherits(OneOf, Base);
 
+/**
+ * OneOf#and
+ *
+ * Add another condition to the chain
+ *
+ * @param {*} condition - The condition to be evaluated
+ * @returns {OneOf}
+ *
+ */
 OneOf.prototype.and = function(condition) {
   this.current.push({
     val: condition,
@@ -1463,19 +1697,46 @@ OneOf.prototype.and = function(condition) {
   return this;
 };
 
+/**
+ * OneOf#test
+ *
+ * Evaluate the result of the current boolean expression.
+ * @returns {boolean}
+ *
+ */
 OneOf.prototype.test = function() {
   return _(this.current).pluck('val').countBy(function(cond) {
     return Boolean(cond) ? 'true': 'false';
   }).value()['true'] === 1;
 };
 
+/**
+ * ~oneOf
+ *
+ * The main entry point for oneOf
+ *
+ * @param {*} condition - The thing to be evaluated
+ * @returns {OneOf}
+ *
+ */
 var oneOf = module.exports = function(condition) {
   return new OneOf(condition);
 };
 
+// Expose constructor
 oneOf.OneOf = OneOf;
 
 },{"./base":4,"lodash":19,"util":18}],14:[function(require,module,exports){
+/**
+ * .delegate
+ *
+ * Create a new instance of Indeed for chaining purposes
+ *
+ * @param {*} condition - The condition being evaluated
+ * @param {string} join - The type of join
+ * @returns {Indeed}
+ *
+ */
 exports.delegate = function(condition, join) {
   var i = new (require('./indeed')).Indeed(true);
   i.current = [];
