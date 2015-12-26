@@ -1,4 +1,21 @@
-languages:
-  JavaScript: true
+engines:
+  eslint:
+    enabled: true
+  duplication:
+    enabled: false
+    config:
+      languages:
+        - javascript
+ratings:
+   paths:
+    - "lib/**.js"
 exclude_paths:
   - "dist/**.js"
+  - "gulp/**.js"
+  - "test/**.js"
+  - "**.json"
+  - "**.md"
+  - "*.js"
+  - "**.coffee"
+  - "LICENSE"
+  - "**.txt"
