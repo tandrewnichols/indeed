@@ -13,6 +13,7 @@ exclude_paths:
   - "dist/**.js"
   - "gulp/**.js"
   - "test/**.js"
+  - "tasks/**.js"
   - "**.json"
   - "**.md"
   - "*.js"
