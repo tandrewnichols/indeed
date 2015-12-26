@@ -2,8 +2,8 @@ module.exports = {
   options: {
     targets: {
       test: '{{ version }}',
-      when: 'v0.12',
-      tasks: ['mochacov:lcov', 'matrix:v0.12']
+      when: 'v4.0.0',
+      tasks: ['mochacov:lcov', 'matrix:v4.0.0']
     }
   }
 };
