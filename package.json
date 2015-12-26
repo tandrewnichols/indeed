@@ -2,7 +2,11 @@
   "name": "indeed",
   "description": "Boolean helpers for node.js",
   "version": "1.0.6",
-  "author": "Andrew Nichols <tandrewnichols@gmail.com>",
+  "author": {
+    "name": "Andrew Nichols",
+    "email": "tandrewnichols@gmail.com>",
+    "url": "www.tandrewnichols.me"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/tandrewnichols/indeed.git"
