@@ -1,3 +1,3 @@
 module.exports = {
-  'v0.12': 'codeclimate-test-reporter < coverage/coverage.lcov'
+  'v4.0.0': 'codeclimate-test-reporter < coverage/coverage.lcov'
 };
