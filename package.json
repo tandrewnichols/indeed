@@ -1,7 +1,7 @@
 {
   "name": "indeed",
   "description": "Boolean helpers for node.js",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "author": {
     "name": "Andrew Nichols",
     "email": "tandrewnichols@gmail.com>",
